@@ -1,0 +1,52 @@
+# Architecture
+
+**Last updated**: YYYY-MM-DD
+
+---
+
+## Stack
+
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| Framework | [e.g., Next.js] | |
+| Styling | [e.g., Tailwind] | |
+| Map | [e.g., deck.gl] | |
+| State | [e.g., Zustand] | |
+| Hosting | [e.g., Vercel] | |
+
+---
+
+## Directory Structure
+
+```
+project-root/
+├── app/              — Pages
+├── components/       — UI components
+├── lib/              — Data utilities, types, mock data
+├── public/
+│   └── dataset/      — Cleaned data for download
+├── docs/             — Living documentation
+└── ...
+```
+
+---
+
+## Data Flow
+
+```
+[Source] → [Ingestion] → [Processing] → [Output] → [Web App]
+```
+
+---
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| [VAR] | [description] | [yes/no] |
+
+---
+
+## Deployment
+
+[Deployment notes]

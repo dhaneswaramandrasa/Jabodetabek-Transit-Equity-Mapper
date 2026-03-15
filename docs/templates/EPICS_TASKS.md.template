@@ -1,0 +1,40 @@
+# Epics & Tasks
+
+**Project**: [Project Name]
+**Linear workspace**: [workspace URL]
+**Last synced**: YYYY-MM-DD
+
+---
+
+## Epic Overview
+
+| Epic | Track | Name | Status | Tickets |
+|------|-------|------|--------|---------|
+| E1 | Shared | Research Framing | [status] | [done/total] |
+| E2 | Shared | Methodology & Data Design | [status] | [done/total] |
+| E3 | Paper | Literature Review | [status] | [done/total] |
+| E4 | Paper | Paper Drafting | [status] | [done/total] |
+| E5 | Paper | Paper Review & Revision | [status] | [done/total] |
+| E6 | Product | Data Pipeline | [status] | [done/total] |
+| E7 | Product | UI Foundation | [status] | [done/total] |
+| E8 | Product | Core Features | [status] | [done/total] |
+| E9 | Product | Code Review & QA | [status] | [done/total] |
+| E10 | Convergence | Deliverables | [status] | [done/total] |
+
+Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
+
+---
+
+## E1 · Research Framing (Shared)
+
+### [TICKET-ID] — [Title]
+- **Status**: [Todo/In Progress/Done]
+- **Priority**: [priority]
+- **AC**:
+  - [ ] [acceptance criterion]
+- **Blocked by**: [ticket or none]
+- **Notes**: [any notes]
+
+---
+
+[Repeat for each epic and ticket]

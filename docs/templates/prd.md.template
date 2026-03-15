@@ -1,0 +1,45 @@
+# Product Requirements Document
+
+**Last updated**: YYYY-MM-DD
+
+---
+
+## 1. Overview
+
+[What is this product and why does it exist?]
+
+## 2. Problem Statement
+
+[What problem does this solve?]
+
+## 3. Background
+
+### 3.1 Research Context
+[Gap statement from Source Map]
+
+### 3.2 Target Users
+[Who uses this and why?]
+
+## 4. User Personas
+
+| Persona | Role | Primary Goal | Key Need |
+|---------|------|-------------|----------|
+| [name] | [role] | [goal] | [need] |
+
+## 5. Features
+
+### 5.1 [Feature Name]
+- **Description**: [what]
+- **User story**: As a [persona], I want to [action] so that [outcome]
+- **Acceptance criteria**:
+  - [ ] [criterion]
+
+## 6. Constraints
+
+| Constraint | Details |
+|-----------|---------|
+| [constraint] | [details] |
+
+## 7. Out of Scope
+
+- [item]

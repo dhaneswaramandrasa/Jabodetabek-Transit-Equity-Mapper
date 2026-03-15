@@ -1,0 +1,44 @@
+# Data Model
+
+**Last updated**: YYYY-MM-DD
+**Contract**: This file = `lib/types.ts` = `lib/mock-data.ts`. All three must match.
+
+---
+
+## Primary Schema — [Unit Name]
+
+| Field | Type | Description | Source |
+|-------|------|-------------|--------|
+| `id` | string | Unique identifier | [source] |
+
+---
+
+## Secondary Schema — [Unit Name]
+
+| Field | Type | Description | Derivation |
+|-------|------|-------------|------------|
+| `id` | string | Unique identifier | [method] |
+
+---
+
+## Derivation Methods
+
+| Data type | Method | Rationale |
+|-----------|--------|-----------|
+| [type] | [method] | [why] |
+
+---
+
+## Join Keys
+
+| Join | Left key | Right key | Type |
+|------|----------|-----------|------|
+| [join] | [left] | [right] | [type] |
+
+---
+
+## Mock Data Spec
+
+- Record count: [N]
+- Generated from: [source/method]
+- Matches schema above: [yes/no]
