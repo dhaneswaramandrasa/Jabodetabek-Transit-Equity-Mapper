@@ -47,7 +47,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] 10–15 papers extracted (citation, method+findings, data sources, relevance)
   - [ ] Source Map table produced
   - [ ] Synthesis: established knowledge, gap, methodological precedents, data sources
-- **Blocked by**: none (deferred to Hiroshima arrival)
+- **Blocked by**: none
 - **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-2/complete-literature-scan-and-source-map
 
 ### TEQ-3 — Produce PRD for web product
@@ -242,14 +242,14 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **Blocked by**: TEQ-16 (all paper sections complete)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-17/self-review-against-phase-5p-checklist
 
-### TEQ-18 — Incorporate supervisor feedback
+### TEQ-18 — Final review and revision
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
-  - [ ] Supervisor feedback collected and incorporated
-  - [ ] Citation format confirmed per venue
+  - [ ] Peer feedback incorporated (if available)
+  - [ ] Citation format confirmed
   - [ ] Final proofread
-- **Blocked by**: TEQ-17 (self-review) + supervisor availability
+- **Blocked by**: TEQ-17 (self-review)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-18/incorporate-supervisor-feedback
 
 ---

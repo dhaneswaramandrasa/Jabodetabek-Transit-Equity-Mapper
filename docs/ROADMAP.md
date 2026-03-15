@@ -59,7 +59,7 @@
 | GTFS feeds outdated or incomplete | H | M | Check feed freshness; fall back to stop-proximity if schedule data missing |
 | r5py compute time exceeds budget | H | M | Batch H3 centroids in chunks of 1000; use cloud compute if needed |
 | BPS data not available at kelurahan level | M | H | Disaggregate from kecamatan via WorldPop dasymetric; document as limitation |
-| Supervisor redirects research scope | H | M | Keep framing flexible; defer venue decision |
+| Scope creep on features | M | M | Stick to PRD; defer v2 enhancements |
 | LRT Jabodebek has no GTFS feed | M | H | Include as point proximity only; flag as limitation |
 | What-if simulator misleads users | M | L | Clear disclaimer labels; simplified buffer model only |
-| Timeline too aggressive (16 days for full pipeline + paper + product) | H | H | Prioritize E6 data pipeline → paper results → core features; defer TEQ-38 (presentation) |
+| Timeline too aggressive (16 days for full pipeline + paper + product) | H | H | Prioritize E6 data pipeline → core features → paper; defer TEQ-38 (presentation) |

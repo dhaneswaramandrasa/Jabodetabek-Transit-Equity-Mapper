@@ -8,9 +8,8 @@
 
 ## Current Focus
 
-Phase 3 complete. Docs system bootstrapped. Ready to begin Phase 4 work.
-Next actionable ticket is TEQ-2 (literature scan) — deferred until Hiroshima arrival.
-Parallel option: TEQ-19 (GTFS data pipeline) can start if methodology is considered confirmed.
+Phase 3 complete. Docs system bootstrapped. Ready to begin Phase 4 work immediately.
+This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary
 
@@ -19,21 +18,20 @@ Parallel option: TEQ-19 (GTFS data pipeline) can start if methodology is conside
 - Pre-filled all docs from `research-framing.md`, `methodology.md`, and Linear tickets
 - 38 active Linear tickets across 10 epics (TEQ-1 through TEQ-38)
 - 2 tickets Done (TEQ-1: research framing, TEQ-4: 5-layer TAI methodology)
+- Created README.md
 
 ## Blockers
 
-- TEQ-2 (literature scan) deferred to Hiroshima — no papers scanned yet
-- TEQ-3 (PRD) depends on source map gap statement from TEQ-2
-- Remaining E2 methodology tickets (TEQ-5, TEQ-7, TEQ-8) are design tasks, not code
+- None — all Phase 1–3 gates cleared, ready to execute
 
 ## Next Action
 
-1. **If at Hiroshima**: Start TEQ-2 — run literature scan, produce source map
-2. **If pre-Hiroshima**: Start TEQ-5 (TNI weighting) or TEQ-8 (three-way GC model) to finalize remaining methodology
-3. **If eager to code**: Start TEQ-19 (GTFS download) — data acquisition can proceed with confirmed methodology
+Start TEQ-2 (literature scan) — produce source map. This unblocks:
+- TEQ-3 (PRD refinement with gap statement)
+- TEQ-9/10/11 (literature review paper sections)
+
+In parallel, can start TEQ-19 (GTFS data pipeline) — data acquisition is unblocked.
 
 ## Open Questions
 
-- Supervisor assignment at Hiroshima — may affect research direction
-- Citation format depends on target venue (thesis chapter vs journal vs conference)
-- TEQ-2 literature scan scope: 10–15 papers sufficient or need more for thesis?
+- None currently
