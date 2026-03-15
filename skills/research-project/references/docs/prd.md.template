@@ -1,0 +1,204 @@
+# Product Requirements Document
+<!-- STABLE DOC: update only when product definition changes.
+     Full 11-section template. Sections 1–6 required; 7–11 add on request.
+     Reference asset: assets/PRD_Template_Core_Product.docx for Word version. -->
+
+**Version**: v0.1
+**Date**: [DD/MM/YYYY]
+**Author**: [Name]
+**Status**: Draft
+
+---
+
+## 1. PRD Change Log
+
+| Date | Version | Author | Description | Status |
+|---|---|---|---|---|
+| [date] | v0.1 | [name] | Initial draft | Draft |
+
+---
+
+## 2. PRD Details
+
+| Field | Details |
+|---|---|
+| PRD Title | [Product/Feature Name] |
+| Product Owner | [Name — Role] |
+| Tech Lead | [Name — Role] |
+| Design Lead | [Name — if applicable] |
+| Target Release | [e.g. Q2 2026 / prototype] |
+| Current Status | Draft |
+| Related Documents | [methodology.md, paper draft, Figma link] |
+
+### 2.1 Approval Sign-off
+
+| Role | Name | Date | Status |
+|---|---|---|---|
+| Product Owner | [name] | | Pending |
+| Tech Lead | [name] | | Pending |
+
+---
+
+## 3. Product Overview
+
+### 3.1 Background & Context
+[Academic context, research gap, or business driver. Why does this product need to exist?]
+
+### 3.2 Problem Statement
+- **Primary Problem**: [fill in]
+- **Secondary Problem(s)**: [fill in]
+
+### 3.3 Target Users / Personas
+
+| Attribute | Persona 1: [Name] | Persona 2: [Name] |
+|---|---|---|
+| Role | [e.g. urban researcher] | [e.g. city planner] |
+| Goals | [what they achieve] | [what they achieve] |
+| Pain Points | [frustrations] | [frustrations] |
+| Quote | "I wish I could..." | "I wish I could..." |
+
+### 3.4 Assumptions
+- Assumption 1: [fill in]
+- Assumption 2: [fill in]
+
+### 3.5 Scope
+- **In Scope**: [fill in]
+- **Out of Scope**: [fill in]
+
+---
+
+## 4. Product Objectives
+
+### 4.1 Objective
+[One sentence: what does success look like?]
+
+### 4.2 Key Results & Metrics
+
+| Metric | Current | Target | Measurement | Timeframe |
+|---|---|---|---|---|
+| [e.g. monthly active users] | 0 | 100 | analytics | 3 months post-launch |
+| [research metric, e.g. citation] | 0 | 5 | scholar | 12 months |
+
+### 4.3 Success Definition
+
+| Level | Definition |
+|---|---|
+| Launch success | [e.g. App deployed, dataset accessible, paper submitted] |
+| Adoption success | [e.g. 50 dataset downloads in first month] |
+| Research success | [e.g. Paper accepted / findings replicated] |
+
+### 4.4 North Star Metric
+[fill in — the single most important metric]
+
+---
+
+## 5. Solution
+
+### 5.1 Proposed Solution
+[What are we building and how does it address the problem?]
+
+### 5.2 Key Features
+
+| # | Feature | Description | Priority |
+|---|---|---|---|
+| 1 | [name] | [description] | Must |
+| 2 | [name] | [description] | Should |
+| 3 | [name] | [description] | Nice |
+
+### 5.3 Mockups & Wireframes
+[Figma link or description of key screens]
+
+### 5.4 User Flow
+```
+Entry Point → [Step 1] → [Decision] → [Step 2A / 2B] → Completion
+```
+
+---
+
+## 6. User Stories & Requirements
+
+| ID | Epic | User Story | Acceptance Criteria | Priority | Size | Status |
+|---|---|---|---|---|---|---|
+| US-01 | [epic] | As a [user], I want to [action] so that [benefit] | [DoD] | P0 | M | Todo |
+
+*Priority: P0=Must, P1=Should, P2=Could, P3=Won't this time*
+*Size: S=<1 day, M=1–3 days, L=3–5 days*
+
+---
+
+## 7. Timeline & Deliverables
+*See ROADMAP.md for the full delivery timeline.*
+
+| Phase | Milestone | Target Date |
+|---|---|---|
+| Discovery | Methodology confirmed | [date] |
+| Build | Product MVP | [date] |
+| Launch | Deployed + paper submitted | [date] |
+
+---
+
+## 8. Rollout Plan
+
+**Approach**: [e.g. soft launch via paper publication + dataset release]
+
+| Phase | Audience | Criteria to proceed |
+|---|---|---|
+| Phase 1 | Supervisor / internal review | No critical issues |
+| Phase 2 | Conference / academic audience | Paper accepted |
+| Phase 3 | General public | Deployed, stable |
+
+---
+
+## 9. Constraints & Dependencies
+
+### 9.1 Risk Assessment
+
+| Risk Type | Description | Mitigation | Likelihood | Impact |
+|---|---|---|---|---|
+| Value Risk | Will users find this useful? | User interviews, supervisor validation | M | H |
+| Feasibility Risk | Can we acquire the data? | Synthetic fallback prepared | M | H |
+| Viability Risk | Is this publishable? | Align with supervisor early | L | H |
+
+### 9.2 Technical Constraints
+- [e.g. No server-side processing — client-side only for prototype]
+- [e.g. Mapbox requires API key — budget $0 for prototype, use SVG fallback]
+
+### 9.3 Dependencies
+
+| Dependency | Owner | Status | Impact if delayed |
+|---|---|---|---|
+| [e.g. BPS dataset access] | BPS / self | [status] | Blocks E6 |
+| [e.g. Supervisor approval of methodology] | Supervisor | [status] | Blocks E4 |
+
+---
+
+## 10. FAQs — Questions & Decisions
+
+### Open Questions
+
+| # | Question | Raised by | Date | Assigned to | Status |
+|---|---|---|---|---|---|
+| 1 | [question] | [name] | [date] | [name] | Open |
+
+### Decisions Log
+
+| # | Decision | Rationale | Decision Maker | Date |
+|---|---|---|---|---|
+| 1 | [decision] | [rationale] | [name] | [date] |
+
+---
+
+## 11. Appendix
+
+### Supporting Data & Research
+
+| # | Source | Type | Link |
+|---|---|---|---|
+| 1 | [e.g. BPS Census 2020] | Dataset | [URL] |
+| 2 | [e.g. key paper] | Paper | [URL] |
+
+### Glossary
+
+| Term | Definition |
+|---|---|
+| [term] | [definition] |

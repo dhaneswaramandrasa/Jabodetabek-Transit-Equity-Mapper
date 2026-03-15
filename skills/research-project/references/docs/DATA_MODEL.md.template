@@ -1,0 +1,111 @@
+# Data Model
+<!-- STABLE DOC: update only when schema actually changes.
+     Flag change with: "DATA_MODEL.md updated — [what changed and why]"
+     Must stay in sync with: lib/types.ts, lib/mock-data.ts, methodology.md -->
+
+**Version**: [v1.0]
+**Last updated**: [YYYY-MM-DD]
+
+---
+
+## Overview
+[1–2 sentences: what data does this system work with, at what granularity, from what sources?]
+
+---
+
+## Target Schema (analysis-ready)
+
+The cleaned, joined, analysis-ready dataset used by both the paper and the product.
+
+### [Main entity — e.g. KelurahanRecord]
+
+```typescript
+interface KelurahanRecord {
+  // Identifiers
+  kelurahan_id: string        // BPS area code — primary join key
+  kelurahan_name: string      // Display name
+  kecamatan: string           // District
+  kota: string                // City
+
+  // Primary variables
+  transit_score: number       // Composite accessibility index [0–100]
+  poverty_rate: number        // % population below poverty line (BPS 2020)
+
+  // Control variables
+  population_density: number  // persons per km²
+  area_km2: number            // Area in square kilometers
+
+  // Metadata
+  data_year: number           // Source year
+  has_missing: boolean        // Any imputed fields?
+}
+```
+
+| Field | Type | Range / Values | Source | In paper | In product | Nullable |
+|---|---|---|---|---|---|---|
+| `kelurahan_id` | string | BPS code format | BPS | ✓ | ✓ | No |
+| `transit_score` | float | 0–100 | Computed | ✓ | ✓ | No |
+| `poverty_rate` | float | 0–1 | BPS 2020 | ✓ | ✓ | Yes* |
+
+*Imputed using kecamatan median where missing.
+
+---
+
+## Raw Source Schemas
+
+### [Dataset 1 — e.g. BPS Census 2020]
+
+| Field | Type | Description | Maps to |
+|---|---|---|---|
+| `kode_kelurahan` | string | BPS area code | `kelurahan_id` |
+| `pct_miskin` | float | % below poverty line | `poverty_rate` |
+| `kepadatan` | float | population density | `population_density` |
+
+**Source**: [URL or institution]
+**Format**: CSV
+**Update frequency**: [annual / one-time / etc.]
+**Access**: [open / restricted]
+
+---
+
+## Wrangling Transformations
+
+Key transformations from raw → target schema:
+
+| Target field | Source field(s) | Transformation |
+|---|---|---|
+| `kelurahan_id` | `kode_kelurahan` | rename only |
+| `transit_score` | multiple GTFS fields | weighted composite formula — see methodology.md §2.5 |
+| `poverty_rate` | `pct_miskin` | divide by 100 to normalize 0–1 |
+
+---
+
+## Mock Data Spec
+
+For prototype development, `lib/mock-data.ts` must:
+- Use the exact field names from the Target Schema above
+- Use realistic value ranges (see Range column)
+- Include at least 20 records for meaningful chart rendering
+- Include a few records with nullable fields set to null (to test null handling)
+- Include edge cases: min value, max value, one outlier
+
+---
+
+## Dataset Distribution
+
+The cleaned dataset is published at `public/dataset/`:
+
+| File | Description | Format | Records |
+|---|---|---|---|
+| `[name].csv` | Full cleaned dataset | CSV | [N] |
+| `[name].geojson` | Spatial version | GeoJSON | [N] |
+
+**License**: CC BY 4.0
+**Citation**: [how to cite this dataset]
+
+---
+
+## Change Log
+| Date | Version | What changed | Why |
+|---|---|---|---|
+| [date] | v1.0 | Initial schema defined | Phase 2 confirmation |

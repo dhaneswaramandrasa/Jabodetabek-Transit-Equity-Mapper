@@ -1,0 +1,51 @@
+# Source Map
+<!-- Generated in Phase 1.3. STABLE DOC — update only if new papers are added.
+     Flag change: "source-map.md updated — [N papers added, gap refined]"
+     Feeds: docs/methodology.md §Theoretical Framework, E3 lit review tickets, Phase 2.2, Phase 2.3 -->
+
+**Generated**: [YYYY-MM-DD]
+**Papers found**: [N] (web search: [N], user-added: [N])
+**Search queries used**: [list the queries that were run]
+
+---
+
+## Paper Table
+
+| # | Citation (APA) | Method + Findings | Data Sources Used | Relevance to RQ |
+|---|---|---|---|---|
+| 1 | [Author, A., & Author, B. (Year). Title. *Venue*. DOI] | [2–3 sentences on what they did and found] | [datasets, APIs, tools] | High — [why] |
+| 2 | | | | Medium — [why] |
+| 3 | | | | Low — [why] |
+
+---
+
+## Synthesis
+
+### What the literature establishes
+[2–3 sentences: what is well-covered, what methods dominate, what data is commonly used]
+
+### The gap this research fills
+[1–2 sentences: what is NOT answered by existing work — this is the sharpened RQ justification]
+
+### Methodological precedents
+[Which papers use methods closest to the planned approach? What can be borrowed directly?]
+
+### Data sources to consider
+[Datasets or APIs already used by related work — feeds Phase 2.3 acquisition plan directly]
+
+---
+
+## Refined Research Question
+<!-- Updated after synthesis — may differ from Phase 1.2 draft -->
+[Final RQ as confirmed after literature scan]
+
+## Refined Hypothesis
+<!-- Updated if literature reveals a more specific testable claim -->
+[Final hypothesis as confirmed after literature scan]
+
+---
+
+## Change Log
+| Date | What changed | Why |
+|---|---|---|
+| [date] | Initial scan complete | Phase 1.3 |
