@@ -40,14 +40,16 @@ E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 ---
 
 ## E3 — Literature Review [PAPER TRACK]
-**Goal**: Related work section ready for paper draft
+**Goal**: Supervisor-approved Related Work section
 **Status**: [status]
+**Note**: `docs/literature_review.md` is already a v0.1 draft from Phase 1.3 — E3 expands it
 
 | ID | Title | AC | Depends on | Estimate | Status |
 |---|---|---|---|---|---|
-| E3-001 | Identify 10–15 key papers | Reference list compiled with relevance notes | E2-001 | 3h | [status] |
-| E3-002 | Draft related work section | Section written, positions this research in field | E3-001 | 4h | [status] |
-| E3-003 | Supervisor review of lit review | Feedback addressed, section approved | E3-002 | 2h | [status] |
+| E3-001 | Expand literature_review.md with additional papers | 15+ papers covered, all themes complete | E1-002 | 3h | [status] |
+| E3-002 | Restructure into final thematic clusters | Clusters reflect paper argument, not just topic | E3-001 | 2h | [status] |
+| E3-003 | Write gap and positioning paragraph | Gap clearly stated, bridges to RQ | E3-002 | 2h | [status] |
+| E3-004 | Supervisor review of lit review | Feedback addressed, section approved | E3-003 | 2h | [status] |
 
 ---
 

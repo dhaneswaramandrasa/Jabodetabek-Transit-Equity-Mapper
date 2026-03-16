@@ -143,15 +143,20 @@ For each paper, extract exactly these fields — no more:
 | **Data sources used** | Datasets, APIs, or tools they relied on |
 | **Relevance to your RQ** | How directly does this address your question? (High / Medium / Low + 1 sentence why) |
 
-#### Source map output
+#### Phase 1.3 produces two documents
 
-After extracting all papers, produce a **Source Map** — a structured table plus a
-synthesis paragraph:
+Both are generated at the end of the scan and confirmed before moving to Phase 2.
+
+---
+
+##### Output 1 — `docs/source-map.md`
+
+The raw structured output of the scan. Internal working document.
 
 ```
 ## Source Map
 
-| # | Citation | Method + Findings | Data Sources | Relevance to RQ |
+| # | Citation (APA) | Method + Findings | Data Sources | Relevance to RQ |
 |---|---|---|---|---|
 | 1 | [Author, Year. Title. Venue.] | [2–3 sentences] | [datasets/tools] | High — [why] |
 | 2 | ... | ... | ... | Medium — [why] |
@@ -161,35 +166,84 @@ synthesis paragraph:
 ### What the literature establishes
 [2–3 sentences: what is well-covered, what methods dominate, what data is commonly used]
 
-### The gap your research fills
-[1–2 sentences: what is NOT answered — this sharpens the research question]
+### The gap this research fills
+[1–2 sentences: what is NOT answered — this sharpens the RQ]
 
 ### Methodological precedents
-[Which papers use methods closest to your planned approach? What can you borrow?]
+[Papers using the closest approach — what to borrow for Phase 2.2]
 
 ### Data sources to consider
-[Datasets or APIs used by existing work that you could also use — feeds directly into Phase 2.3]
+[Datasets/APIs already used by others — feeds Phase 2.3 directly]
+
+## Refined Research Question
+[Updated RQ after scan — may differ from Phase 1.2 draft]
+
+## Refined Hypothesis
+[Updated hypothesis if literature reveals a more specific testable claim]
 ```
+
+---
+
+##### Output 2 — `docs/literature_review.md`
+
+Academic prose ready to become the paper's Related Work section. Written from the
+Source Map but structured for a reader, not a spreadsheet.
+
+```markdown
+# Literature Review
+
+## [Thematic cluster 1 — e.g. Transit accessibility measurement]
+
+[3–5 sentences synthesising 2–4 papers on this theme. Cite inline: (Author, Year).
+Do not summarise papers one by one — group by theme and compare approaches.]
+
+## [Thematic cluster 2 — e.g. Economic mobility and urban infrastructure]
+
+[Same pattern — synthesis, not summary.]
+
+## [Thematic cluster 3 — if applicable]
+
+[...]
+
+## Gap and positioning
+
+[1–2 paragraphs: what the combined literature does not answer, and how this research
+fills that gap. This is the bridge to the research question.]
+
+## References
+
+[Full APA reference list — every paper cited above]
+```
+
+**Clustering guidance:**
+- Group papers by *theme or approach*, not by paper
+- Aim for 2–4 clusters of 2–5 papers each
+- The gap paragraph is the most important part — it directly justifies the RQ
+- This doc is a living draft: it will be expanded in E3 (Literature Review epic)
+  but should already be substantive enough to share with a supervisor
+
+---
 
 #### Framing refinement
 
-After the Source Map, revisit the draft framing from 1.2:
-- **Research question**: does it need sharpening based on what already exists?
-- **Hypothesis**: is it differentiated from existing findings?
-- **Academic contribution**: update the "gap" section now that you've seen the field
-- **Methodology hints**: note any methods or data sources worth adopting in Phase 2
+After both documents are drafted, revisit the framing from 1.2:
+- **Research question**: sharpen based on the gap identified
+- **Hypothesis**: differentiate from existing findings
+- **Academic contribution**: update with the precise gap statement
+- **Methodology hints**: note methods and data sources to adopt in Phase 2
 
-Update the Research Framing Document (1.2) with any changes before moving on.
+Update `docs/research-framing.md` with any changes before moving on.
 
-#### What the Source Map feeds downstream
+#### What Phase 1.3 feeds downstream
 
-| Downstream | What it gets |
+| Downstream | From |
 |---|---|
-| `docs/methodology.md` §Theoretical Framework | Top 3–5 papers as the theoretical foundation |
-| E3 (Literature Review epic) | Full source map becomes the raw material for E3 tickets |
-| Phase 2.2 (Methodology) | Methodological precedents inform method choices |
-| Phase 2.3 (Data requirements) | Data sources used by others inform your acquisition plan |
-| `docs/prd.md` §Background | Gap statement feeds Section 3.1 |
+| `docs/methodology.md` §Theoretical Framework | Top 3–5 papers from source-map.md |
+| `docs/literature_review.md` | Written in Phase 1.3, expanded in E3 |
+| `docs/prd.md` §3.1 Background | Gap statement from source-map.md synthesis |
+| Phase 2.2 method choices | Methodological precedents from source-map.md |
+| Phase 2.3 data acquisition | Data sources column from source-map.md |
+| E3 Linear epic tickets | literature_review.md is the starting draft — E3 expands it |
 
 ---
 
@@ -203,7 +257,11 @@ Key differences from a pure product PRD:
 - Section 4 (Objectives): include both product metrics AND research outcomes
 - Section 6 (User Stories): include researcher/analyst personas alongside end-user personas
 
-✋ Confirm framing doc (1.2, updated after 1.3) + Source Map + PRD before moving to Phase 2.
+✋ Confirm all four before moving to Phase 2:
+- `docs/research-framing.md` (updated after scan)
+- `docs/source-map.md`
+- `docs/literature_review.md`
+- `docs/prd.md`
 
 ---
 
@@ -618,6 +676,7 @@ Claude updates it. Templates for all docs are in `references/docs/*.template`.
 | `docs/state.md` | **Volatile** | Auto — every session | Current state, active ticket, blockers, next action |
 | `docs/EPICS_TASKS.md` | **Volatile** | Auto — when ticket statuses change | Full epic/task breakdown with ACs, dependencies, estimates |
 | `docs/ROADMAP.md` | **Volatile** | Auto — when timeline or status changes | Delivery timeline, milestones, weekly focus, risks |
+| `docs/literature_review.md` | Stable | Only when papers added or argument restructured | Academic prose for Related Work section |
 | `docs/methodology.md` | Stable | Only when methodology changes | RQ, hypothesis, methods, data pipeline |
 | `docs/ARCHITECTURE.md` | Stable | Only when system structure changes | Tech stack, directory structure, data flow, deployment |
 | `docs/DATA_MODEL.md` | Stable | Only when schema changes | Full schema, field definitions, wrangling map, mock data spec |
@@ -654,7 +713,9 @@ for f in docs/*.template; do mv "$f" "${f%.template}"; done
 ```
 
 Fill each doc from confirmed Phase 1 and Phase 2 outputs:
-- `prd.md` ← Phase 1.3 PRD
+- `prd.md` ← Phase 1.4 PRD
+- `source-map.md` ← Phase 1.3 literature scan output
+- `literature_review.md` ← Phase 1.3 draft (expanded in E3)
 - `methodology.md` ← Phase 2 Methodology Summary
 - `EPICS_TASKS.md` ← Phase 3 Linear epic/ticket structure
 - `ROADMAP.md` ← Phase 3 milestone dates

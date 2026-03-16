@@ -24,17 +24,18 @@
 
 ### Week 1 (Mon Mar 16 – Sun Mar 22)
 - [x] Bootstrap docs system (this session)
-- [ ] MVP-2: Literature scan + source map
+- [ ] MVP-2: Literature scan + source map + literature review (v0.1)
 - [ ] MVP-3: Refine PRD with gap statement
-- [ ] MVP-5: Finalize TNI weighting
-- [ ] MVP-7: Finalize H3 derivation design
-- [ ] MVP-8: Finalize three-way GC model
-- [ ] MVP-19: Download + validate GTFS feeds
-- [ ] MVP-20: Extract OSM road network
+- [ ] MVP-5: Finalize TNI weighting (blocked by MVP-2)
+- [ ] MVP-7: Finalize H3 derivation design (blocked by MVP-2)
+- [ ] MVP-8: Finalize three-way GC model (blocked by MVP-2)
+- [ ] MVP-6: Define data acquisition scripts (blocked by MVP-5/7/8)
 
 ### Week 2 (Mon Mar 23 – Sun Mar 29)
-- [ ] MVP-21: Extract strict POIs
-- [ ] MVP-22: Assemble BPS demographics
+- [ ] MVP-19: Download + validate GTFS feeds (blocked by MVP-6)
+- [ ] MVP-20: Extract OSM road network (blocked by MVP-6)
+- [ ] MVP-21: Extract strict POIs (blocked by MVP-6)
+- [ ] MVP-22: Assemble BPS demographics (blocked by MVP-6)
 - [ ] MVP-23: Compute TAI/TNI per kelurahan (heavy compute: 2–4 hrs)
 - [ ] MVP-24: Generate H3 grid + derive indicators (heavy compute: 8–16 hrs)
 - [ ] MVP-25: Equity gap, Gini, LISA

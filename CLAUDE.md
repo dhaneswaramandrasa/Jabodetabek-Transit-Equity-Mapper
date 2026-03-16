@@ -53,7 +53,8 @@ Seven living docs in `docs/`. Templates in `docs/templates/`.
 
 | File | Volatility | Purpose |
 |---|---|---|
-| `docs/source-map.md` | Stable | Literature scan: papers, synthesis, gap statement |
+| `docs/source-map.md` | Stable | Literature scan: raw paper table + synthesis |
+| `docs/literature_review.md` | Stable | Academic prose for Related Work section (v0.1 from Phase 1.3, expanded in E3) |
 | `docs/state.md` | **Auto every session** | Current state, active ticket, blockers, next action |
 | `docs/EPICS_TASKS.md` | **Auto on status change** | Epics, tasks, ACs, dependencies, estimates |
 | `docs/ROADMAP.md` | **Auto on timeline change** | Milestones, weekly plan, risks |
@@ -73,7 +74,9 @@ for f in docs/*.template; do mv "$f" "${f%.template}"; done
 ```
 
 Then fill each doc from the confirmed Phase 1 and Phase 2 outputs:
-- `prd.md` ← Phase 1 PRD (drafted in Claude for Mac)
+- `prd.md` ← Phase 1.4 PRD (drafted in Claude for Mac)
+- `source-map.md` ← Phase 1.3 literature scan output
+- `literature_review.md` ← Phase 1.3 draft (v0.1, expanded in E3)
 - `methodology.md` ← Phase 2 methodology summary
 - `EPICS_TASKS.md` ← Phase 3 Linear epic/ticket structure
 - `ROADMAP.md` ← Phase 3 milestone dates
@@ -211,25 +214,53 @@ Fetch links/DOIs via web_fetch. Read uploaded PDFs directly. Merge and deduplica
 [Datasets/APIs from existing work — feeds Phase 2.3 directly]
 ```
 
-### After the scan
-1. Update the draft research framing doc with any RQ refinements
-2. Save Source Map to `docs/source-map.md`
-3. Update `docs/methodology.md`:
-   - §Theoretical Framework — insert top 3–5 papers as foundation
-   - §Methodological precedents — note which methods/tools from literature to adopt or adapt
-   - §Data sources — add any new datasets discovered in the literature
-   - §Validation approach — incorporate any validation strategies from comparable studies
-4. Update `docs/state.md` — note scan complete, N papers found
-5. Confirm refined framing with user before Phase 2
+### After the scan — two outputs
 
-### What the Source Map feeds downstream
-| Downstream | What it gets |
+**Output 1: `docs/source-map.md`** — raw structured data
+Save the paper table + synthesis. Internal working document.
+
+**Output 2: `docs/literature_review.md`** — academic prose
+Write this from the source map, structured by theme not by paper. Use this format:
+
+```markdown
+# Literature Review
+
+## [Thematic cluster 1 — e.g. Transit accessibility measurement]
+[3–5 sentences synthesising 2–4 papers. Cite inline: (Author, Year).
+Group by theme and compare approaches — never summarise papers one by one.]
+
+## [Thematic cluster 2 — e.g. Urban mobility and social equity]
+[Same pattern. 2–4 clusters total.]
+
+## Gap and positioning
+[1–2 paragraphs: what the literature does NOT answer, and how this research fills
+that gap. This bridges directly to the research question.]
+
+## References
+[Full APA reference list — every cited paper]
+```
+
+This is a v0.1 draft — E3 tickets expand and refine it. It must be substantive enough
+to share with a supervisor after Phase 1.
+
+Then:
+1. Update `docs/research-framing.md` with any RQ refinements from the scan
+2. Update `docs/state.md` — scan complete, N papers found, two docs generated
+3. Confirm all four docs with user before Phase 2:
+   - docs/research-framing.md (updated)
+   - docs/source-map.md
+   - docs/literature_review.md
+   - docs/prd.md
+
+### What Phase 1.3 feeds downstream
+| Downstream | From |
 |---|---|
-| `docs/methodology.md` §Theoretical Framework | Top 3–5 papers as foundation |
-| E3 Linear epic (Literature Review) | Raw material — no cold start |
-| Phase 2.2 method choices | Methodological precedents |
-| Phase 2.3 data acquisition | Data sources already used by others |
-| `docs/prd.md` §3.1 Background | Gap statement |
+| `docs/methodology.md` §Theoretical Framework | Top 3–5 papers from source-map.md |
+| `docs/literature_review.md` | Written in Phase 1.3, expanded in E3 |
+| `docs/prd.md` §3.1 Background | Gap statement from source-map.md synthesis |
+| Phase 2.2 method choices | Methodological precedents from source-map.md |
+| Phase 2.3 data acquisition | Data sources column from source-map.md |
+| E3 Linear tickets | literature_review.md is the v0.1 starting draft |
 
 ---
 
@@ -289,7 +320,7 @@ Work ticket by ticket through E3–E5.
 ### Paper section → doc mapping
 | Section | Source doc |
 |---|---|
-| Literature Review (E3) | `docs/source-map.md` — raw material, expand into academic prose |
+| Literature Review (E3) | `docs/literature_review.md` — v0.1 draft from Phase 1.3, expand and refine |
 | Methods | `docs/methodology.md` — rewrite as academic prose, never diverge |
 | Results | Must reference same data/figures used in the product |
 | Discussion | Must answer the research question from `docs/methodology.md` |
@@ -324,7 +355,8 @@ my-app/
 │   ├── ARCHITECTURE.md
 │   ├── DATA_MODEL.md
 │   ├── prd.md
-│   ├── source-map.md       — literature scan output (Phase 1.3)
+│   ├── source-map.md       — literature scan: raw paper table + synthesis
+│   ├── literature_review.md — academic prose for Related Work (v0.1 → expanded in E3)
 │   └── templates/          — source templates for all docs above
 ├── CLAUDE.md               — this file
 ├── package.json

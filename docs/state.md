@@ -14,11 +14,16 @@ This is a **portfolio / independent research project** — no academic gating.
 ## Last Session Summary
 
 - Bootstrapped full `docs/` system from Phase 1–3 outputs
-- Generated 7 doc templates in `docs/templates/`
+- Generated 8 doc templates in `docs/templates/` (added literature_review.md.template)
 - Pre-filled all docs from `research-framing.md`, `methodology.md`, and Linear tickets
 - 38 active Linear tickets across 10 epics (MVP-1 through MVP-38)
 - 2 tickets Done (MVP-1: research framing, MVP-4: 5-layer TAI methodology)
 - Created README.md
+- **Corrected dependency chain**: MVP-2 → MVP-5/7/8 → MVP-6 → MVP-19-22
+  - Literature scan must complete before methodology finalization
+  - Methodology must be finalized before data acquisition scripts
+  - Data acquisition scripts must be defined before individual data downloads
+- Added `docs/literature_review.md` as Phase 1.3 output (academic prose, v0.1)
 
 ## Blockers
 
@@ -26,11 +31,17 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-Start MVP-2 (literature scan) — produce source map. This unblocks:
+Start MVP-2 (literature scan) — produce TWO outputs:
+1. `docs/source-map.md` — raw paper table + synthesis
+2. `docs/literature_review.md` — academic prose by theme (v0.1)
+
+MVP-2 unblocks:
 - MVP-3 (PRD refinement with gap statement)
+- MVP-5/7/8 (methodology finalization — TNI, H3, GC)
 - MVP-9/10/11 (literature review paper sections)
 
-In parallel, can start MVP-19 (GTFS data pipeline) — data acquisition is unblocked.
+**Critical path**: MVP-2 → MVP-5/7/8 → MVP-6 → MVP-19-22 → MVP-23 → MVP-24 → MVP-25
+No data pipeline work can start until literature scan + methodology are finalized.
 
 ## Open Questions
 

@@ -83,7 +83,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Normalization method confirmed (min-max)
   - [ ] Weighting confirmed (equal default, sensitivity analysis planned)
   - [ ] Edge cases documented
-- **Blocked by**: none
+- **Blocked by**: MVP-2 (literature scan may refine indicators)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-5/finalize-tni-indicator-set-and-weighting-scheme
 
 ### MVP-6 — Define data acquisition scripts and verify source access
@@ -93,7 +93,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] All 10 data sources verified accessible
   - [ ] Acquisition scripts in `src/ingestion/`
   - [ ] GTFS, OSM, Overpass, BPS, WorldPop, GADM downloads tested
-- **Blocked by**: none
+- **Blocked by**: MVP-5, MVP-7, MVP-8 (methodology must be finalized before data acquisition)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
 
 ### MVP-7 — Design H3 derivation pipeline (dasymetric + area-weighted)
@@ -106,7 +106,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Point-in-polygon for stops/POIs
   - [ ] Direct computation for travel times
   - [ ] Resolution sensitivity plan (7, 8, 9)
-- **Blocked by**: none
+- **Blocked by**: MVP-2 (literature scan may inform derivation methods)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-7/design-h3-derivation-pipeline-dasymetric-area-weighted
 
 ### MVP-8 — Design three-way generalized cost model (transit vs car vs motorcycle)
@@ -117,7 +117,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Cost parameters confirmed (VOT, fuel, toll, parking, fatigue)
   - [ ] Motorcycle toll exclusion modeled
   - [ ] TCR thresholds validated with 3 worked examples (BSD, Ciputat, Tebet)
-- **Blocked by**: none
+- **Blocked by**: MVP-2 (literature scan may refine cost parameters)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-8/design-three-way-generalized-cost-model-transit-vs-car-vs-motorcycle
 
 ---
@@ -265,7 +265,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Merged into unified transit_stops.geojson with mode tags
   - [ ] Headway per stop computed
   - [ ] Output: `data/processed/transit/`
-- **Blocked by**: none
+- **Blocked by**: MVP-6 (data acquisition scripts must be defined first)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-19/download-validate-and-merge-gtfs-feeds-lrt-stations
 
 ### MVP-20 — Extract and process OSM road network + compute road metrics
@@ -277,7 +277,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Road segments extracted with highway tags
   - [ ] Road metrics per kelurahan: length, density, class proportions, intersection density
   - [ ] Output: `data/processed/networks/`
-- **Blocked by**: none
+- **Blocked by**: MVP-6 (data acquisition scripts must be defined first)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-20/extract-and-process-osm-road-network-compute-road-metrics
 
 ### MVP-21 — Extract strict POIs via Overpass API + manual verification
@@ -288,7 +288,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Strict POIs extracted via Overpass (hospitals, schools, markets, industrial, gov offices)
   - [ ] Manual verification of 10% sample
   - [ ] Output: `data/processed/poi/`
-- **Blocked by**: none
+- **Blocked by**: MVP-6 (data acquisition scripts must be defined first)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-21/extract-strict-pois-via-overpass-api-manual-verification
 
 ### MVP-22 — Assemble BPS demographics + disaggregate to kelurahan via WorldPop
@@ -301,7 +301,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Kecamatan data disaggregated to kelurahan via dasymetric allocation
   - [ ] zero_vehicle_hh_pct and dependency_ratio modeled
   - [ ] Output: `data/processed/demographics/`
-- **Blocked by**: none
+- **Blocked by**: MVP-6 (data acquisition scripts must be defined first)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-22/assemble-bps-demographics-disaggregate-to-kelurahan-via-worldpop
 
 ### MVP-23 — Compute 5-layer TAI and TNI per kelurahan
