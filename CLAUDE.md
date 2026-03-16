@@ -214,8 +214,13 @@ Fetch links/DOIs via web_fetch. Read uploaded PDFs directly. Merge and deduplica
 ### After the scan
 1. Update the draft research framing doc with any RQ refinements
 2. Save Source Map to `docs/source-map.md`
-3. Update `docs/state.md` — note scan complete, N papers found
-4. Confirm refined framing with user before Phase 2
+3. Update `docs/methodology.md`:
+   - §Theoretical Framework — insert top 3–5 papers as foundation
+   - §Methodological precedents — note which methods/tools from literature to adopt or adapt
+   - §Data sources — add any new datasets discovered in the literature
+   - §Validation approach — incorporate any validation strategies from comparable studies
+4. Update `docs/state.md` — note scan complete, N papers found
+5. Confirm refined framing with user before Phase 2
 
 ### What the Source Map feeds downstream
 | Downstream | What it gets |
