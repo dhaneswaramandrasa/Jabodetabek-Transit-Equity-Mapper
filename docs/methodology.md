@@ -1,8 +1,8 @@
 # Scientific Methodology
 ## Jabodetabek Transit Equity Mapper
 
-**Status**: Draft — awaiting confirmation before Phase 3 (Linear setup)
-**Last updated**: 2026-03-15
+**Status**: Draft — §Theoretical Framework + §Methodological Precedents added from literature scan (MVP-2)
+**Last updated**: 2026-03-16
 **Feeds**: Paper Methods section, product data layer, `docs/DATA_MODEL.md`, `docs/ARCHITECTURE.md`
 
 ---
@@ -24,6 +24,44 @@
 ### Analysis Type
 
 Descriptive + Exploratory spatial analysis with scenario simulation. Not causal inference.
+
+---
+
+## 2.1b Theoretical Framework
+
+*Added from literature scan (MVP-2). See `docs/source-map.md` for full paper table and `docs/literature_review.md` for expanded prose.*
+
+This research builds on three established theoretical foundations from the transit equity literature:
+
+**1. Need-Supply Gap Framework (Currie 2010; Mamun & Lownes 2011; Jiao & Dillivan 2013)**
+
+The core analytical structure — comparing transit need against transit supply to identify spatial gaps — originates from Currie's (2010) spatial gap analysis in Melbourne and was formalized by Mamun and Lownes (2011) through their Transit Need Index. Jiao and Dillivan (2013) coined the term "transit desert" for areas where transit-dependent populations exceed transit service. Our two-axis Transit Equity Matrix (TNI vs. TAI) directly extends this tradition, with the Q4 quadrant ("High Need, Low Access") operationalizing the transit desert concept.
+
+**2. Distributional Equity Measurement (Delmelle & Casas 2012; Pereira et al. 2019)**
+
+Beyond binary gap identification, distributional equity analysis uses Gini coefficients and Lorenz curves to quantify the overall inequality of transit accessibility across a metropolitan area. Delmelle and Casas (2012) demonstrated this approach in Cali, Colombia — a developing-country BRT context similar to Jakarta. Pereira et al. (2019) extended it to show that Rio de Janeiro's transit investments disproportionately benefited higher-income groups. We adopt the Gini/Lorenz approach and additionally compute it at two spatial resolutions to test MAUP sensitivity.
+
+**3. MAUP Sensitivity in Transit Equity (Javanmard et al. 2023)**
+
+Javanmard et al. (2023) empirically demonstrated that the spatial unit of analysis substantively changes transit equity conclusions — route-level analysis appeared equitable while stop/neighborhood-level analysis revealed significant inequity. This motivates our dual-resolution design: comparing kelurahan (variable-area administrative units) against H3 hexagons (constant-area analytical units) to expose how aggregation choices affect equity diagnoses in Jabodetabek.
+
+**Extension beyond existing frameworks:**
+
+Our research extends the theoretical foundations in two directions not previously combined:
+- **Three-way cost competitiveness**: Western frameworks compare transit vs. car only. Following Ng (2018) and Sukor & Bhayo (2024) on motorcycle dominance in Southeast Asia, we add motorcycle as a third mode in the generalized cost comparison — a novel layer within the composite TAI.
+- **Scenario simulation within equity classification**: No existing study embeds what-if infrastructure placement directly into a transit equity quadrant framework to measure shifts in equity scores, making the analysis actionable for planners.
+
+## 2.1c Methodological Precedents
+
+| Precedent | Key papers | What we borrow | What we extend |
+|-----------|------------|----------------|----------------|
+| Need-supply gap analysis | Currie (2010), Mamun & Lownes (2011a), Jiao & Dillivan (2013) | Two-axis need vs. access structure; quadrant classification | Apply to full Jabodetabek (not just DKI Jakarta); add motorcycle cost layer |
+| Composite accessibility index | Mamun & Lownes (2011b), Rathod et al. (2025) | Multi-indicator composite with normalization | Restructure as 5-layer journey chain model reflecting Jabodetabek commuter experience |
+| Gini/Lorenz equity measurement | Delmelle & Casas (2012), Pereira et al. (2019) | Gini coefficient + Lorenz curve for accessibility distribution | Compute at two resolutions; compare Gini between kelurahan and H3 |
+| Transit desert identification | Jiao & Dillivan (2013), Jomehpour & Smith-Colin (2020) | GIS overlay for demand-supply gap zones | Embed what-if scenario to test interventions in transit desert zones |
+| Multimodal routing (r5py) | Pereira et al. (2021), Fink et al. (2022) | RAPTOR-based travel time matrices; GTFS + OSM input | Apply to Jabodetabek GTFS feeds; gravity-weighted CBD model |
+| MAUP multi-scale comparison | Javanmard et al. (2023) | Compare equity metrics across spatial scales | Use H3 hexagons (not just administrative tiers) for constant-area comparison |
+| Jakarta transit analysis | Hardi & Murad (2023), Taki et al. (2018) | Walk-isochrone BRT accessibility; Jakarta network context | Extend beyond BRT/DKI Jakarta to full multi-modal Jabodetabek with equity framing |
 
 ---
 

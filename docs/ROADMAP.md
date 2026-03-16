@@ -25,7 +25,7 @@
 ### Week 1 (Mon Mar 16 – Sun Mar 22) — E0 Foundation
 - [x] Bootstrap docs system
 - [x] Introduce E0 epic + restructure tickets
-- [ ] **MVP-2** (E0-001): Literature scan + source map + literature review (v0.1)
+- [x] **MVP-2** (E0-001): Literature scan + source map + literature review (v0.1)
 - [ ] **MVP-5** (E0-003): Finalize TNI weighting (blocked by MVP-2)
 - [ ] **MVP-7** (E0-004): Finalize H3 derivation design (blocked by MVP-2)
 - [ ] **MVP-8** (E0-005): Finalize three-way GC model (blocked by MVP-2)

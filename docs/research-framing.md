@@ -9,7 +9,7 @@
 | Supervisor         | TBD                                                      |
 | Target Venue       | TBD — keeping options open (thesis chapter / journal / conference) |
 | Prototype Audience | Government planners (Dishub, Bappeda, BPTJ), NGOs (ITDP), transport operators (TransJakarta, Gojek/Grab), real estate developers, general public |
-| Status             | **Draft** — awaiting literature scan (Phase 1.3)         |
+| Status             | **Draft** — literature scan complete (MVP-2); RQ confirmed, no changes needed |
 
 ---
 
@@ -87,4 +87,6 @@ The product gives planners an answer to: **"Where should the next bus route or s
 
 ---
 
-*Next step: Phase 1.3 — Literature Scan to sharpen the RQ and build the Source Map.*
+*Literature scan complete (MVP-2, 2026-03-16). RQ confirmed — no refinements needed. The literature validates all four gap claims. See `docs/source-map.md` for full scan output and `docs/literature_review.md` for academic prose.*
+
+*Next step: MVP-5 (E0-003) — Finalize TNI weighting using literature precedents.*

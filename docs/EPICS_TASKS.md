@@ -11,7 +11,7 @@
 
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
-| E0 | Foundation | Research Foundation | In Progress | 2/9 done |
+| E0 | Foundation | Research Foundation | In Progress | 3/9 done |
 | E3 | Paper | Literature Review | Draft — confirm after E0 | 0/3 done |
 | E4 | Paper | Paper Drafting | Draft — confirm after E0 | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Draft — confirm after E0 | 0/2 done |
@@ -51,17 +51,17 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
 
 ### MVP-2 — Complete literature scan and source map *(E0-001)*
 - **E0 position**: E0-001 — first E0 ticket, unblocks all methodology work
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] 3–5 search queries on Google Scholar, Semantic Scholar
-  - [ ] 10–15 papers extracted (citation, method+findings, data sources, relevance)
-  - [ ] `docs/source-map.md`: Source Map table + synthesis produced
-  - [ ] `docs/literature_review.md`: Academic prose by theme (v0.1)
-  - [ ] `docs/methodology.md` §Theoretical Framework updated with top papers
-  - [ ] `docs/methodology.md` §Methodological Precedents updated
-  - [ ] Identify refinements needed for TNI, H3, GC methodology
-  - [ ] `docs/research-framing.md` updated with any RQ refinements
+  - [x] 12 search queries on Google Scholar, Semantic Scholar, web
+  - [x] 15 papers extracted (citation, method+findings, data sources, relevance)
+  - [x] `docs/source-map.md`: Source Map table + synthesis produced
+  - [x] `docs/literature_review.md`: Academic prose by theme (v0.1, ~2,200 words)
+  - [x] `docs/methodology.md` §2.1b Theoretical Framework updated with top papers
+  - [x] `docs/methodology.md` §2.1c Methodological Precedents updated
+  - [x] Refinements identified: TNI indicators confirmed (literature supports current set); GC motorcycle parameters confirmed (Ng 2018); MAUP dual-resolution confirmed (Javanmard 2023)
+  - [x] `docs/research-framing.md` updated — RQ confirmed, no changes needed
 - **Blocked by**: none
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-2/complete-literature-scan-and-source-map
 
