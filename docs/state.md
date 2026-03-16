@@ -1,7 +1,7 @@
 # Project State
 
 **Last updated**: 2026-03-16
-**Active ticket**: TEQ-2 — Complete literature scan and source map
+**Active ticket**: MVP-2 — Complete literature scan and source map
 **Branch**: main
 
 ---
@@ -16,8 +16,8 @@ This is a **portfolio / independent research project** — no academic gating.
 - Bootstrapped full `docs/` system from Phase 1–3 outputs
 - Generated 7 doc templates in `docs/templates/`
 - Pre-filled all docs from `research-framing.md`, `methodology.md`, and Linear tickets
-- 38 active Linear tickets across 10 epics (TEQ-1 through TEQ-38)
-- 2 tickets Done (TEQ-1: research framing, TEQ-4: 5-layer TAI methodology)
+- 38 active Linear tickets across 10 epics (MVP-1 through MVP-38)
+- 2 tickets Done (MVP-1: research framing, MVP-4: 5-layer TAI methodology)
 - Created README.md
 
 ## Blockers
@@ -26,11 +26,11 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-Start TEQ-2 (literature scan) — produce source map. This unblocks:
-- TEQ-3 (PRD refinement with gap statement)
-- TEQ-9/10/11 (literature review paper sections)
+Start MVP-2 (literature scan) — produce source map. This unblocks:
+- MVP-3 (PRD refinement with gap statement)
+- MVP-9/10/11 (literature review paper sections)
 
-In parallel, can start TEQ-19 (GTFS data pipeline) — data acquisition is unblocked.
+In parallel, can start MVP-19 (GTFS data pipeline) — data acquisition is unblocked.
 
 ## Open Questions
 

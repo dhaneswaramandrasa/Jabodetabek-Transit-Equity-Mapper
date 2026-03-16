@@ -2,7 +2,7 @@
 
 **Project**: Jabodetabek Transit Equity Mapper
 **Linear workspace**: https://linear.app/olsera-mitra-modal/project/jabodetabek-transit-equity-mapper-64fadf43f309
-**Team**: Transit Equity (TEQ)
+**Team**: Product-MVP (MVP)
 **Last synced**: 2026-03-16
 
 ---
@@ -28,7 +28,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ## E1 · Research Framing (Shared)
 
-### TEQ-1 — Finalize research framing document
+### MVP-1 — Finalize research framing document
 - **Status**: Done
 - **Priority**: High
 - **AC**:
@@ -37,9 +37,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [x] Two outputs defined (paper + web product)
   - [x] Scope and out-of-scope documented
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-1/finalize-research-framing-document
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-1/finalize-research-framing-document
 
-### TEQ-2 — Complete literature scan and source map
+### MVP-2 — Complete literature scan and source map
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -48,9 +48,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Source Map table produced
   - [ ] Synthesis: established knowledge, gap, methodological precedents, data sources
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-2/complete-literature-scan-and-source-map
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-2/complete-literature-scan-and-source-map
 
-### TEQ-3 — Produce PRD for web product
+### MVP-3 — Produce PRD for web product
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -58,24 +58,24 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] All 4 personas documented
   - [ ] 5-layer TAI requirements reflected in features
   - [ ] Gap statement from Source Map included
-- **Blocked by**: TEQ-2 (needs gap statement from source map)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-3/produce-prd-for-web-product
-- **Notes**: Draft PRD pre-filled in `docs/prd.md` from research-framing.md; will be refined after TEQ-2
+- **Blocked by**: MVP-2 (needs gap statement from source map)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-3/produce-prd-for-web-product
+- **Notes**: Draft PRD pre-filled in `docs/prd.md` from research-framing.md; will be refined after MVP-2
 
 ---
 
 ## E2 · Methodology & Data Design (Shared)
 
-### TEQ-4 — Finalize 5-layer TAI methodology
+### MVP-4 — Finalize 5-layer TAI methodology
 - **Status**: Done
 - **Priority**: High
 - **AC**:
   - [x] 5-layer TAI confirmed: first-mile, service quality, CBD journey chain, last-mile, cost competitiveness
   - [x] Weights: 0.20 / 0.15 / 0.35 / 0.15 / 0.15
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-4/finalize-5-layer-tai-methodology
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-4/finalize-5-layer-tai-methodology
 
-### TEQ-5 — Finalize TNI indicator set and weighting scheme
+### MVP-5 — Finalize TNI indicator set and weighting scheme
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -84,9 +84,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Weighting confirmed (equal default, sensitivity analysis planned)
   - [ ] Edge cases documented
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-5/finalize-tni-indicator-set-and-weighting-scheme
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-5/finalize-tni-indicator-set-and-weighting-scheme
 
-### TEQ-6 — Define data acquisition scripts and verify source access
+### MVP-6 — Define data acquisition scripts and verify source access
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -94,9 +94,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Acquisition scripts in `src/ingestion/`
   - [ ] GTFS, OSM, Overpass, BPS, WorldPop, GADM downloads tested
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-6/define-data-acquisition-scripts-and-verify-source-access
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
 
-### TEQ-7 — Design H3 derivation pipeline (dasymetric + area-weighted)
+### MVP-7 — Design H3 derivation pipeline (dasymetric + area-weighted)
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -107,9 +107,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Direct computation for travel times
   - [ ] Resolution sensitivity plan (7, 8, 9)
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-7/design-h3-derivation-pipeline-dasymetric-area-weighted
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-7/design-h3-derivation-pipeline-dasymetric-area-weighted
 
-### TEQ-8 — Design three-way generalized cost model (transit vs car vs motorcycle)
+### MVP-8 — Design three-way generalized cost model (transit vs car vs motorcycle)
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -118,13 +118,13 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Motorcycle toll exclusion modeled
   - [ ] TCR thresholds validated with 3 worked examples (BSD, Ciputat, Tebet)
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-8/design-three-way-generalized-cost-model-transit-vs-car-vs-motorcycle
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-8/design-three-way-generalized-cost-model-transit-vs-car-vs-motorcycle
 
 ---
 
 ## E3 · Literature Review (Paper)
 
-### TEQ-9 — Write theoretical framework section
+### MVP-9 — Write theoretical framework section
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -133,20 +133,20 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Generalized cost theory
   - [ ] First/last mile literature
   - [ ] ~1500–2000 words
-- **Blocked by**: TEQ-2 (source map)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-9/write-theoretical-framework-section
+- **Blocked by**: MVP-2 (source map)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-9/write-theoretical-framework-section
 
-### TEQ-10 — Write related work section (Jakarta/Jabodetabek transit studies)
+### MVP-10 — Write related work section (Jakarta/Jabodetabek transit studies)
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
   - [ ] Jakarta/Jabodetabek transit studies reviewed (Hardi & Murad 2023, Taki et al. 2018, BPTJ)
   - [ ] Gap identified: no composite need-vs-access framework spanning full Jabodetabek
   - [ ] ~1000–1500 words
-- **Blocked by**: TEQ-2 (source map)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-10/write-related-work-section-jakartajabodetabek-transit-studies
+- **Blocked by**: MVP-2 (source map)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-10/write-related-work-section-jakartajabodetabek-transit-studies
 
-### TEQ-11 — Write methodology precedents section (r5py, H3, composite indices)
+### MVP-11 — Write methodology precedents section (r5py, H3, composite indices)
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -155,14 +155,14 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Composite index construction (Currie 2010, Kaeoruean et al. 2020)
   - [ ] Generalized cost in mode choice
   - [ ] ~1000–1500 words
-- **Blocked by**: TEQ-2 (source map)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-11/write-methodology-precedents-section-r5py-h3-composite-indices
+- **Blocked by**: MVP-2 (source map)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-11/write-methodology-precedents-section-r5py-h3-composite-indices
 
 ---
 
 ## E4 · Paper Drafting (Paper)
 
-### TEQ-12 — Write introduction
+### MVP-12 — Write introduction
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -170,10 +170,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Contributions: 5-layer TAI, dual resolution, three-way cost model, what-if simulator
   - [ ] Paper structure overview
   - [ ] ~1500–2000 words
-- **Blocked by**: TEQ-9, TEQ-10, TEQ-11 (literature review sections)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-12/write-introduction
+- **Blocked by**: MVP-9, MVP-10, MVP-11 (literature review sections)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-12/write-introduction
 
-### TEQ-13 — Write methods section
+### MVP-13 — Write methods section
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -185,10 +185,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] What-if simulator method
   - [ ] Matches `docs/methodology.md` exactly
   - [ ] ~3000–4000 words
-- **Blocked by**: TEQ-4, TEQ-5, TEQ-7, TEQ-8 (methodology finalized)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-13/write-methods-section
+- **Blocked by**: MVP-4, MVP-5, MVP-7, MVP-8 (methodology finalized)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-13/write-methods-section
 
-### TEQ-14 — Write results section
+### MVP-14 — Write results section
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -198,10 +198,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Cost competitiveness map
   - [ ] What-if scenarios
   - [ ] ~2000–3000 words
-- **Blocked by**: TEQ-25 (E6 data pipeline complete)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-14/write-results-section
+- **Blocked by**: MVP-25 (E6 data pipeline complete)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-14/write-results-section
 
-### TEQ-15 — Write discussion section
+### MVP-15 — Write discussion section
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -211,24 +211,24 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Comparison with international studies
   - [ ] Practical implications for all 4 audiences
   - [ ] ~2000–2500 words
-- **Blocked by**: TEQ-14 (results)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-15/write-discussion-section
+- **Blocked by**: MVP-14 (results)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-15/write-discussion-section
 
-### TEQ-16 — Write conclusion and abstract
+### MVP-16 — Write conclusion and abstract
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
   - [ ] Conclusion: contribution summary, future work
   - [ ] Abstract: 250–300 words, written last
   - [ ] References compiled in APA format
-- **Blocked by**: TEQ-15 (discussion)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-16/write-conclusion-and-abstract
+- **Blocked by**: MVP-15 (discussion)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-16/write-conclusion-and-abstract
 
 ---
 
 ## E5 · Paper Review & Revision (Paper)
 
-### TEQ-17 — Self-review against Phase 5P checklist
+### MVP-17 — Self-review against Phase 5P checklist
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -239,24 +239,24 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Claims cited
   - [ ] Limitations acknowledged
   - [ ] Figures numbered and matching product
-- **Blocked by**: TEQ-16 (all paper sections complete)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-17/self-review-against-phase-5p-checklist
+- **Blocked by**: MVP-16 (all paper sections complete)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-17/self-review-against-phase-5p-checklist
 
-### TEQ-18 — Final review and revision
+### MVP-18 — Final review and revision
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
   - [ ] Peer feedback incorporated (if available)
   - [ ] Citation format confirmed
   - [ ] Final proofread
-- **Blocked by**: TEQ-17 (self-review)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-18/incorporate-supervisor-feedback
+- **Blocked by**: MVP-17 (self-review)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-18/incorporate-supervisor-feedback
 
 ---
 
 ## E6 · Data Pipeline (Product)
 
-### TEQ-19 — Download, validate, and merge GTFS feeds + LRT stations
+### MVP-19 — Download, validate, and merge GTFS feeds + LRT stations
 - **Status**: Todo
 - **Priority**: Urgent
 - **AC**:
@@ -266,9 +266,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Headway per stop computed
   - [ ] Output: `data/processed/transit/`
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-19/download-validate-and-merge-gtfs-feeds-lrt-stations
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-19/download-validate-and-merge-gtfs-feeds-lrt-stations
 
-### TEQ-20 — Extract and process OSM road network + compute road metrics
+### MVP-20 — Extract and process OSM road network + compute road metrics
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -278,9 +278,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Road metrics per kelurahan: length, density, class proportions, intersection density
   - [ ] Output: `data/processed/networks/`
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-20/extract-and-process-osm-road-network-compute-road-metrics
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-20/extract-and-process-osm-road-network-compute-road-metrics
 
-### TEQ-21 — Extract strict POIs via Overpass API + manual verification
+### MVP-21 — Extract strict POIs via Overpass API + manual verification
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -289,9 +289,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Manual verification of 10% sample
   - [ ] Output: `data/processed/poi/`
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-21/extract-strict-pois-via-overpass-api-manual-verification
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-21/extract-strict-pois-via-overpass-api-manual-verification
 
-### TEQ-22 — Assemble BPS demographics + disaggregate to kelurahan via WorldPop
+### MVP-22 — Assemble BPS demographics + disaggregate to kelurahan via WorldPop
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -302,9 +302,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] zero_vehicle_hh_pct and dependency_ratio modeled
   - [ ] Output: `data/processed/demographics/`
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-22/assemble-bps-demographics-disaggregate-to-kelurahan-via-worldpop
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-22/assemble-bps-demographics-disaggregate-to-kelurahan-via-worldpop
 
-### TEQ-23 — Compute 5-layer TAI and TNI per kelurahan
+### MVP-23 — Compute 5-layer TAI and TNI per kelurahan
 - **Status**: Todo
 - **Priority**: Urgent
 - **AC**:
@@ -313,10 +313,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Equity gap + quadrant classification
   - [ ] ~16,200 route queries budgeted (2–4 hours compute)
   - [ ] Output: `data/processed/scores/`
-- **Blocked by**: TEQ-19, TEQ-20, TEQ-21, TEQ-22 (all data acquired)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-23/compute-5-layer-tai-and-tni-per-kelurahan
+- **Blocked by**: MVP-19, MVP-20, MVP-21, MVP-22 (all data acquired)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-23/compute-5-layer-tai-and-tni-per-kelurahan
 
-### TEQ-24 — Generate H3 grid + derive all indicators via dual methods
+### MVP-24 — Generate H3 grid + derive all indicators via dual methods
 - **Status**: Todo
 - **Priority**: Urgent
 - **AC**:
@@ -328,10 +328,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] TAI/TNI/quadrant at H3 level
   - [ ] Batch in chunks of 1000; budget 8–16 hours
   - [ ] Output: `data/processed/scores/`
-- **Blocked by**: TEQ-23 (kelurahan pipeline validated first)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-24/generate-h3-grid-derive-all-indicators-via-dual-methods
+- **Blocked by**: MVP-23 (kelurahan pipeline validated first)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-24/generate-h3-grid-derive-all-indicators-via-dual-methods
 
-### TEQ-25 — Compute equity gap, Gini, LISA at both resolutions
+### MVP-25 — Compute equity gap, Gini, LISA at both resolutions
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -341,14 +341,14 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Resolution comparison: confusion matrix, reclassified areas
   - [ ] Sensitivity analysis: weights ±20%, H3 res 7 and 9
   - [ ] Output: `data/processed/analysis/`
-- **Blocked by**: TEQ-23, TEQ-24
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-25/compute-equity-gap-gini-lisa-at-both-resolutions
+- **Blocked by**: MVP-23, MVP-24
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
 
 ---
 
 ## E7 · UI Foundation (Product)
 
-### TEQ-26 — Audit existing prototype against new methodology
+### MVP-26 — Audit existing prototype against new methodology
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -359,9 +359,9 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Zustand store audit
   - [ ] Migration plan produced
 - **Blocked by**: none
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-26/audit-existing-prototype-against-new-methodology
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-26/audit-existing-prototype-against-new-methodology
 
-### TEQ-27 — Migrate from synthetic data to real pipeline output
+### MVP-27 — Migrate from synthetic data to real pipeline output
 - **Status**: Todo
 - **Priority**: Urgent
 - **AC**:
@@ -371,10 +371,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Road network + CBD zones files added
   - [ ] Zustand store types updated
   - [ ] App loads with real data verified
-- **Blocked by**: TEQ-23 (kelurahan scores), TEQ-26 (audit)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-27/migrate-from-synthetic-data-to-real-pipeline-output
+- **Blocked by**: MVP-23 (kelurahan scores), MVP-26 (audit)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-27/migrate-from-synthetic-data-to-real-pipeline-output
 
-### TEQ-28 — Add road network layer + cost comparison card to UI
+### MVP-28 — Add road network layer + cost comparison card to UI
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -384,14 +384,14 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Transit competitive zone badge
   - [ ] 5-layer TAI breakdown card (L1–L5)
   - [ ] First-mile quality indicators on detail panel
-- **Blocked by**: TEQ-27 (real data migrated)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-28/add-road-network-layer-cost-comparison-card-to-ui
+- **Blocked by**: MVP-27 (real data migrated)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-28/add-road-network-layer-cost-comparison-card-to-ui
 
 ---
 
 ## E8 · Core Features (Product)
 
-### TEQ-29 — Implement quadrant map with dual-resolution toggle
+### MVP-29 — Implement quadrant map with dual-resolution toggle
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -400,10 +400,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Color legend with quadrant descriptions
   - [ ] Click shows detail panel (TNI, TAI, 5 layers, equity gap, quadrant)
   - [ ] Smooth resolution transitions
-- **Blocked by**: TEQ-27 (real data)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-29/implement-quadrant-map-with-dual-resolution-toggle
+- **Blocked by**: MVP-27 (real data)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-29/implement-quadrant-map-with-dual-resolution-toggle
 
-### TEQ-30 — Implement CBD journey chain visualization
+### MVP-30 — Implement CBD journey chain visualization
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -411,10 +411,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Each leg shows mode, time, fare
   - [ ] Path rendered on map as polyline
   - [ ] Side panel compares transit vs car vs motorcycle GC
-- **Blocked by**: TEQ-27 (real data)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-30/implement-cbd-journey-chain-visualization
+- **Blocked by**: MVP-27 (real data)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-30/implement-cbd-journey-chain-visualization
 
-### TEQ-31 — Implement what-if station placement simulator
+### MVP-31 — Implement what-if station placement simulator
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -423,10 +423,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Configurable catchment (1km walk, 3km feeder)
   - [ ] Before/after: quadrant changes, Gini delta
   - [ ] Labeled as "scenario simulation, not prediction"
-- **Blocked by**: TEQ-29 (quadrant map)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-31/implement-what-if-station-placement-simulator
+- **Blocked by**: MVP-29 (quadrant map)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-31/implement-what-if-station-placement-simulator
 
-### TEQ-32 — Implement transit competitive zone map
+### MVP-32 — Implement transit competitive zone map
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -435,14 +435,14 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Click shows full GC breakdown
   - [ ] Distance-to-CBD ring overlay
   - [ ] Summary stats: % population per zone
-- **Blocked by**: TEQ-27 (real data)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-32/implement-transit-competitive-zone-map
+- **Blocked by**: MVP-27 (real data)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-32/implement-transit-competitive-zone-map
 
 ---
 
 ## E9 · Code Review & QA (Product)
 
-### TEQ-33 — Code review against Phase 5D checklist
+### MVP-33 — Code review against Phase 5D checklist
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -454,10 +454,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Dataset in public/dataset/ with README
   - [ ] Components < 150 lines, no `any`
   - [ ] Loading/empty/error states
-- **Blocked by**: TEQ-29, TEQ-30, TEQ-31, TEQ-32 (all core features)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-33/code-review-against-phase-5d-checklist
+- **Blocked by**: MVP-29, MVP-30, MVP-31, MVP-32 (all core features)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-33/code-review-against-phase-5d-checklist
 
-### TEQ-34 — Edge case testing + deployment verification
+### MVP-34 — Edge case testing + deployment verification
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -468,14 +468,14 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Vercel deployment loads all GeoJSON
   - [ ] Performance: map < 3s, click < 1s
   - [ ] Mobile responsive
-- **Blocked by**: TEQ-33 (code review)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-34/edge-case-testing-deployment-verification
+- **Blocked by**: MVP-33 (code review)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-34/edge-case-testing-deployment-verification
 
 ---
 
 ## E10 · Deliverables (Convergence)
 
-### TEQ-35 — Final paper assembly + reference formatting
+### MVP-35 — Final paper assembly + reference formatting
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -484,10 +484,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Figures numbered matching product screenshots
   - [ ] Abstract written last
   - [ ] PDF generated
-- **Blocked by**: TEQ-17 (paper self-review)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-35/final-paper-assembly-reference-formatting
+- **Blocked by**: MVP-17 (paper self-review)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-35/final-paper-assembly-reference-formatting
 
-### TEQ-36 — Package dataset for public distribution
+### MVP-36 — Package dataset for public distribution
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -495,10 +495,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] README with field glossary, source citations, methodology summary
   - [ ] License: CC BY 4.0
   - [ ] Dataset downloadable independently
-- **Blocked by**: TEQ-25 (analysis complete)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-36/package-dataset-for-public-distribution
+- **Blocked by**: MVP-25 (analysis complete)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-36/package-dataset-for-public-distribution
 
-### TEQ-37 — Deploy product to Vercel + link paper and dataset
+### MVP-37 — Deploy product to Vercel + link paper and dataset
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -508,10 +508,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] README with research context
   - [ ] Performance < 5s load, < 15 MB GeoJSON
   - [ ] OG meta tags for social sharing
-- **Blocked by**: TEQ-34 (edge case testing)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-37/deploy-product-to-vercel-link-paper-and-dataset
+- **Blocked by**: MVP-34 (edge case testing)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-37/deploy-product-to-vercel-link-paper-and-dataset
 
-### TEQ-38 — Prepare presentation / poster with product demo
+### MVP-38 — Prepare presentation / poster with product demo
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -521,5 +521,5 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Speaker notes
   - [ ] Optional academic poster (A0)
   - [ ] Practice: 15–20 min + 10 min Q&A
-- **Blocked by**: TEQ-37 (product deployed)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/TEQ-38/prepare-presentation-poster-with-product-demo
+- **Blocked by**: MVP-37 (product deployed)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-38/prepare-presentation-poster-with-product-demo

@@ -1,15 +1,15 @@
 # Source Map
 
 **Last updated**: 2026-03-16
-**Status**: Skeleton — full literature scan pending (TEQ-2)
+**Status**: Skeleton — full literature scan pending (MVP-2)
 **Papers reviewed**: 0 (references below are from research-framing.md, not yet formally scanned)
-**Search queries used**: TBD — will be generated from RQ in TEQ-2
+**Search queries used**: TBD — will be generated from RQ in MVP-2
 
 ---
 
 ## Papers (Preliminary — from Research Framing)
 
-These references were cited in the research framing document. They will be formally scanned and expanded in TEQ-2.
+These references were cited in the research framing document. They will be formally scanned and expanded in MVP-2.
 
 | # | Citation | Method + Findings | Data Sources | Relevance to RQ |
 |---|----------|-------------------|--------------|-----------------|
@@ -33,7 +33,7 @@ These references were cited in the research framing document. They will be forma
 - **No three-way cost model** (transit vs car vs motorcycle) for mode choice equity
 
 ### Methodological precedents
-- TBD — to be expanded in TEQ-2 with r5py, H3, composite index, generalized cost literature
+- TBD — to be expanded in MVP-2 with r5py, H3, composite index, generalized cost literature
 
 ### Data sources to consider
-- TBD — to be expanded in TEQ-2 with datasets used by comparable studies
+- TBD — to be expanded in MVP-2 with datasets used by comparable studies
