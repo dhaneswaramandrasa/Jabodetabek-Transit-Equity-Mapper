@@ -152,12 +152,13 @@ Read `docs/state.md` and `docs/EPICS_TASKS.md`, then jump to the right phase:
 | Signal | Phase |
 |---|---|
 | `docs/` doesn't exist | Bootstrap docs, then Phase 1.1 |
-| Has draft RQ, no literature scan | Phase 1.3 (literature scan) |
-| Has literature scan, no confirmed framing | Phase 1.3 (refinement loop) |
-| Has confirmed framing + source map, no methodology | Phase 2 |
-| Methodology confirmed, no Linear setup | Phase 3 |
-| Linear set up, paper tickets active | Phase 4P |
-| Linear set up, product tickets active | Phase 4D |
+| Has draft RQ, no Linear project yet | Create Linear project + E0 epic |
+| Has Linear + E0, E0-001 not started | Phase 1.3 (work E0-001 lit scan) |
+| Has lit scan, no confirmed framing | Phase 1.3 (refinement loop) |
+| Has source map confirmed (E0-001 done) | Phase 2 (work E0-002 onwards) |
+| E0 all Done, E1–E10 not created | Phase 3 (full Linear setup) |
+| E1–E10 exist, paper tickets active | Phase 4P |
+| E1–E10 exist, product tickets active | Phase 4D |
 | Code or paper drafts need review | Phase 5P / 5D |
 | All tickets done | Phase 6 |
 
@@ -264,27 +265,22 @@ Then:
 
 ---
 
-## Phase 3: Linear Setup (if not done yet)
+## Phase 3: Linear Full Setup — E1–E10 (triggered automatically when E0-008 Done)
 
-Phases 1–2 are typically done in Claude for Mac. If arriving here with confirmed framing +
-methodology, set up Linear immediately.
+**Trigger**: E0-008 status changes to `Done` — Claude acts immediately, no prompt needed.
+E0 was created in Claude for Mac at Phase 1.2. This phase runs in Claude Code CLI.
+Read `docs/references/linear-workflow.md` for branch/commit/PR conventions.
 
-### Epic structure
+### Linear creation sequence
 
-| Epic | Track | Name |
+| Epic | When created | How |
 |---|---|---|
-| E1 | Shared | Research Framing |
-| E2 | Shared | Methodology & Data Design |
-| E3 | Paper | Literature Review |
-| E4 | Paper | Paper Drafting |
-| E5 | Paper | Paper Review & Revision |
-| E6 | Product | Data Pipeline |
-| E7 | Product | UI Foundation |
-| E8 | Product | Core Features |
-| E9 | Product | Code Review & QA |
-| E10 | Convergence | Deliverables |
+| E0 | Phase 1.2 — automatically after framing confirmed | Claude calls `save_milestone` + 8x `save_issue` |
+| E1–E10 | Phase 3 — automatically after E0-008 Done | Claude calls `save_milestone` for each epic |
+| E1, E2 tickets | Phase 3 — immediately after milestones created | Claude calls `save_issue` for E1-001–003 + E2-001–003 |
+| E3–E10 tickets | At the start of each phase becoming active | Claude calls `save_issue` after reading handoff notes |
 
-Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
+Dependency order: E0 → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ### Ticket template
 ```
@@ -304,12 +300,23 @@ Title: [action-oriented verb phrase]
 [ticket ID or "none"]
 ```
 
-After confirming the full epic/ticket list, create in Linear and bootstrap `docs/`:
+After confirming the full epic/ticket list, create in Linear and bootstrap `docs/`
+(templates are in `docs/templates/` — copy them and fill from E0 outputs):
 ```bash
 mkdir -p docs
 cp docs/templates/*.template docs/
 for f in docs/*.template; do mv "$f" "${f%.template}"; done
 ```
+Fill each doc from confirmed E0 outputs:
+- `source-map.md` ← E0-001 lit scan
+- `literature_review.md` ← E0-001 prose output
+- `methodology.md` ← E0-002 through E0-007
+- `DATA_MODEL.md` ← E0-004 target schema
+- `prd.md` ← E0-008 PRD (informed by methodology + schema)
+- `EPICS_TASKS.md` ← E1–E10 just created
+- `ROADMAP.md` ← milestone dates
+- `ARCHITECTURE.md` ← skeleton (fill after Phase 4D)
+- `state.md` ← generate fresh
 
 ---
 

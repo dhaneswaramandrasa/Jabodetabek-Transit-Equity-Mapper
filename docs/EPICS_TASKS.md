@@ -11,24 +11,34 @@
 
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
-| E1 | Shared | Research Framing | In Progress | 1/3 done |
-| E2 | Shared | Methodology & Data Design | In Progress | 1/5 done |
-| E3 | Paper | Literature Review | Not Started | 0/3 done |
-| E4 | Paper | Paper Drafting | Not Started | 0/5 done |
-| E5 | Paper | Paper Review & Revision | Not Started | 0/2 done |
-| E6 | Product | Data Pipeline | Not Started | 0/7 done |
-| E7 | Product | UI Foundation | Not Started | 0/3 done |
-| E8 | Product | Core Features | Not Started | 0/4 done |
-| E9 | Product | Code Review & QA | Not Started | 0/2 done |
-| E10 | Convergence | Deliverables | Not Started | 0/4 done |
+| E0 | Foundation | Research Foundation | In Progress | 2/9 done |
+| E3 | Paper | Literature Review | Draft — confirm after E0 | 0/3 done |
+| E4 | Paper | Paper Drafting | Draft — confirm after E0 | 0/5 done |
+| E5 | Paper | Paper Review & Revision | Draft — confirm after E0 | 0/2 done |
+| E6 | Product | Data Pipeline | Draft — confirm after E0 | 0/7 done |
+| E7 | Product | UI Foundation | Draft — confirm after E0 | 0/3 done |
+| E8 | Product | Core Features | Draft — confirm after E0 | 0/4 done |
+| E9 | Product | Code Review & QA | Draft — confirm after E0 | 0/2 done |
+| E10 | Convergence | Deliverables | Draft — confirm after E0 | 0/4 done |
 
-Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
+**Current phase**: E0 (Foundation)
+**Phase 3 trigger**: When MVP-3 (E0-008) is Done → create E1, E2, confirm E3–E10
+
+Dependency order: E0 → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
+
+> **Note**: E1 (Research Framing) and E2 (Methodology & Data Design) will be created in Phase 3
+> after E0 completes. Their tickets confirm and formalize the E0 outputs in the docs system.
+> E3–E10 tickets below are **drafts** from initial planning — they will be reviewed and
+> refined in Phase 3 based on finalized methodology.
 
 ---
 
-## E1 · Research Framing (Shared)
+## E0 · Foundation
 
-### MVP-1 — Finalize research framing document
+MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
+
+### MVP-1 — Finalize research framing document *(E0 pre-work, Phase 1.2)*
+- **E0 position**: Pre-E0 (Phase 1.2 output)
 - **Status**: Done
 - **Priority**: High
 - **AC**:
@@ -39,34 +49,24 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **Blocked by**: none
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-1/finalize-research-framing-document
 
-### MVP-2 — Complete literature scan and source map
+### MVP-2 — Complete literature scan and source map *(E0-001)*
+- **E0 position**: E0-001 — first E0 ticket, unblocks all methodology work
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
   - [ ] 3–5 search queries on Google Scholar, Semantic Scholar
   - [ ] 10–15 papers extracted (citation, method+findings, data sources, relevance)
-  - [ ] Source Map table produced
-  - [ ] Synthesis: established knowledge, gap, methodological precedents, data sources
+  - [ ] `docs/source-map.md`: Source Map table + synthesis produced
+  - [ ] `docs/literature_review.md`: Academic prose by theme (v0.1)
+  - [ ] `docs/methodology.md` §Theoretical Framework updated with top papers
+  - [ ] `docs/methodology.md` §Methodological Precedents updated
+  - [ ] Identify refinements needed for TNI, H3, GC methodology
+  - [ ] `docs/research-framing.md` updated with any RQ refinements
 - **Blocked by**: none
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-2/complete-literature-scan-and-source-map
 
-### MVP-3 — Produce PRD for web product
-- **Status**: Todo
-- **Priority**: Medium
-- **AC**:
-  - [ ] PRD sections 1–7 complete
-  - [ ] All 4 personas documented
-  - [ ] 5-layer TAI requirements reflected in features
-  - [ ] Gap statement from Source Map included
-- **Blocked by**: MVP-2 (needs gap statement from source map)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-3/produce-prd-for-web-product
-- **Notes**: Draft PRD pre-filled in `docs/prd.md` from research-framing.md; will be refined after MVP-2
-
----
-
-## E2 · Methodology & Data Design (Shared)
-
-### MVP-4 — Finalize 5-layer TAI methodology
+### MVP-4 — Finalize 5-layer TAI methodology *(E0-002)*
+- **E0 position**: E0-002 — first methodology ticket
 - **Status**: Done
 - **Priority**: High
 - **AC**:
@@ -75,7 +75,8 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **Blocked by**: none
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-4/finalize-5-layer-tai-methodology
 
-### MVP-5 — Finalize TNI indicator set and weighting scheme
+### MVP-5 — Finalize TNI indicator set and weighting scheme *(E0-003)*
+- **E0 position**: E0-003 — TNI methodology, informed by literature scan
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -83,20 +84,12 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Normalization method confirmed (min-max)
   - [ ] Weighting confirmed (equal default, sensitivity analysis planned)
   - [ ] Edge cases documented
+  - [ ] Literature precedents cited for indicator selection
 - **Blocked by**: MVP-2 (literature scan may refine indicators)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-5/finalize-tni-indicator-set-and-weighting-scheme
 
-### MVP-6 — Define data acquisition scripts and verify source access
-- **Status**: Todo
-- **Priority**: High
-- **AC**:
-  - [ ] All 10 data sources verified accessible
-  - [ ] Acquisition scripts in `src/ingestion/`
-  - [ ] GTFS, OSM, Overpass, BPS, WorldPop, GADM downloads tested
-- **Blocked by**: MVP-5, MVP-7, MVP-8 (methodology must be finalized before data acquisition)
-- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
-
-### MVP-7 — Design H3 derivation pipeline (dasymetric + area-weighted)
+### MVP-7 — Design H3 derivation pipeline *(E0-004)*
+- **E0 position**: E0-004 — H3 methodology, informed by literature scan
 - **Status**: Todo
 - **Priority**: Medium
 - **AC**:
@@ -106,10 +99,12 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Point-in-polygon for stops/POIs
   - [ ] Direct computation for travel times
   - [ ] Resolution sensitivity plan (7, 8, 9)
+  - [ ] Literature precedents cited for derivation methods
 - **Blocked by**: MVP-2 (literature scan may inform derivation methods)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-7/design-h3-derivation-pipeline-dasymetric-area-weighted
 
-### MVP-8 — Design three-way generalized cost model (transit vs car vs motorcycle)
+### MVP-8 — Design three-way generalized cost model *(E0-005)*
+- **E0 position**: E0-005 — GC methodology, informed by literature scan
 - **Status**: Todo
 - **Priority**: High
 - **AC**:
@@ -117,15 +112,86 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
   - [ ] Cost parameters confirmed (VOT, fuel, toll, parking, fatigue)
   - [ ] Motorcycle toll exclusion modeled
   - [ ] TCR thresholds validated with 3 worked examples (BSD, Ciputat, Tebet)
+  - [ ] Literature precedents cited for cost parameters
 - **Blocked by**: MVP-2 (literature scan may refine cost parameters)
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-8/design-three-way-generalized-cost-model-transit-vs-car-vs-motorcycle
 
+### MVP-77 — Consolidate methodology.md + DATA_MODEL.md with literature findings *(E0-006)*
+- **E0 position**: E0-006 — consolidation gate before data acquisition
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] `docs/methodology.md` §Theoretical Framework updated with top papers from source-map.md
+  - [ ] `docs/methodology.md` §Methodological Precedents updated with methods from literature
+  - [ ] All formula references verified against literature (TAI, TNI, GC, H3)
+  - [ ] `docs/DATA_MODEL.md` confirmed against finalized methodology — all fields traceable
+  - [ ] `docs/methodology.md` and `docs/DATA_MODEL.md` in sync
+  - [ ] Any methodology refinements from literature documented as changes
+- **Blocked by**: MVP-5, MVP-7, MVP-8 (all methodology pieces finalized)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-77/consolidate-methodologymd-data-modelmd-with-literature-findings
+
+### MVP-6 — Define data acquisition plan and verify source access *(E0-007)*
+- **E0 position**: E0-007 — data acquisition plan, needs confirmed schema
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] All 10 data sources verified accessible
+  - [ ] Acquisition scripts in `src/ingestion/`
+  - [ ] GTFS, OSM, Overpass, BPS, WorldPop, GADM downloads tested
+  - [ ] Data sources match finalized DATA_MODEL.md schema
+- **Blocked by**: MVP-77 (methodology + schema must be consolidated first)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
+
+### MVP-3 — Produce PRD for web product *(E0-008)*
+- **E0 position**: E0-008 — LAST E0 ticket. When Done → Phase 3 triggers.
+- **Status**: Todo
+- **Priority**: Medium
+- **AC**:
+  - [ ] PRD sections 1–7 complete
+  - [ ] All 4 personas documented
+  - [ ] 5-layer TAI requirements reflected in features
+  - [ ] Gap statement from Source Map included
+  - [ ] Features match finalized methodology + verified data sources
+- **Blocked by**: MVP-2 (gap statement), MVP-6 (verified data sources)
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-3/produce-prd-for-web-product
+- **Notes**: Draft PRD pre-filled in `docs/prd.md` from research-framing.md; will be refined after E0
+
 ---
 
-## E3 · Literature Review (Paper)
+## E0 Dependency Chain
+
+```
+MVP-1 (Done) ─┐
+              │
+MVP-4 (Done) ─┤
+              │
+MVP-2 (E0-001: lit scan)
+  │
+  ├→ MVP-5 (E0-003: TNI) ──┐
+  ├→ MVP-7 (E0-004: H3)  ──┤→ MVP-77 (E0-006: consolidate) → MVP-6 (E0-007: acquisition)
+  └→ MVP-8 (E0-005: GC)  ──┘                                        │
+  │                                                                  │
+  └──────────────────────────────────────────────────── MVP-3 (E0-008: PRD) ←──┘
+                                                           │
+                                                    [Phase 3 trigger]
+```
+
+**Critical path**: `MVP-2 → [MVP-5, MVP-7, MVP-8] → MVP-77 → MVP-6 → MVP-3 → Phase 3`
+
+---
+
+## E3–E10: Draft Tickets (to be confirmed in Phase 3)
+
+> These tickets were created during initial planning. They will be **reviewed, refined, and
+> potentially restructured** in Phase 3 after E0 completes and methodology is finalized.
+> Dependencies may change based on finalized methodology and data acquisition results.
+
+---
+
+## E3 · Literature Review (Paper) — Draft
 
 ### MVP-9 — Write theoretical framework section
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Transit equity theory (Gini, Lorenz)
@@ -137,7 +203,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-9/write-theoretical-framework-section
 
 ### MVP-10 — Write related work section (Jakarta/Jabodetabek transit studies)
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Jakarta/Jabodetabek transit studies reviewed (Hardi & Murad 2023, Taki et al. 2018, BPTJ)
@@ -147,7 +213,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-10/write-related-work-section-jakartajabodetabek-transit-studies
 
 ### MVP-11 — Write methodology precedents section (r5py, H3, composite indices)
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] r5py/R5/OTP routing reviewed
@@ -160,10 +226,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E4 · Paper Drafting (Paper)
+## E4 · Paper Drafting (Paper) — Draft
 
 ### MVP-12 — Write introduction
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Problem statement, motivation, RQ
@@ -174,7 +240,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-12/write-introduction
 
 ### MVP-13 — Write methods section
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Study area, data sources
@@ -189,7 +255,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-13/write-methods-section
 
 ### MVP-14 — Write results section
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Quadrant distribution, spatial patterns
@@ -202,7 +268,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-14/write-results-section
 
 ### MVP-15 — Write discussion section
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Assess H1/H2/H3
@@ -215,7 +281,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-15/write-discussion-section
 
 ### MVP-16 — Write conclusion and abstract
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Conclusion: contribution summary, future work
@@ -226,10 +292,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E5 · Paper Review & Revision (Paper)
+## E5 · Paper Review & Revision (Paper) — Draft
 
 ### MVP-17 — Self-review against Phase 5P checklist
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] RQ stated in intro
@@ -243,7 +309,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-17/self-review-against-phase-5p-checklist
 
 ### MVP-18 — Final review and revision
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Peer feedback incorporated (if available)
@@ -254,10 +320,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E6 · Data Pipeline (Product)
+## E6 · Data Pipeline (Product) — Draft
 
 ### MVP-19 — Download, validate, and merge GTFS feeds + LRT stations
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Urgent
 - **AC**:
   - [ ] TransJakarta, KRL, MRT GTFS downloaded and validated
@@ -269,7 +335,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-19/download-validate-and-merge-gtfs-feeds-lrt-stations
 
 ### MVP-20 — Extract and process OSM road network + compute road metrics
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Java PBF downloaded from Geofabrik
@@ -281,7 +347,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-20/extract-and-process-osm-road-network-compute-road-metrics
 
 ### MVP-21 — Extract strict POIs via Overpass API + manual verification
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] 9 CBD zone polygons created manually
@@ -292,7 +358,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-21/extract-strict-pois-via-overpass-api-manual-verification
 
 ### MVP-22 — Assemble BPS demographics + disaggregate to kelurahan via WorldPop
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] BPS data collected for DKI Jakarta + 5 Bodetabek jurisdictions
@@ -305,7 +371,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-22/assemble-bps-demographics-disaggregate-to-kelurahan-via-worldpop
 
 ### MVP-23 — Compute 5-layer TAI and TNI per kelurahan
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Urgent
 - **AC**:
   - [ ] All 5 TAI layers computed per kelurahan via r5py
@@ -317,7 +383,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-23/compute-5-layer-tai-and-tni-per-kelurahan
 
 ### MVP-24 — Generate H3 grid + derive all indicators via dual methods
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Urgent
 - **AC**:
   - [ ] H3 res-8 grid generated (~15–20k cells)
@@ -332,7 +398,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-24/generate-h3-grid-derive-all-indicators-via-dual-methods
 
 ### MVP-25 — Compute equity gap, Gini, LISA at both resolutions
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Gini coefficients at both resolutions
@@ -346,10 +412,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E7 · UI Foundation (Product)
+## E7 · UI Foundation (Product) — Draft
 
 ### MVP-26 — Audit existing prototype against new methodology
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Current data model documented
@@ -362,7 +428,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-26/audit-existing-prototype-against-new-methodology
 
 ### MVP-27 — Migrate from synthetic data to real pipeline output
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Urgent
 - **AC**:
   - [ ] Synthetic data replaced with real pipeline output
@@ -375,7 +441,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-27/migrate-from-synthetic-data-to-real-pipeline-output
 
 ### MVP-28 — Add road network layer + cost comparison card to UI
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Road network deck.gl layer (color-coded by highway class, toggleable)
@@ -389,10 +455,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E8 · Core Features (Product)
+## E8 · Core Features (Product) — Draft
 
 ### MVP-29 — Implement quadrant map with dual-resolution toggle
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Quadrant choropleth at kelurahan level (4 colors)
@@ -404,7 +470,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-29/implement-quadrant-map-with-dual-resolution-toggle
 
 ### MVP-30 — Implement CBD journey chain visualization
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Journey legs displayed: first-mile → station → ride → transfer → ride → last-mile
@@ -415,7 +481,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-30/implement-cbd-journey-chain-visualization
 
 ### MVP-31 — Implement what-if station placement simulator
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Click map to place hypothetical station
@@ -427,7 +493,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-31/implement-what-if-station-placement-simulator
 
 ### MVP-32 — Implement transit competitive zone map
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Three-color choropleth: green (transit wins), amber (swing), red (private wins)
@@ -440,10 +506,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E9 · Code Review & QA (Product)
+## E9 · Code Review & QA (Product) — Draft
 
 ### MVP-33 — Code review against Phase 5D checklist
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] No runtime errors
@@ -458,7 +524,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-33/code-review-against-phase-5d-checklist
 
 ### MVP-34 — Edge case testing + deployment verification
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Zero-transit-stop kelurahan tested
@@ -473,10 +539,10 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
 
-## E10 · Deliverables (Convergence)
+## E10 · Deliverables (Convergence) — Draft
 
 ### MVP-35 — Final paper assembly + reference formatting
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] All paper sections assembled in order
@@ -488,7 +554,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-35/final-paper-assembly-reference-formatting
 
 ### MVP-36 — Package dataset for public distribution
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Cleaned datasets in public/dataset/
@@ -499,7 +565,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-36/package-dataset-for-public-distribution
 
 ### MVP-37 — Deploy product to Vercel + link paper and dataset
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: High
 - **AC**:
   - [ ] Production build clean
@@ -512,7 +578,7 @@ Dependency order: E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-37/deploy-product-to-vercel-link-paper-and-dataset
 
 ### MVP-38 — Prepare presentation / poster with product demo
-- **Status**: Todo
+- **Status**: Todo (draft)
 - **Priority**: Medium
 - **AC**:
   - [ ] Slide deck (10–12 slides)
