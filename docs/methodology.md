@@ -1,8 +1,8 @@
 # Scientific Methodology
 ## Jabodetabek Transit Equity Mapper
 
-**Status**: Draft — §Theoretical Framework + §Methodological Precedents added from literature scan (MVP-2)
-**Last updated**: 2026-03-16
+**Status**: Draft — TNI, H3 pipeline, and GC model finalized (MVP-5/7/8); consolidated (MVP-77)
+**Last updated**: 2026-03-20
 **Feeds**: Paper Methods section, product data layer, `docs/DATA_MODEL.md`, `docs/ARCHITECTURE.md`
 
 ---
@@ -92,6 +92,32 @@ The core framework scores every spatial unit on two composite indices, then clas
 **Axis 2 — Transit Accessibility Index (TAI)**: Composite of physical proximity, network connectivity, and service quality indicators measuring how well transit serves an area.
 
 **Equity Gap Score** = TNI_normalized − TAI_normalized (positive = underserved, negative = overserved)
+
+### TNI Indicator Set (finalized — MVP-5)
+
+Five indicators confirmed against literature (Mamun & Lownes 2011a, Jiao & Dillivan 2013, Currie 2010):
+
+| # | Indicator | Dimension | Direction | Literature precedent |
+|---|-----------|-----------|-----------|---------------------|
+| 1 | `pop_density` | Aggregate demand | Higher = higher need | Mamun & Lownes (2011a), Jiao & Dillivan (2013) |
+| 2 | `poverty_rate` | Economic vulnerability | Higher = higher need | Mamun & Lownes (2011a), Currie (2010) |
+| 3 | `avg_household_expenditure` | Economic gradient | **Higher = LOWER need** (invert) | Pereira et al. (2019) income proxy |
+| 4 | `zero_vehicle_hh_pct` | Transit dependence | Higher = higher need | Mamun & Lownes (2011a), Jiao & Dillivan (2013) |
+| 5 | `dependency_ratio` | Demographic vulnerability | Higher = higher need | Mamun & Lownes (2011a) |
+
+**Normalization**: Min-max to [0, 1] with winsorization at 2nd/98th percentiles before scaling. `avg_household_expenditure` uses inverted formula: `(x_max - x) / (x_max - x_min)`.
+
+**Weighting**: Equal (0.20 each) as default — literature consensus (Mamun & Lownes 2011a, Rathod et al. 2025). Sensitivity analysis: Monte Carlo ±20% perturbation (1,000 iterations) + PCA-derived weights as robustness check.
+
+```
+TNI = 0.20 × norm(pop_density) + 0.20 × norm(poverty_rate)
+    + 0.20 × norm_inv(avg_household_expenditure)
+    + 0.20 × norm(zero_vehicle_hh_pct) + 0.20 × norm(dependency_ratio)
+```
+
+**Edge cases**: (1) Missing data: hierarchical fallback (parent kecamatan → adjacent kelurahan → kota/kab average → exclude if >2 indicators missing). (2) Zero variance: assign 0.5, redistribute weight. (3) Outliers: winsorize, don't delete. (4) Zero-population kelurahan (<100 pop): exclude from TNI, retain in spatial dataset.
+
+*Full detail: `docs/drafts/mvp5-tni-methodology.md`*
 
 ### Spatial Units (Dual Resolution)
 
@@ -222,13 +248,24 @@ Generalized Cost (motorcycle):
 
 Where:
   VOT (value of time) = Rp 500/min (~Rp 30k/hr, Jakarta UMR proxy)
-  transfer_friction = Rp 5,000 per transfer
+    Cross-validated: Ng (2018) USD 1.5–3.0/hr → Rp 23–47k/hr; Sukor & Bhayo (2024) 30–50% of hourly wage
+  transfer_friction = Rp 5,000 per transfer (~10 min equivalent; Wardman 2004)
   first_mile_cost = ojol_fare OR (walk_time_min × VOT), whichever is lower
-  fatigue_premium = Rp 0 for car, Rp 10,000 for motorcycle (rides >30 min), Rp 0 for transit
-  
-  NOTE: Motorcycles CANNOT use toll roads in Indonesia — this is a critical cost advantage
-  for motorcycles in non-toll corridors, but means motorcycle travel time on suburban routes
-  uses the non-toll surface road (slower, more congested at certain corridors).
+  discomfort_penalty = Rp 3,000 (peak-hour crowding default; Rp 0 off-peak, Rp 5,000 severe)
+  fatigue_premium (motorcycle) = Rp 0 (<20 min), Rp 5,000 (20–40 min), Rp 10,000 (40–60 min), Rp 15,000 (>60 min)
+    Based on Sukor & Bhayo (2024): >30 min triggers willingness to switch to transit
+  fatigue_premium (car) = Rp 0 (climate-controlled, seated)
+
+  NOTE: Motorcycles CANNOT use toll roads in Indonesia (PP No. 15/2005) — zero toll fees but
+  forced onto surface roads. Net effect: cost advantage at all suburban distances because
+  toll savings (Rp 8k–35k) consistently exceed time penalty cost (Rp 2.5k–20k).
+
+Cost parameters (finalized — MVP-8):
+  Car fuel: Rp 1,000/km (12 km/L × Rp 10k/L Pertalite, rounded for mixed Pertalite/Pertamax)
+  Motorcycle fuel: Rp 200/km (50 km/L × Rp 10k/L — 5:1 car:motorcycle ratio)
+  Car parking (CBD): Rp 25,000 | Motorcycle parking: Rp 8,000
+  Toll: Rp 8,000–35,000 per corridor (Jasa Marga 2024 tariffs, car only)
+  Transit fares: KRL Rp 3k–13k | MRT Rp 3k–14k | BRT Rp 3,500 flat | LRT Rp 5k–20k
 
 Transit competitive ratio (3-way):
   TCR_vs_car = GC_car / GC_transit
@@ -255,15 +292,16 @@ L5_cost_competitive = norm(clamp(TCR_combined, 0.3, 2.0))
 | Travel time | 90 min (incl. transfers) | 75 min (toll + congestion) | 80 min (surface roads, no toll) |
 | Time cost (@Rp 500) | Rp 45k | Rp 37.5k | Rp 40k |
 | Transfer friction | 1 × Rp 5k | — | — |
-| Fatigue premium | — | — | Rp 10k (>30 min ride) |
-| **Generalized cost** | **Rp 70.5k** | **Rp 127.5k** | **Rp 64k** |
+| Discomfort penalty | Rp 3k (peak crowding) | — | — |
+| Fatigue premium | — | — | Rp 15k (>60 min ride) |
+| **Generalized cost** | **Rp 73.5k** | **Rp 127.5k** | **Rp 69k** |
 | | | | |
 
-TCR_vs_car = 127.5/70.5 = **1.81** (transit strongly beats car)
-TCR_vs_motor = 64/70.5 = **0.91** (motorcycle slightly beats transit)
-TCR_combined = min(127.5, 64)/70.5 = **0.91** → **Swing zone**
+TCR_vs_car = 127.5/73.5 = **1.73** (transit strongly beats car)
+TCR_vs_motor = 69/73.5 = **0.94** (motorcycle slightly beats transit)
+TCR_combined = min(127.5, 69)/73.5 = **0.94** → **Swing zone**
 
-Interpretation: For BSD, motorcycle slightly beats transit in generalized cost (Rp 64k vs Rp 70.5k). Car is far more expensive. The swing factor is first-mile quality — if BSD improves feeder service to the KRL station (removing the Rp 12k ojol), transit clearly wins. This matches reality: BSD commuters with good first-mile access use KRL, others ride motorcycles.
+Interpretation: For BSD, motorcycle slightly beats transit in generalized cost (Rp 69k vs Rp 73.5k). Car is far more expensive. The swing factor is first-mile quality — if BSD improves feeder service to the KRL station (removing the Rp 12k ojol), transit GC drops to ~Rp 61.5k, pushing TCR above 1.0. This matches reality: BSD commuters with good first-mile access use KRL, others ride motorcycles.
 
 **Worked example — Tebet resident (near-CBD, 5 km to Sudirman):**
 
@@ -272,18 +310,45 @@ Interpretation: For BSD, motorcycle slightly beats transit in generalized cost (
 | First-mile/access | Walk 10 min to Busway | Door-to-door | Door-to-door |
 | Fare / fuel | Busway Rp 3.5k | Rp 5k (5km × Rp1k) | Rp 1k (5km × Rp200) |
 | Toll | — | Rp 0 | Rp 0 |
-| Parking | — | Rp 20k | Rp 8k |
+| Parking | — | Rp 25k (car CBD) | Rp 8k |
 | Travel time | 35 min (walk + wait + ride) | 20 min | 15 min |
 | Time cost (@Rp 500) | Rp 17.5k | Rp 10k | Rp 7.5k |
 | Transfer friction | — | — | — |
-| Fatigue premium | — | — | Rp 0 (<30 min) |
-| **Generalized cost** | **Rp 21k** | **Rp 35k** | **Rp 16.5k** |
+| Discomfort penalty | Rp 3k (peak crowding) | — | — |
+| Fatigue premium | — | — | Rp 0 (<20 min) |
+| **Generalized cost** | **Rp 24k** | **Rp 40k** | **Rp 16.5k** |
 
-TCR_vs_car = 35/21 = **1.67** (transit beats car)
-TCR_vs_motor = 16.5/21 = **0.79** (motorcycle beats transit)
-TCR_combined = **0.79** → **Private transport wins**
+TCR_vs_car = 40/24 = **1.67** (transit beats car)
+TCR_vs_motor = 16.5/24 = **0.69** (motorcycle beats transit)
+TCR_combined = **0.69** → **Private transport wins**
 
-Interpretation: For near-CBD Tebet, motorcycle is cheaper and faster than transit despite having Busway access. The short distance means fuel is negligible and there's no toll. Transit's fare advantage disappears because Busway's Rp 3.5k barely undercuts Rp 1k fuel, but the 15-min time difference costs Rp 10k in VOT. This explains why near-CBD residents with motorcycles rarely use transit for commuting.
+Interpretation: For near-CBD Tebet, motorcycle is cheaper and faster than transit despite having Busway access. The short distance means fuel is negligible and there's no toll. Transit's fare advantage disappears because Busway's Rp 3.5k barely undercuts Rp 1k fuel, but the 20-min time difference costs Rp 10k in VOT. This explains why near-CBD residents with motorcycles rarely use transit for commuting.
+
+**Worked example — Ciputat resident (peri-urban, 18 km to Sudirman):**
+
+| Component | Transit | Car | Motorcycle |
+|-----------|---------|-----|------------|
+| First-mile/access | Walk 12 min to feeder | Door-to-door | Door-to-door |
+| Fare / fuel | Feeder Rp 3.5k + MRT Rp 10k = Rp 13.5k | Rp 18k (18km × Rp1k) | Rp 3.6k (18km × Rp200) |
+| Toll | — | Rp 18k (JORR) | Rp 0 |
+| Parking | — | Rp 25k | Rp 8k |
+| Travel time | 85 min (feeder + MRT + walk) | 55 min (JORR + congestion) | 50 min (surface arterial) |
+| Time cost (@Rp 500) | Rp 42.5k | Rp 27.5k | Rp 25k |
+| Transfer/discomfort | 1 × Rp 5k + Rp 2k | — | — |
+| Fatigue premium | — | — | Rp 10k (40–60 min tier) |
+| **Generalized cost** | **Rp 63k** | **Rp 88.5k** | **Rp 46.6k** |
+
+TCR_vs_car = 88.5/63 = **1.40** (transit beats car)
+TCR_vs_motor = 46.6/63 = **0.74** (motorcycle clearly beats transit)
+TCR_combined = **0.74** → **Private transport wins**
+
+Interpretation: Ciputat demonstrates the "missing middle" — close enough that motorcycle is fast (50 min), but far enough that transit requires a multi-leg chain (feeder → MRT). The 52 min of non-in-vehicle time (walk + wait + transfer + wait + egress) is the problem, not fare. Without a direct high-frequency connection, motorcycle dominance is entrenched.
+
+**Key finding across all three examples**: Motorcycle beats transit at every distance tested (BSD TCR 0.94, Ciputat TCR 0.74, Tebet TCR 0.69). Car is always most expensive. The marginal competitor to transit is always motorcycle, not car — validating the three-mode approach. First-mile cost (ojol Rp 12k for BSD) is the decisive swing factor (Sukor & Bhayo 2024).
+
+**Spatial units without transit**: Where no transit service exists, `gc_transit_idr = null`, `tcr_combined = null`, `transit_competitive_zone = "transit_not_available"`, and `L5 = 0.0`.
+
+*Full detail with toll exclusion analysis, sensitivity parameters, and corridor-specific dynamics: `docs/drafts/mvp8-gc-methodology.md`*
 
 **Schema fields for three-way comparison:**
 
@@ -296,7 +361,7 @@ Interpretation: For near-CBD Tebet, motorcycle is cheaper and faster than transi
 | `tcr_vs_car` | float | GC_car / GC_transit |
 | `tcr_vs_motorcycle` | float | GC_motorcycle / GC_transit |
 | `tcr_combined` | float | min(GC_car, GC_motorcycle) / GC_transit |
-| `transit_competitive_zone` | enum | "transit_wins" (>1.2), "swing" (0.8–1.2), "private_wins" (<0.8) |
+| `transit_competitive_zone` | enum | "transit_wins" (>1.2), "swing" (0.8–1.2), "private_wins" (<0.8), "transit_not_available" |
 | `distance_to_sudirman_km` | float | Straight-line distance to Sudirman–Thamrin centroid |
 
 ### Validation Approach
@@ -411,7 +476,9 @@ Same fields as kelurahan, plus:
 | `h3_index` | string | H3 cell ID at resolution 8 | h3-py |
 | `h3_geometry` | polygon | Hexagon boundary | h3-py |
 | `h3_area_km2` | float | ~0.74 km² (constant) | h3-py |
-| `population` | float | Estimated population in hex | **Dasymetric**: WorldPop raster (#9) aggregated to H3 cell |
+| `is_edge_cell` | boolean | True if cell straddles study area boundary | Spatial check |
+| `kelurahan_ids` | list[string] | Kelurahan(s) overlapping this cell | Spatial overlay |
+| `population` | float | Dasymetric-estimated population (not census count) | **Dasymetric**: WorldPop raster (#9) aggregated to H3 cell |
 | `pop_density` | float | population / h3_area_km2 | Computed |
 | `poverty_rate` | float | Redistributed from kelurahan | **Dasymetric**: population-weighted from overlapping kelurahan(s) |
 | `avg_household_expenditure` | float | Redistributed | **Dasymetric**: population-weighted |
@@ -428,14 +495,29 @@ Same fields as kelurahan, plus:
 | `poi_reach_*` | float | Travel time from hex centroid | **Direct computation**: r5py from hex centroid |
 | All other derived fields | | Same as kelurahan | Computed from H3-level inputs |
 
-### H3 Derivation Strategy Summary
+### H3 Derivation Strategy (finalized — MVP-7)
 
-| Data type | Derivation method | Rationale |
-|-----------|-------------------|-----------|
-| Socioeconomic (population, poverty, expenditure, vehicle ownership) | **Dasymetric mapping** using WorldPop raster | Population is not uniformly distributed within a kelurahan — built-up areas are denser. WorldPop captures this at ~100m resolution. |
-| Infrastructure counts (road network, road class proportions) | **Area-weighted / spatial clip** — clip features to H3 boundary, recompute | Roads and intersections are physical features with known locations; direct clipping is accurate |
-| Point features (transit stops, POIs) | **Point-in-polygon** spatial join | Stops and POIs have exact coordinates; assign directly to containing H3 cell |
-| Travel-time based (poi_reach_*, min_dist_to_transit) | **Direct computation** from H3 centroid | Compute fresh from hex centroid using r5py or network distance; no need to redistribute kelurahan values |
+| Data type | Derivation method | Source unit | Rationale |
+|-----------|-------------------|------------|-----------|
+| Socioeconomic (population, poverty, expenditure, vehicle ownership) | **Dasymetric mapping** via WorldPop raster | Kelurahan (from BPS kecamatan via step 9) | Population not uniform within kelurahan; WorldPop ~100m resolution as allocation surface |
+| Infrastructure (road network, class proportions) | **Area-weighted spatial clip** | OSM segments | Physical features with known geometries; clip to H3 boundary, recompute per cell |
+| Point features (transit stops, POIs) | **Point-in-polygon** spatial join | GTFS/Overpass points | Exact coordinates; assign to containing H3 cell via `h3.geo_to_h3()` |
+| Travel times (poi_reach_*, min_dist_to_transit) | **Direct computation** from H3 centroid | r5py routing | Fresh routing from each centroid; redistributing kelurahan values would be methodologically incorrect |
+
+**Dasymetric formula (rate-based indicators)**:
+```
+value_h3 = sum(pop_raster_in_h3_and_kelurahan_k * value_kelurahan_k) / sum(pop_raster_in_h3)
+```
+For cells entirely within one kelurahan (vast majority): rate passes through unchanged.
+For cells straddling boundaries: population-weighted average of overlapping kelurahan values.
+
+**Grid generation**: `h3.polyfill_geojson(study_area, res=8)` → clip to GADM boundary → ~15,000–20,000 cells. Buffer 500m for edge handling; flag `is_edge_cell` for sensitivity.
+
+**MAUP mitigation** (Javanmard et al. 2023): Dual-resolution comparison (kelurahan vs H3) quantifies scale and zoning effects. Identical pipeline at both resolutions; differences attributable to spatial unit choice.
+
+**Resolution sensitivity**: Full pipeline at res-7 (~3–5k cells), res-8 (primary), res-9 (~50–70k cells). Compare via confusion matrix (quadrant stability), Cohen's kappa, Gini comparison, and LISA pattern stability. Res-9 r5py computation (~60k origins) may require stratified sampling fallback.
+
+*Full detail with derivation formulas, edge case handling, and implementation sequence: `docs/drafts/mvp7-h3-methodology.md`*
 
 ---
 
@@ -481,7 +563,7 @@ Same fields as kelurahan, plus:
 | 15 | **Compute Transit Accessibility Index (TAI)** | All access indicators | `tai_score` per kelurahan | `pandas` + `sklearn.preprocessing` | Min-max normalize → weighted sum |
 | 16 | **Compute equity gap + quadrant** | TNI + TAI | `equity_gap`, `quadrant` per kelurahan | `pandas` | Gap = TNI − TAI; quadrant from median split |
 | 17 | **Generate H3 grid** | Jabodetabek boundary polygon | H3 hexagon GeoDataFrame (res 8) | `h3-py` + `geopandas` | `h3.polyfill_geojson` on boundary → to GeoDataFrame |
-| 18 | **Dasymetric mapping: socioeconomic → H3** | Kelurahan demographics + WorldPop raster + H3 grid | Socioeconomic estimates per H3 cell | `rasterstats` + `geopandas` overlay | For each H3 cell: (a) extract WorldPop pop sum, (b) find overlapping kelurahan(s), (c) allocate kelurahan-level rates proportionally to pop within hex |
+| 18 | **Dasymetric mapping: socioeconomic → H3** | Kelurahan-level demographics (from step 9) + WorldPop raster + H3 grid | Socioeconomic estimates per H3 cell | `rasterstats` + `geopandas` overlay | For each H3 cell: (a) extract WorldPop pop sum, (b) find overlapping kelurahan(s), (c) allocate kelurahan-level rates proportionally to WorldPop pop within hex. Formula: `value_h3 = Σ(pop_in_intersection_k × value_kelurahan_k) / pop_h3` |
 | 19 | **Area-weighted: road network → H3** | Road GDF + H3 grid | Road metrics per H3 cell | `geopandas` overlay + clip | Clip road segments to each H3 cell; recompute metrics |
 | 20 | **Point-in-polygon: stops/POIs → H3** | Unified stops + POIs + H3 grid | Stop/POI counts per H3 cell | `geopandas` spatial join | Direct assignment |
 | 21 | **Direct computation: travel times from H3 centroids** | H3 centroids + GTFS + road network + POIs | `poi_reach_*`, `min_dist_to_transit_m` per H3 cell | `r5py` | Same methodology as step 14 but from hex centroids |
@@ -703,7 +785,7 @@ This means the v1 product can ship without traffic data, and v2 simply adds a pi
 
 **Research Question**: Does transit accessibility in Jabodetabek align with socioeconomic need, and does the answer depend on the spatial resolution of analysis?
 
-**Method**: Construct a two-axis Transit Equity Matrix (Transit Need Index × Transit Accessibility Index) for ~1,800 kelurahan and ~15,000–20,000 H3 hexagons across Jabodetabek. TNI combines population density, poverty rate, household expenditure, zero-vehicle household rate, and dependency ratio. TAI combines transit stop count, route count, headway, network distance to transit, road-adjusted accessibility, mode diversity, fare tier affordability, and travel time to 7 strict POI categories — with CBD travel time weighted 2× as the priority indicator.
+**Method**: Construct a two-axis Transit Equity Matrix (Transit Need Index × Transit Accessibility Index) for ~1,800 kelurahan and ~15,000–20,000 H3 hexagons across Jabodetabek. TNI combines 5 indicators (population density, poverty rate, household expenditure [inverted], zero-vehicle household rate, dependency ratio) with equal weighting, min-max normalization, and winsorization at 2nd/98th percentiles. TAI uses a 5-layer model (first-mile 20%, service quality 15%, CBD journey chain 35%, last-mile 15%, cost competitiveness 15%) with three-way generalized cost comparison (transit vs car vs motorcycle). CBD travel time is gravity-weighted across 9 employment zones.
 
 **CBD as priority POI**: Nine defined CBD zones (Sudirman-Thamrin, Kuningan, Simatupang, Gatot Subroto, Kelapa Gading, PIK, BSD, Summarecon Bekasi, Summarecon Serpong) anchor the accessibility analysis, reflecting the reality that millions commute to these centers daily.
 
@@ -713,7 +795,7 @@ This means the v1 product can ship without traffic data, and v2 simply adds a pi
 
 **Traffic API extension (v2)**: Schema includes null-by-default fields for historical traffic speed and congestion index. When populated (via TomTom or Google Maps API), these automatically feed into a traffic_adjusted_access score. No schema change needed — plug-in architecture.
 
-**Dual resolution**: Kelurahan is the primary analysis unit (census-aligned). H3 resolution 8 (~0.74 km²) is derived via dasymetric mapping (socioeconomic) and spatial clipping (infrastructure). Comparing quadrant classifications across resolutions quantifies the MAUP effect on equity measurement.
+**Dual resolution**: Kelurahan is the primary analysis unit (census-aligned). H3 resolution 8 (~0.74 km²) is derived via dasymetric mapping from kelurahan-level values (socioeconomic), area-weighted spatial clipping (infrastructure), point-in-polygon (stops/POIs), and direct r5py routing (travel times). Sensitivity at res-7 and res-9. Comparing quadrant classifications across resolutions quantifies the MAUP effect (Javanmard et al. 2023).
 
 **Equity measurement**: Gini coefficient and Lorenz curves measure overall distributional equity; Moran's I and LISA identify spatial clustering of transit deserts. Quadrant classification (Q1–Q4) enables actionable policy categorization.
 
