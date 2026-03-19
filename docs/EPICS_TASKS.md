@@ -11,7 +11,7 @@
 
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
-| E0 | Foundation | Research Foundation | In Progress | 7/9 done |
+| E0 | Foundation | Research Foundation | In Progress | 8/9 done |
 | E3 | Paper | Literature Review | Draft — confirm after E0 | 0/3 done |
 | E4 | Paper | Paper Drafting | Draft — confirm after E0 | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Draft — confirm after E0 | 0/2 done |
@@ -136,14 +136,29 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
 
 ### MVP-6 — Define data acquisition plan and verify source access *(E0-007)*
 - **E0 position**: E0-007 — data acquisition plan, needs confirmed schema
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] All 10 data sources verified accessible
-  - [ ] Acquisition scripts in `src/ingestion/`
-  - [ ] GTFS, OSM, Overpass, BPS, WorldPop, GADM downloads tested
-  - [ ] Data sources match finalized DATA_MODEL.md schema
-- **Blocked by**: MVP-77 (methodology + schema must be consolidated first)
+  - [x] All 10 data sources verified: 5 accessible, 2 unavailable (KRL/MRT GTFS — need manual construction), 2 manual (LRT/BPS), 1 generated (H3)
+  - [x] Acquisition scripts in `src/ingestion/` (7 scripts + README + verification report)
+  - [x] TransJakarta GTFS confirmed fresh (2026-03-14), OSM/Overpass/WorldPop accessible, GADM+HDX for boundaries
+  - [x] Data sources mapped to DATA_MODEL.md schema
+- **Blocked by**: MVP-77 ✅
+- **New blocker discovered**: KRL and MRT GTFS feeds do not exist — must be manually constructed from community APIs before E6 pipeline. See MVP-39.
+- **Output**: `src/ingestion/`, `src/ingestion/VERIFICATION_REPORT.md`
+
+### MVP-39 — Construct KRL and MRT GTFS feeds manually *(new — blocks E6)*
+- **E0 position**: New ticket — discovered during MVP-6 verification
+- **Status**: Todo
+- **Priority**: Urgent
+- **AC**:
+  - [ ] KRL GTFS constructed from comuline/api + published schedules (~80 stations, 6 lines)
+  - [ ] MRT GTFS constructed from mrt-jakarta-api + published schedules (~13 stations, 1 line)
+  - [ ] Both feeds pass `gtfs_kit` validation
+  - [ ] Feeds placed in `data/raw/gtfs/`
+  - [ ] Feed freshness documented
+- **Blocked by**: none
+- **Estimated effort**: KRL 4-6 hours, MRT 1-2 hours
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
 
 ### MVP-3 — Produce PRD for web product *(E0-008)*
@@ -172,7 +187,7 @@ MVP-4 (Done) ─┤
 MVP-2 (Done) ─────────────┐
   │                       │
   ├→ MVP-5 (Done: TNI) ──┐
-  ├→ MVP-7 (Done: H3)  ──┤→ MVP-77 (Done: consolidate) → MVP-6 (E0-007: acquisition)
+  ├→ MVP-7 (Done: H3)  ──┤→ MVP-77 (Done: consolidate) → MVP-6 (Done: acquisition)
   └→ MVP-8 (Done: GC)  ──┘                                        │
   │                                                                  │
   └──────────────────────────────────────────────────── MVP-3 (E0-008: PRD) ←──┘
@@ -180,7 +195,8 @@ MVP-2 (Done) ─────────────┐
                                                     [Phase 3 trigger]
 ```
 
-**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 ✅ → MVP-6 → MVP-3 → Phase 3`
+**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 ✅ → MVP-6 ✅ → MVP-3 → Phase 3`
+**New dependency**: `MVP-39 (construct KRL+MRT GTFS) → blocks E6 pipeline (MVP-19)`
 
 ---
 
