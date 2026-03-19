@@ -214,7 +214,7 @@ Generalized Cost (car):
          + fatigue_premium_idr            (Rp 0 — car is comfortable)
 
 Generalized Cost (motorcycle):
-  GC_motorcycle = fuel_cost_idr           (distance × Rp 400/km, 50 km/L at Rp 10k/L)
+  GC_motorcycle = fuel_cost_idr           (distance × Rp 200/km, 50 km/L at Rp 10k/L)
                 + toll_cost_idr           (Rp 0 — motorcycles cannot use toll roads in Indonesia)
                 + parking_cost_idr        (CBD parking: Rp 5-10k for motorcycles)
                 + (travel_time_min × VOT) (motorcycle faster in traffic but variable)
@@ -249,41 +249,41 @@ L5_cost_competitive = norm(clamp(TCR_combined, 0.3, 2.0))
 | Component | Transit | Car | Motorcycle |
 |-----------|---------|-----|------------|
 | First-mile/access | Ojol: Rp 12k, 15 min | Door-to-door | Door-to-door |
-| Fare / fuel | KRL Rp 5k + Busway Rp 3.5k = Rp 8.5k | Rp 30k (30km × Rp1k) | Rp 12k (30km × Rp400) |
+| Fare / fuel | KRL Rp 5k + Busway Rp 3.5k = Rp 8.5k | Rp 30k (30km × Rp1k) | Rp 6k (30km × Rp200) |
 | Toll | — | Rp 35k (BSD–Jakarta toll) | Rp 0 (motorcycles can't use toll) |
 | Parking | — | Rp 25k (car CBD) | Rp 8k (motorcycle CBD) |
 | Travel time | 90 min (incl. transfers) | 75 min (toll + congestion) | 80 min (surface roads, no toll) |
 | Time cost (@Rp 500) | Rp 45k | Rp 37.5k | Rp 40k |
 | Transfer friction | 1 × Rp 5k | — | — |
 | Fatigue premium | — | — | Rp 10k (>30 min ride) |
-| **Generalized cost** | **Rp 70.5k** | **Rp 127.5k** | **Rp 70k** |
+| **Generalized cost** | **Rp 70.5k** | **Rp 127.5k** | **Rp 64k** |
 | | | | |
 
 TCR_vs_car = 127.5/70.5 = **1.81** (transit strongly beats car)
-TCR_vs_motor = 70/70.5 = **0.99** (motorcycle nearly ties transit)
-TCR_combined = min(127.5, 70)/70.5 = **0.99** → **Swing zone**
+TCR_vs_motor = 64/70.5 = **0.91** (motorcycle slightly beats transit)
+TCR_combined = min(127.5, 64)/70.5 = **0.91** → **Swing zone**
 
-Interpretation: For BSD, transit and motorcycle are nearly equal in generalized cost. Car is far more expensive. The swing factor is first-mile quality — if BSD improves feeder service to the KRL station (removing the Rp 12k ojol), transit clearly wins. This matches reality: BSD commuters with good first-mile access use KRL, others ride motorcycles.
+Interpretation: For BSD, motorcycle slightly beats transit in generalized cost (Rp 64k vs Rp 70.5k). Car is far more expensive. The swing factor is first-mile quality — if BSD improves feeder service to the KRL station (removing the Rp 12k ojol), transit clearly wins. This matches reality: BSD commuters with good first-mile access use KRL, others ride motorcycles.
 
 **Worked example — Tebet resident (near-CBD, 5 km to Sudirman):**
 
 | Component | Transit | Car | Motorcycle |
 |-----------|---------|-----|------------|
 | First-mile/access | Walk 10 min to Busway | Door-to-door | Door-to-door |
-| Fare / fuel | Busway Rp 3.5k | Rp 5k (5km × Rp1k) | Rp 2k (5km × Rp400) |
+| Fare / fuel | Busway Rp 3.5k | Rp 5k (5km × Rp1k) | Rp 1k (5km × Rp200) |
 | Toll | — | Rp 0 | Rp 0 |
 | Parking | — | Rp 20k | Rp 8k |
 | Travel time | 35 min (walk + wait + ride) | 20 min | 15 min |
 | Time cost (@Rp 500) | Rp 17.5k | Rp 10k | Rp 7.5k |
 | Transfer friction | — | — | — |
 | Fatigue premium | — | — | Rp 0 (<30 min) |
-| **Generalized cost** | **Rp 21k** | **Rp 35k** | **Rp 17.5k** |
+| **Generalized cost** | **Rp 21k** | **Rp 35k** | **Rp 16.5k** |
 
 TCR_vs_car = 35/21 = **1.67** (transit beats car)
-TCR_vs_motor = 17.5/21 = **0.83** (motorcycle beats transit)
-TCR_combined = **0.83** → **Private transport wins**
+TCR_vs_motor = 16.5/21 = **0.79** (motorcycle beats transit)
+TCR_combined = **0.79** → **Private transport wins**
 
-Interpretation: For near-CBD Tebet, motorcycle is cheaper and faster than transit despite having Busway access. The short distance means fuel is negligible and there's no toll. Transit's fare advantage disappears because Busway's Rp 3.5k barely undercuts Rp 2k fuel, but the 15-min time difference costs Rp 10k in VOT. This explains why near-CBD residents with motorcycles rarely use transit for commuting.
+Interpretation: For near-CBD Tebet, motorcycle is cheaper and faster than transit despite having Busway access. The short distance means fuel is negligible and there's no toll. Transit's fare advantage disappears because Busway's Rp 3.5k barely undercuts Rp 1k fuel, but the 15-min time difference costs Rp 10k in VOT. This explains why near-CBD residents with motorcycles rarely use transit for commuting.
 
 **Schema fields for three-way comparison:**
 

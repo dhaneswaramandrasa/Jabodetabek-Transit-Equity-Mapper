@@ -79,7 +79,7 @@
 | `tcr_vs_car` | float | GC_car / GC_transit | Computed |
 | `tcr_vs_motorcycle` | float | GC_motorcycle / GC_transit | Computed |
 | `tcr_combined` | float | min(GC_car, GC_motorcycle) / GC_transit | Computed |
-| `transit_competitive_zone` | enum | "transit_wins" (>1.2) / "swing" (0.8–1.2) / "private_wins" (<0.8) | Computed |
+| `transit_competitive_zone` | enum | "transit_wins" (>1.2) / "swing" (0.8–1.2) / "private_wins" (<0.8) / "transit_not_available" (no transit service) | Computed |
 | `distance_to_sudirman_km` | float | Straight-line distance to Sudirman–Thamrin centroid | Computed |
 
 ### Traffic Extension (v2 — null by default)
@@ -102,13 +102,16 @@
 
 ## Secondary Schema — H3 Level
 
-Same fields as kelurahan, plus:
+Same fields as kelurahan, with the following differences and additions:
 
 | Field | Type | Description | Derivation |
 |-------|------|-------------|------------|
 | `h3_index` | string | H3 cell ID at resolution 8 | h3-py |
 | `h3_geometry` | polygon | Hexagon boundary | h3-py |
 | `h3_area_km2` | float | ~0.74 km² (constant) | h3-py |
+| `population` | float | Dasymetric-estimated population (not census count) | WorldPop zonal sum |
+| `is_edge_cell` | boolean | True if cell straddles study area boundary | Spatial check |
+| `kelurahan_ids` | list[string] | Kelurahan(s) overlapping this cell | Spatial overlay |
 
 ---
 
@@ -116,7 +119,7 @@ Same fields as kelurahan, plus:
 
 | Data Type | Method | Rationale |
 |-----------|--------|-----------|
-| Socioeconomic (population, poverty, expenditure, vehicle ownership) | **Dasymetric mapping** via WorldPop raster | Population not uniform within kelurahan; WorldPop captures at ~100m |
+| Socioeconomic (population, poverty, expenditure, vehicle ownership) | **Dasymetric mapping** via WorldPop raster from kelurahan-level values | Population not uniform within kelurahan; WorldPop captures at ~100m |
 | Infrastructure counts (road network, road class proportions) | **Area-weighted / spatial clip** | Physical features with known locations; direct clipping is accurate |
 | Point features (transit stops, POIs) | **Point-in-polygon** spatial join | Exact coordinates; assign to containing H3 cell |
 | Travel-time based (poi_reach_*, min_dist_to_transit) | **Direct computation** from H3 centroid | Fresh routing from hex centroid; no redistribution needed |
@@ -148,7 +151,7 @@ Same fields as kelurahan, plus:
 | Transit stops → Kelurahan | stop geometry | kelurahan polygon | spatial (point-in-polygon) |
 | Road network → Kelurahan | road geometry | kelurahan polygon | spatial (overlay/clip) |
 | WorldPop → H3 | raster cell | H3 polygon | zonal stats |
-| Kelurahan rates → H3 | kelurahan polygon | H3 polygon | spatial overlay + pop weighting |
+| Kelurahan rates → H3 | kelurahan polygon | H3 polygon | dasymetric (WorldPop-weighted spatial overlay) |
 | Transit stops → H3 | stop geometry | H3 polygon | spatial (point-in-polygon) |
 
 ---

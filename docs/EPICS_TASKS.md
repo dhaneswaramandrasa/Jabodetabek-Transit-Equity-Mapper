@@ -11,7 +11,7 @@
 
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
-| E0 | Foundation | Research Foundation | In Progress | 3/9 done |
+| E0 | Foundation | Research Foundation | In Progress | 6/9 done |
 | E3 | Paper | Literature Review | Draft — confirm after E0 | 0/3 done |
 | E4 | Paper | Paper Drafting | Draft — confirm after E0 | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Draft — confirm after E0 | 0/2 done |
@@ -77,43 +77,46 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
 
 ### MVP-5 — Finalize TNI indicator set and weighting scheme *(E0-003)*
 - **E0 position**: E0-003 — TNI methodology, informed by literature scan
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] TNI indicators confirmed: pop_density, poverty_rate, avg_household_expenditure, zero_vehicle_hh_pct, dependency_ratio
-  - [ ] Normalization method confirmed (min-max)
-  - [ ] Weighting confirmed (equal default, sensitivity analysis planned)
-  - [ ] Edge cases documented
-  - [ ] Literature precedents cited for indicator selection
-- **Blocked by**: MVP-2 (literature scan may refine indicators)
+  - [x] TNI indicators confirmed: pop_density, poverty_rate, avg_household_expenditure, zero_vehicle_hh_pct, dependency_ratio
+  - [x] Normalization method confirmed (min-max with winsorization at 2nd/98th percentile)
+  - [x] Weighting confirmed (equal default, sensitivity analysis via ±20% perturbation + PCA check)
+  - [x] Edge cases documented (missing data, zero variance, outliers)
+  - [x] Literature precedents cited: Mamun & Lownes (2011), Jiao & Dillivan (2013), Currie (2010), Rathod et al. (2025)
+- **Blocked by**: MVP-2 ✅
+- **Output**: `docs/drafts/mvp5-tni-methodology.md`
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-5/finalize-tni-indicator-set-and-weighting-scheme
 
 ### MVP-7 — Design H3 derivation pipeline *(E0-004)*
 - **E0 position**: E0-004 — H3 methodology, informed by literature scan
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] Dual-method H3 derivation designed
-  - [ ] Dasymetric (WorldPop) for socioeconomic
-  - [ ] Area-weighted (spatial clip) for infrastructure
-  - [ ] Point-in-polygon for stops/POIs
-  - [ ] Direct computation for travel times
-  - [ ] Resolution sensitivity plan (7, 8, 9)
-  - [ ] Literature precedents cited for derivation methods
-- **Blocked by**: MVP-2 (literature scan may inform derivation methods)
+  - [x] Dual-method H3 derivation designed
+  - [x] Dasymetric (WorldPop) for socioeconomic — from kelurahan-level values (step 9 output)
+  - [x] Area-weighted (spatial clip) for infrastructure
+  - [x] Point-in-polygon for stops/POIs
+  - [x] Direct computation for travel times
+  - [x] Resolution sensitivity plan (7, 8, 9) with confusion matrices + Cohen's kappa
+  - [x] Literature precedents cited: Javanmard et al. (2023), Mennis (2003), Tatem (2017), Openshaw (1984)
+- **Blocked by**: MVP-2 ✅
+- **Output**: `docs/drafts/mvp7-h3-methodology.md`
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-7/design-h3-derivation-pipeline-dasymetric-area-weighted
 
 ### MVP-8 — Design three-way generalized cost model *(E0-005)*
 - **E0 position**: E0-005 — GC methodology, informed by literature scan
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] Layer 5 formulas finalized
-  - [ ] Cost parameters confirmed (VOT, fuel, toll, parking, fatigue)
-  - [ ] Motorcycle toll exclusion modeled
-  - [ ] TCR thresholds validated with 3 worked examples (BSD, Ciputat, Tebet)
-  - [ ] Literature precedents cited for cost parameters
-- **Blocked by**: MVP-2 (literature scan may refine cost parameters)
+  - [x] Layer 5 formulas finalized (transit, car, motorcycle)
+  - [x] Cost parameters confirmed: VOT Rp 500/min, car fuel Rp 1,000/km, motorcycle fuel Rp 200/km, tolls, parking, fatigue brackets
+  - [x] Motorcycle toll exclusion modeled with structural implications analysis
+  - [x] TCR thresholds validated with 3 worked examples: BSD (0.87 swing), Ciputat (0.66 private wins), Tebet (0.69 private wins)
+  - [x] Literature precedents cited: Ng (2018), Sukor & Bhayo (2024), Ortuzar & Willumsen (2011), Hardi & Murad (2023)
+- **Blocked by**: MVP-2 ✅
+- **Output**: `docs/drafts/mvp8-gc-methodology.md`
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-8/design-three-way-generalized-cost-model-transit-vs-car-vs-motorcycle
 
 ### MVP-77 — Consolidate methodology.md + DATA_MODEL.md with literature findings *(E0-006)*
@@ -165,18 +168,18 @@ MVP-1 (Done) ─┐
               │
 MVP-4 (Done) ─┤
               │
-MVP-2 (E0-001: lit scan)
-  │
-  ├→ MVP-5 (E0-003: TNI) ──┐
-  ├→ MVP-7 (E0-004: H3)  ──┤→ MVP-77 (E0-006: consolidate) → MVP-6 (E0-007: acquisition)
-  └→ MVP-8 (E0-005: GC)  ──┘                                        │
+MVP-2 (Done) ─────────────┐
+  │                       │
+  ├→ MVP-5 (Done: TNI) ──┐
+  ├→ MVP-7 (Done: H3)  ──┤→ MVP-77 (E0-006: consolidate) → MVP-6 (E0-007: acquisition)
+  └→ MVP-8 (Done: GC)  ──┘                                        │
   │                                                                  │
   └──────────────────────────────────────────────────── MVP-3 (E0-008: PRD) ←──┘
                                                            │
                                                     [Phase 3 trigger]
 ```
 
-**Critical path**: `MVP-2 → [MVP-5, MVP-7, MVP-8] → MVP-77 → MVP-6 → MVP-3 → Phase 3`
+**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 → MVP-6 → MVP-3 → Phase 3`
 
 ---
 
