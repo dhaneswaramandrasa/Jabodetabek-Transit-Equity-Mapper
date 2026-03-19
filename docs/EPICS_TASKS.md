@@ -11,7 +11,7 @@
 
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
-| E0 | Foundation | Research Foundation | In Progress | 6/9 done |
+| E0 | Foundation | Research Foundation | In Progress | 7/9 done |
 | E3 | Paper | Literature Review | Draft — confirm after E0 | 0/3 done |
 | E4 | Paper | Paper Drafting | Draft — confirm after E0 | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Draft — confirm after E0 | 0/2 done |
@@ -121,16 +121,17 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
 
 ### MVP-77 — Consolidate methodology.md + DATA_MODEL.md with literature findings *(E0-006)*
 - **E0 position**: E0-006 — consolidation gate before data acquisition
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] `docs/methodology.md` §Theoretical Framework updated with top papers from source-map.md
-  - [ ] `docs/methodology.md` §Methodological Precedents updated with methods from literature
-  - [ ] All formula references verified against literature (TAI, TNI, GC, H3)
-  - [ ] `docs/DATA_MODEL.md` confirmed against finalized methodology — all fields traceable
-  - [ ] `docs/methodology.md` and `docs/DATA_MODEL.md` in sync
-  - [ ] Any methodology refinements from literature documented as changes
-- **Blocked by**: MVP-5, MVP-7, MVP-8 (all methodology pieces finalized)
+  - [x] `docs/methodology.md` §Theoretical Framework updated with top papers from source-map.md
+  - [x] `docs/methodology.md` §Methodological Precedents updated with methods from literature
+  - [x] All formula references verified against literature (TAI, TNI, GC, H3)
+  - [x] `docs/DATA_MODEL.md` confirmed against finalized methodology — all fields traceable
+  - [x] `docs/methodology.md` and `docs/DATA_MODEL.md` in sync
+  - [x] Methodology refinements documented: motorcycle fuel Rp 400→200/km, H3 source kecamatan→kelurahan, transit_not_available enum, is_edge_cell, kelurahan_ids, population as float at H3
+  - [x] research-methodology-verifier validated alignment
+- **Blocked by**: MVP-5 ✅, MVP-7 ✅, MVP-8 ✅
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-77/consolidate-methodologymd-data-modelmd-with-literature-findings
 
 ### MVP-6 — Define data acquisition plan and verify source access *(E0-007)*
@@ -171,7 +172,7 @@ MVP-4 (Done) ─┤
 MVP-2 (Done) ─────────────┐
   │                       │
   ├→ MVP-5 (Done: TNI) ──┐
-  ├→ MVP-7 (Done: H3)  ──┤→ MVP-77 (E0-006: consolidate) → MVP-6 (E0-007: acquisition)
+  ├→ MVP-7 (Done: H3)  ──┤→ MVP-77 (Done: consolidate) → MVP-6 (E0-007: acquisition)
   └→ MVP-8 (Done: GC)  ──┘                                        │
   │                                                                  │
   └──────────────────────────────────────────────────── MVP-3 (E0-008: PRD) ←──┘
@@ -179,7 +180,7 @@ MVP-2 (Done) ─────────────┐
                                                     [Phase 3 trigger]
 ```
 
-**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 → MVP-6 → MVP-3 → Phase 3`
+**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 ✅ → MVP-6 → MVP-3 → Phase 3`
 
 ---
 
