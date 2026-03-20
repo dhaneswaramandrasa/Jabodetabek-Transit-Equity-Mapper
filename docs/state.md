@@ -1,47 +1,47 @@
 # Project State
 
 **Last updated**: 2026-03-20
-**Active ticket**: MVP-6 — Define data acquisition plan and verify source access (E0-007)
-**Branch**: mvp-77/consolidate-methodology
+**Active ticket**: MVP-3 — Produce PRD for web product (E0-008)
+**Branch**: mvp-6/data-acquisition-plan
 
 ---
 
 ## Current Focus
 
-**Phase**: E0 (Foundation) — completing foundational research work before execution epics.
+**Phase**: E0 (Foundation) — final ticket before Phase 3.
 This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary
 
-- **MVP-5 (E0-003) completed**: TNI indicator set finalized (5 indicators, equal weighting, min-max + winsorization)
-- **MVP-7 (E0-004) completed**: H3 derivation pipeline designed (4 methods, res-8 primary, sensitivity at 7/9)
-- **MVP-8 (E0-005) completed**: Three-way GC model designed (all parameters sourced, 3 worked examples)
-- **MVP-77 (E0-006) completed**: Consolidation gate
-  - Merged TNI, H3, and GC draft content into `docs/methodology.md`
-  - Fixed motorcycle fuel cost (Rp 400→200/km) + H3 dasymetric source (kecamatan→kelurahan)
-  - Updated `docs/DATA_MODEL.md` with 4 schema additions
-  - All formula references verified against literature
-  - methodology.md and DATA_MODEL.md confirmed in sync
-  - Research-methodology-verifier agent validated alignment
+- **MVP-5, MVP-7, MVP-8 completed**: TNI, H3 pipeline, GC model methodology finalized
+- **MVP-77 (E0-006) completed**: Consolidated all methodology drafts into methodology.md
+- **MVP-6 (E0-007) completed**: Data acquisition plan verified
+  - 7 ingestion scripts created in `src/ingestion/`
+  - 5/10 sources confirmed accessible (TransJakarta GTFS, OSM, Overpass, WorldPop, GADM+HDX)
+  - **Critical finding**: KRL and MRT GTFS feeds do not exist — must be manually constructed
+  - New ticket MVP-39 created for GTFS construction (blocks E6 pipeline)
+  - BPS data requires manual collection from 9 regional websites
+  - LRT stations compiled manually (18 stations)
+- 8/9 E0 tickets Done; MVP-3 (PRD) is the last one
 
 ## Blockers
 
-- None — MVP-6 is now unblocked
+- **MVP-39** (new): KRL + MRT GTFS must be manually constructed before E6 pipeline can run
+  - KRL: ~80 stations, 6 lines, community API available (comuline/api) — 4-6 hours
+  - MRT: ~13 stations, 1 line, community API available — 1-2 hours
+  - Does NOT block MVP-3 (PRD) or Phase 3 — only blocks E6 execution
 
 ## Next Action
 
-1. **MVP-6** (E0-007): Define data acquisition plan and verify source access
-   - Verify all 10 data sources accessible
-   - Write acquisition scripts in `src/ingestion/`
-   - Test downloads for GTFS, OSM, Overpass, BPS, WorldPop, GADM
-   - Confirm data sources match finalized DATA_MODEL.md schema
+1. **MVP-3** (E0-008): Produce PRD for web product — LAST E0 ticket
+   - PRD sections 1–7
+   - 4 personas
+   - Features match finalized methodology + verified data sources
+   - Gap statement from Source Map
+   - When Done → Phase 3 triggers (create E1, E2, confirm E3–E10)
 
-2. **MVP-3** (E0-008): Produce PRD for web product (after MVP-6)
-   - Last E0 ticket — triggers Phase 3
-
-**E0 critical path**: `[MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 ✅ → MVP-6 → MVP-3`
-**Phase 3 trigger**: When MVP-3 (E0-008) is Done → create E1, E2, confirm E3–E10
+**E0 critical path**: `MVP-6 ✅ → MVP-3 → [Phase 3 trigger]`
 
 ## Open Questions
 
-- None currently blocking
+- None blocking MVP-3
