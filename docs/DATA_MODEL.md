@@ -1,6 +1,7 @@
 # Data Model
 
-**Last updated**: 2026-03-16
+**Last updated**: 2026-03-21
+**Status**: **Signed off** — 2026-03-21 (MVP-82). All fields traceable to methodology.md.
 **Source**: `docs/methodology.md` §2.3
 **Contract**: This file = `lib/types.ts` = `lib/mock-data.ts`. All three must match.
 

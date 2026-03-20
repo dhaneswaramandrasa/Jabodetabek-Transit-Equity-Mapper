@@ -12,8 +12,8 @@
 | # | Milestone | Target | Status | Key Deliverable |
 |---|-----------|--------|--------|-----------------|
 | M0 | E0 Foundation Complete | 2026-03-20 | **Done** | Literature scan, methodology finalized, schema confirmed, data plan verified, PRD done |
-| M1 | E1 Research Framing Complete | 2026-03-21 | **In Progress** | research-framing.md confirmed, source map verified, ROADMAP.md generated |
-| M2 | E2 Methodology & Data Design Signed Off | 2026-03-23 | Not Started | methodology.md signed off, DATA_MODEL.md signed off, ARCHITECTURE.md skeleton |
+| M1 | E1 Research Framing Complete | 2026-03-21 | **Done** | research-framing.md confirmed, source map verified, ROADMAP.md generated |
+| M2 | E2 Methodology & Data Design Signed Off | 2026-03-21 | **Done** | methodology.md signed off, DATA_MODEL.md signed off, ARCHITECTURE.md skeleton |
 | M3 | E6 Data Pipeline Complete | 2026-04-13 | Not Started | All raw data acquired, processed, scored at kelurahan + H3 (MVP-84, MVP-19–25) |
 | M4 | E3 Literature Review Complete | 2026-04-06 | Not Started | Theoretical framework, related work, methodology precedents sections (MVP-9–11) |
 | M5 | E7 UI Foundation Complete | 2026-04-20 | Not Started | Prototype audited, real data migrated, road network + cost layers (MVP-26–28) |
@@ -28,7 +28,7 @@
 ## Dependency Graph
 
 ```
-E0 ✅ → E1 (in progress) → E2
+E0 ✅ → E1 ✅ → E2 ✅
                               │
                 ┌─────────────┴──────────────┐
                 ▼                            ▼
