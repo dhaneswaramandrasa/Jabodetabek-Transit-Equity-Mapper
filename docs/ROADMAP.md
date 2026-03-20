@@ -2,54 +2,117 @@
 
 **Project**: Jabodetabek Transit Equity Mapper
 **Start date**: 2026-03-16
-**Target date**: 2026-03-31
-**Last updated**: 2026-03-16
+**Target date**: TBD — portfolio project, no hard deadline
+**Last updated**: 2026-03-21
 
 ---
 
 ## Milestones
 
-| # | Milestone | Target Date | Status | Key Deliverable |
-|---|-----------|-------------|--------|-----------------|
-| M0 | E0 Foundation Complete | 2026-03-21 | In Progress | Literature scan, methodology finalized, schema confirmed, data plan verified, PRD done |
-| M1 | Phase 3: E1–E10 Setup | 2026-03-22 | Not Started | E1, E2 created; E3–E10 confirmed/refined from drafts |
-| M2 | Data Pipeline Complete | 2026-03-26 | Not Started | All raw data acquired, processed, scored at kelurahan + H3 (MVP-19 → MVP-25) |
-| M3 | Paper Draft Complete | 2026-03-28 | Not Started | All paper sections drafted (MVP-9 → MVP-16) |
-| M4 | Product Complete | 2026-03-30 | Not Started | UI migrated to real data, all core features working (MVP-26 → MVP-34) |
-| M5 | Deliverables Shipped | 2026-03-31 | Not Started | Paper submitted, dataset published, product deployed (MVP-35 → MVP-38) |
+| # | Milestone | Target | Status | Key Deliverable |
+|---|-----------|--------|--------|-----------------|
+| M0 | E0 Foundation Complete | 2026-03-20 | **Done** | Literature scan, methodology finalized, schema confirmed, data plan verified, PRD done |
+| M1 | E1 Research Framing Complete | 2026-03-21 | **In Progress** | research-framing.md confirmed, source map verified, ROADMAP.md generated |
+| M2 | E2 Methodology & Data Design Signed Off | 2026-03-23 | Not Started | methodology.md signed off, DATA_MODEL.md signed off, ARCHITECTURE.md skeleton |
+| M3 | E6 Data Pipeline Complete | 2026-04-13 | Not Started | All raw data acquired, processed, scored at kelurahan + H3 (MVP-84, MVP-19–25) |
+| M4 | E3 Literature Review Complete | 2026-04-06 | Not Started | Theoretical framework, related work, methodology precedents sections (MVP-9–11) |
+| M5 | E7 UI Foundation Complete | 2026-04-20 | Not Started | Prototype audited, real data migrated, road network + cost layers (MVP-26–28) |
+| M6 | E4 Paper Drafting Complete | 2026-04-27 | Not Started | Introduction, methods, results, discussion, conclusion (MVP-12–16) |
+| M7 | E8 Core Features Complete | 2026-05-04 | Not Started | Quadrant map, journey chain, what-if, competitive zones (MVP-29–32) |
+| M8 | E5 Paper Review Complete | 2026-05-11 | Not Started | Self-review + revision (MVP-17–18) |
+| M9 | E9 Code Review & QA Complete | 2026-05-11 | Not Started | Phase 5D checklist, edge case testing (MVP-33–34) |
+| M10 | E10 Deliverables Shipped | 2026-05-18 | Not Started | Paper submitted, dataset published, product deployed (MVP-35–38) |
+
+---
+
+## Dependency Graph
+
+```
+E0 ✅ → E1 (in progress) → E2
+                              │
+                ┌─────────────┴──────────────┐
+                ▼                            ▼
+        Paper Track                   Product Track
+        E3 (Lit Review)               E6 (Data Pipeline)
+            │                         + MVP-84 (GTFS)
+            ▼                            │
+        E4 (Paper Drafting)              ▼
+            │                         E7 (UI Foundation)
+            ▼                            │
+        E5 (Paper Review)                ▼
+                │                     E8 (Core Features)
+                │                        │
+                │                        ▼
+                │                     E9 (Code Review)
+                └────────┬───────────────┘
+                         ▼
+                    E10 (Deliverables)
+```
+
+Paper (E3→E4→E5) and Product (E6→E7→E8→E9) tracks run in parallel after E2.
+E4 Results section (MVP-14) depends on E6 data pipeline output.
 
 ---
 
 ## Weekly Plan
 
-### Week 1 (Mon Mar 16 – Sun Mar 22) — E0 Foundation
+### Week 1: Mar 16–22 — Foundation (E0 + E1)
 - [x] Bootstrap docs system
-- [x] Introduce E0 epic + restructure tickets
-- [x] **MVP-2** (E0-001): Literature scan + source map + literature review (v0.1)
-- [ ] **MVP-5** (E0-003): Finalize TNI weighting (blocked by MVP-2)
-- [ ] **MVP-7** (E0-004): Finalize H3 derivation design (blocked by MVP-2)
-- [ ] **MVP-8** (E0-005): Finalize three-way GC model (blocked by MVP-2)
-- [ ] **MVP-77** (E0-006): Consolidate methodology.md + DATA_MODEL.md (blocked by MVP-5/7/8)
-- [ ] **MVP-6** (E0-007): Define data acquisition plan (blocked by MVP-77)
-- [ ] **MVP-3** (E0-008): Produce PRD → **Phase 3 trigger** (blocked by MVP-2, MVP-6)
+- [x] E0 complete: literature scan, methodology, schema, data plan, PRD (9/9 tickets)
+- [x] Phase 3 Linear setup: E1–E10 milestones + tickets created
+- [x] **MVP-78**: Confirm research-framing.md ✅
+- [x] **MVP-79**: Verify source map ✅
+- [x] **MVP-80**: Generate ROADMAP.md ✅
 
-### Week 2 (Mon Mar 23 – Sun Mar 29) — Data Pipeline + Paper
-- [ ] Phase 3: Create E1, E2; confirm E3–E10 tickets
-- [ ] MVP-19–22: Download all data sources (blocked by MVP-6)
-- [ ] MVP-23: Compute TAI/TNI per kelurahan (heavy compute: 2–4 hrs)
-- [ ] MVP-24: Generate H3 grid + derive indicators (heavy compute: 8–16 hrs)
-- [ ] MVP-25: Equity gap, Gini, LISA
-- [ ] MVP-9/10/11: Literature review sections
-- [ ] MVP-12/13: Introduction + methods paper sections
-- [ ] MVP-26: Audit existing prototype
-- [ ] MVP-27: Migrate to real data
+### Week 2: Mar 23–29 — E2 Sign-Off + E3/E6 Start
+- [ ] **MVP-81**: Sign off methodology.md
+- [ ] **MVP-82**: Sign off DATA_MODEL.md
+- [ ] **MVP-83**: Generate ARCHITECTURE.md skeleton
+- [ ] **MVP-84**: Construct KRL + MRT GTFS feeds (can start parallel with E2)
+- [ ] **MVP-9**: Write theoretical framework section (E3 start)
 
-### Week 3 (Mon Mar 30 – Mon Mar 31) — Ship
-- [ ] MVP-28/29/30/31/32: Core UI features
-- [ ] MVP-14/15/16: Results, discussion, conclusion
-- [ ] MVP-33/34: Code review + edge case testing
-- [ ] MVP-17: Paper self-review
-- [ ] MVP-35/36/37/38: Final deliverables
+### Week 3: Mar 30–Apr 5 — E3 Literature Review + E6 Data Acquisition
+- [ ] **MVP-10**: Write related work section (Jakarta/Jabodetabek studies)
+- [ ] **MVP-11**: Write methodology precedents section
+- [ ] **MVP-19**: Download, validate, merge GTFS + LRT stations
+- [ ] **MVP-20**: Extract and process OSM road network
+- [ ] **MVP-21**: Extract strict POIs via Overpass API
+- [ ] **MVP-22**: Assemble BPS demographics + WorldPop disaggregation
+
+### Week 4: Apr 6–12 — E6 Compute Pipeline
+- [ ] **MVP-23**: Compute 5-layer TAI and TNI per kelurahan (2–4 hrs compute)
+- [ ] **MVP-24**: Generate H3 grid + derive all indicators (8–16 hrs compute)
+- [ ] **MVP-25**: Compute equity gap, Gini, LISA at both resolutions
+- [ ] **MVP-12**: Write introduction (E4 start)
+
+### Week 5: Apr 13–19 — E7 UI Foundation + E4 Paper
+- [ ] **MVP-26**: Audit existing prototype against new methodology
+- [ ] **MVP-27**: Migrate from synthetic to real pipeline output
+- [ ] **MVP-13**: Write methods section
+- [ ] **MVP-28**: Add road network layer + cost comparison card
+
+### Week 6: Apr 20–26 — E8 Core Features + E4 Paper
+- [ ] **MVP-29**: Implement quadrant map with dual-resolution toggle
+- [ ] **MVP-30**: Implement CBD journey chain visualization
+- [ ] **MVP-14**: Write results section (needs E6 data)
+- [ ] **MVP-15**: Write discussion section
+
+### Week 7: Apr 27–May 3 — E8 Features + E4/E5 Paper
+- [ ] **MVP-31**: Implement what-if station placement simulator
+- [ ] **MVP-32**: Implement transit competitive zone map
+- [ ] **MVP-16**: Write conclusion and abstract
+- [ ] **MVP-17**: Self-review against Phase 5P checklist
+
+### Week 8: May 4–10 — E9 QA + E5 Paper Review
+- [ ] **MVP-33**: Code review against Phase 5D checklist
+- [ ] **MVP-34**: Edge case testing + deployment verification
+- [ ] **MVP-18**: Final paper review and revision
+
+### Week 9: May 11–18 — E10 Deliverables
+- [ ] **MVP-35**: Final paper assembly + reference formatting
+- [ ] **MVP-36**: Package dataset for public distribution
+- [ ] **MVP-37**: Deploy product to Vercel + link paper and dataset
+- [ ] **MVP-38**: Prepare presentation / poster with product demo
 
 ---
 
@@ -57,11 +120,19 @@
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| GTFS feeds outdated or incomplete | H | M | Check feed freshness; fall back to stop-proximity if schedule data missing |
-| r5py compute time exceeds budget | H | M | Batch H3 centroids in chunks of 1000; use cloud compute if needed |
+| KRL/MRT GTFS construction takes longer than estimated | H | M | Start MVP-84 parallel with E2; budget 6–8 hours total |
+| r5py compute time exceeds budget (16k+ route queries) | H | M | Batch H3 centroids in chunks of 1000; use cloud compute if needed |
 | BPS data not available at kelurahan level | M | H | Disaggregate from kecamatan via WorldPop dasymetric; document as limitation |
 | Scope creep on features | M | M | Stick to PRD; defer v2 enhancements |
-| LRT Jabodebek has no GTFS feed | M | H | Include as point proximity only; flag as limitation |
-| What-if simulator misleads users | M | L | Clear disclaimer labels; simplified buffer model only |
-| Timeline too aggressive (16 days for full pipeline + paper + product) | H | H | Prioritize E0 → E6 data pipeline → core features → paper; defer MVP-38 (presentation) |
-| Literature scan changes methodology significantly | M | M | E0-006 (MVP-77) consolidation gate catches all changes before data work starts |
+| E4 Results section blocked by E6 data pipeline | H | M | Paper intro/methods can proceed while pipeline runs; results section waits |
+| Figma design vs prototype integration complexity | M | M | Integration strategy decided: keep Next.js infra, adopt Figma layout; detailed in MVP-26 audit |
+| Timeline may stretch beyond 9 weeks | L | M | Portfolio project — no hard deadline; prioritize data pipeline + core features first |
+
+---
+
+## Completed Milestones
+
+### M0: E0 Foundation (2026-03-16 → 2026-03-20) ✅
+- 9/9 tickets completed
+- Key outputs: source-map.md (15 papers), literature_review.md (v0.1), methodology.md (5-layer TAI, TNI, GC, H3), DATA_MODEL.md, prd.md (9 features, 4 personas)
+- KRL/MRT GTFS gap discovered → MVP-84 created
