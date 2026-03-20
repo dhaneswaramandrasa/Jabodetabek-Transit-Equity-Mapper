@@ -12,8 +12,8 @@
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
 | E0 | Foundation | Research Foundation | **Done** | 9/9 done |
-| E1 | Research Framing | Confirm & Formalize E0 Outputs | **Active** | 0/3 done |
-| E2 | Methodology & Data Design | Sign Off Methodology & Schema | Blocked (E1) | 0/3 done |
+| E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
+| E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Active** | 0/3 done |
 | E3 | Paper | Literature Review | Blocked (E2) | 0/3 done |
 | E4 | Paper | Paper Drafting | Blocked (E3) | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/2 done |
@@ -23,7 +23,7 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: Phase 3 — E1/E2 setup complete, E3–E10 confirmed. Ready to execute E1.
+**Current phase**: E1 Done → E2 active. Next: MVP-81 (sign off methodology.md).
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -204,7 +204,7 @@ MVP-2 (Done) ─────────────┐
 ## E1 · Research Framing — Confirm & Formalize E0 Outputs
 
 ### MVP-78 — Confirm research-framing.md against E0 outputs
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
   - [ ] Research question verified against finalized methodology
@@ -215,7 +215,7 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-78/confirm-research-framingmd-against-e0-outputs
 
 ### MVP-79 — Verify source map completeness and accuracy
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
   - [ ] All 15 papers in source-map.md verified for citation accuracy
@@ -226,7 +226,7 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-79/verify-source-map-completeness-and-accuracy
 
 ### MVP-80 — Generate ROADMAP.md with milestone dates
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
   - [ ] Weekly milestones for E1–E10
