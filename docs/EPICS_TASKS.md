@@ -3,7 +3,7 @@
 **Project**: Jabodetabek Transit Equity Mapper
 **Linear workspace**: https://linear.app/olsera-mitra-modal/project/jabodetabek-transit-equity-mapper-64fadf43f309
 **Team**: Product-MVP (MVP)
-**Last synced**: 2026-03-16
+**Last synced**: 2026-03-20
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Epic | Track | Name | Status | Tickets |
 |------|-------|------|--------|---------|
-| E0 | Foundation | Research Foundation | In Progress | 8/9 done |
+| E0 | Foundation | Research Foundation | **Done** | 9/9 done |
 | E3 | Paper | Literature Review | Draft — confirm after E0 | 0/3 done |
 | E4 | Paper | Paper Drafting | Draft — confirm after E0 | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Draft — confirm after E0 | 0/2 done |
@@ -21,8 +21,8 @@
 | E9 | Product | Code Review & QA | Draft — confirm after E0 | 0/2 done |
 | E10 | Convergence | Deliverables | Draft — confirm after E0 | 0/4 done |
 
-**Current phase**: E0 (Foundation)
-**Phase 3 trigger**: When MVP-3 (E0-008) is Done → create E1, E2, confirm E3–E10
+**Current phase**: E0 Done → Phase 3 triggered
+**Phase 3 trigger**: MVP-3 (E0-008) is Done → create E1, E2, confirm E3–E10
 
 Dependency order: E0 → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -146,6 +146,7 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
 - **Blocked by**: MVP-77 ✅
 - **New blocker discovered**: KRL and MRT GTFS feeds do not exist — must be manually constructed from community APIs before E6 pipeline. See MVP-39.
 - **Output**: `src/ingestion/`, `src/ingestion/VERIFICATION_REPORT.md`
+- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
 
 ### MVP-39 — Construct KRL and MRT GTFS feeds manually *(new — blocks E6)*
 - **E0 position**: New ticket — discovered during MVP-6 verification
@@ -159,21 +160,23 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
   - [ ] Feed freshness documented
 - **Blocked by**: none
 - **Estimated effort**: KRL 4-6 hours, MRT 1-2 hours
-- **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
 
 ### MVP-3 — Produce PRD for web product *(E0-008)*
 - **E0 position**: E0-008 — LAST E0 ticket. When Done → Phase 3 triggers.
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] PRD sections 1–7 complete
-  - [ ] All 4 personas documented
-  - [ ] 5-layer TAI requirements reflected in features
-  - [ ] Gap statement from Source Map included
-  - [ ] Features match finalized methodology + verified data sources
-- **Blocked by**: MVP-2 (gap statement), MVP-6 (verified data sources)
+  - [x] PRD sections 1–10 complete (expanded from 7)
+  - [x] All 4 personas documented with detailed profiles
+  - [x] 5-layer TAI requirements reflected in features with methodology links
+  - [x] All 4 gap statements from Source Map included in section 3.1
+  - [x] Features match finalized methodology + verified data sources
+  - [x] 9 features specified: Quadrant Map, Dual-Resolution Toggle, CBD Journey Chain, Transit Competitive Zones, What-If Simulator, Road Network Layer, POI Heatmaps, Equity Dashboard, Data Download
+  - [x] Non-functional requirements and success criteria added
+  - [x] Data sources section reflects MVP-6 verification findings
+- **Blocked by**: MVP-2 ✅, MVP-6 ✅
+- **Output**: `docs/prd.md`
 - **URL**: https://linear.app/olsera-mitra-modal/issue/MVP-3/produce-prd-for-web-product
-- **Notes**: Draft PRD pre-filled in `docs/prd.md` from research-framing.md; will be refined after E0
 
 ---
 
@@ -190,12 +193,12 @@ MVP-2 (Done) ─────────────┐
   ├→ MVP-7 (Done: H3)  ──┤→ MVP-77 (Done: consolidate) → MVP-6 (Done: acquisition)
   └→ MVP-8 (Done: GC)  ──┘                                        │
   │                                                                  │
-  └──────────────────────────────────────────────────── MVP-3 (E0-008: PRD) ←──┘
+  └──────────────────────────────────────────────────── MVP-3 (Done: PRD) ←──┘
                                                            │
-                                                    [Phase 3 trigger]
+                                                    [Phase 3 trigger] ✅
 ```
 
-**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 ✅ → MVP-6 ✅ → MVP-3 → Phase 3`
+**Critical path**: `MVP-2 ✅ → [MVP-5 ✅, MVP-7 ✅, MVP-8 ✅] → MVP-77 ✅ → MVP-6 ✅ → MVP-3 ✅ → Phase 3`
 **New dependency**: `MVP-39 (construct KRL+MRT GTFS) → blocks E6 pipeline (MVP-19)`
 
 ---
