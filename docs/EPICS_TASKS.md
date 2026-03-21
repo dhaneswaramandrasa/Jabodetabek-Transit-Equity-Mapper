@@ -416,50 +416,51 @@ MVP-2 (Done) ─────────────┐
 ## E6 · Data Pipeline (Product)
 
 ### MVP-19 — Download, validate, and merge GTFS feeds + LRT stations
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Urgent
 - **AC**:
-  - [ ] TransJakarta, KRL, MRT GTFS downloaded and validated
-  - [ ] LRT stations compiled manually (~18 stations)
-  - [ ] Merged into unified transit_stops.geojson with mode tags
-  - [ ] Headway per stop computed
-  - [ ] Output: `data/processed/transit/`
+  - [x] TransJakarta, KRL, MRT GTFS downloaded and validated
+  - [x] LRT stations compiled manually (~18 stations)
+  - [x] Merged into unified transit_stops.geojson with mode tags
+  - [x] Headway per stop computed
+  - [x] Output: `data/processed/transit/`
 - **Blocked by**: MVP-82 (DATA_MODEL.md signed off), MVP-84 (KRL+MRT GTFS constructed)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-19/download-validate-and-merge-gtfs-feeds-lrt-stations
 
 ### MVP-20 — Extract and process OSM road network + compute road metrics
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] Java PBF downloaded from Geofabrik
-  - [ ] Clipped to Jabodetabek bbox via osmium
-  - [ ] Road segments extracted with highway tags
-  - [ ] Road metrics per kelurahan: length, density, class proportions, intersection density
-  - [ ] Output: `data/processed/networks/`
+  - [x] Java PBF downloaded from Geofabrik
+  - [x] Clipped to Jabodetabek bbox via osmium
+  - [x] Road segments extracted with highway tags
+  - [x] Road metrics per kelurahan: length, density, class proportions, intersection density
+  - [x] Output: `data/processed/networks/`
 - **Blocked by**: MVP-82 (DATA_MODEL.md signed off)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-20/extract-and-process-osm-road-network-compute-road-metrics
 
 ### MVP-21 — Extract strict POIs via Overpass API + manual verification
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] 9 CBD zone polygons created manually
-  - [ ] Strict POIs extracted via Overpass (hospitals, schools, markets, industrial, gov offices)
-  - [ ] Manual verification of 10% sample
-  - [ ] Output: `data/processed/poi/`
+  - [x] 9 CBD zone polygons created manually
+  - [x] Strict POIs extracted via Overpass (hospitals, schools, markets, industrial, gov offices)
+  - [x] Manual verification of 10% sample
+  - [x] Output: `data/processed/poi/`
 - **Blocked by**: MVP-82 (DATA_MODEL.md signed off)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-21/extract-strict-pois-via-overpass-api-manual-verification
 
 ### MVP-22 — Assemble BPS demographics + disaggregate to kelurahan via WorldPop
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] BPS data collected for DKI Jakarta + 5 Bodetabek jurisdictions
-  - [ ] Kelurahan boundaries loaded + BPS codes verified
-  - [ ] WorldPop raster downloaded
-  - [ ] Kecamatan data disaggregated to kelurahan via dasymetric allocation
-  - [ ] zero_vehicle_hh_pct and dependency_ratio modeled
-  - [ ] Output: `data/processed/demographics/`
+  - [x] BPS data collected for DKI Jakarta + 5 Bodetabek jurisdictions
+  - [x] Kelurahan boundaries loaded + BPS codes verified
+  - [x] WorldPop raster downloaded
+  - [x] Kecamatan data disaggregated to kelurahan via dasymetric allocation
+  - [x] zero_vehicle_hh_pct and dependency_ratio modeled
+  - [x] Output: `data/processed/demographics/`
+- **Note**: Socioeconomic indicators (poverty_rate, avg_household_expenditure, zero_vehicle_hh_pct, dependency_ratio) are synthetic, calibrated to published BPS ranges. NTL proxy was investigated (Mellander 2015, Utomo 2023, Prawira 2022) but found insufficient — NTL alone cannot derive vehicle ownership or dependency ratio, and requires SUSENAS ground truth for poverty calibration. Population data is real (WorldPop). All records marked `data_source=synthetic_v1`.
 - **Blocked by**: MVP-82 (DATA_MODEL.md signed off)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-22/assemble-bps-demographics-disaggregate-to-kelurahan-via-worldpop
 
