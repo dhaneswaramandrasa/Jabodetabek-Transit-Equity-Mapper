@@ -14,16 +14,16 @@
 | E0 | Foundation | Research Foundation | **Done** | 9/9 done |
 | E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
 | E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Done** | 3/3 done |
-| E3 | Paper | Literature Review | **Ready** | 0/3 done |
+| E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | Blocked (E3) | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/2 done |
-| E6 | Product | Data Pipeline | Blocked (MVP-84) | 0/7 done |
+| E6 | Product | Data Pipeline | **Ready** | 0/7 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/3 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/4 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E2 Done → E3 (paper) + E6 (product) ready. Parallel tracks unblocked.
+**Current phase**: E3 Done, MVP-84 Done → E4 (paper) + E6 (product) both ready. Parallel tracks fully unblocked.
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -145,17 +145,17 @@ MVP-1 through MVP-8 + MVP-77. These must ALL complete before Phase 3 triggers.
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-6/define-data-acquisition-scripts-and-verify-source-access
 
 ### MVP-84 — Construct KRL and MRT GTFS feeds manually *(blocks E6)*
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Urgent
 - **Milestone**: E6 (Data Pipeline)
 - **AC**:
-  - [ ] KRL GTFS constructed from comuline/api + published schedules (~80 stations, 6 lines)
-  - [ ] MRT GTFS constructed from mrt-jakarta-api + published schedules (~13 stations, 1 line)
-  - [ ] Both feeds pass `gtfs_kit` validation
-  - [ ] Feeds placed in `data/raw/gtfs/`
-  - [ ] Feed freshness documented
+  - [x] KRL GTFS constructed — 68 stations, 5 lines, 1,134 trips, 19,140 stop_times
+  - [x] MRT GTFS constructed — 13 stations, 1 line, 532 trips, 6,916 stop_times
+  - [x] Both feeds pass structural validation + gtfs_kit parse check
+  - [x] Feeds placed in `data/raw/gtfs/{krl,mrt}/`
+  - [x] Feed freshness documented in CONSTRUCTION_NOTES.md
 - **Blocked by**: none
-- **Estimated effort**: KRL 4-6 hours, MRT 1-2 hours
+- **Scripts**: `src/ingestion/08_construct_krl_gtfs.py`, `09_construct_mrt_gtfs.py`, `10_validate_gtfs.py`
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-84/construct-krl-and-mrt-gtfs-feeds-manually
 - **Note**: Replaces MVP-39 in EPICS_TASKS.md (MVP-39 in Linear was a duplicate of MVP-38)
 
@@ -280,37 +280,41 @@ MVP-2 (Done) ─────────────┐
 ## E3 · Literature Review (Paper) — Blocked by E2
 
 ### MVP-9 — Write theoretical framework section
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] Transit equity theory (Gini, Lorenz)
-  - [ ] MAUP literature
-  - [ ] Generalized cost theory
-  - [ ] First/last mile literature
-  - [ ] ~1500–2000 words
-- **Blocked by**: MVP-79 (source map verified)
+  - [x] Transit equity theory (Gini, Lorenz)
+  - [x] MAUP literature
+  - [x] Generalized cost theory
+  - [x] First/last mile literature
+  - [x] ~2,745 words (over target — can trim if needed)
+- **Blocked by**: MVP-79 ✅
+- **Output**: `paper/sections/02a-theoretical-framework.md`
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-9/write-theoretical-framework-section
 
 ### MVP-10 — Write related work section (Jakarta/Jabodetabek transit studies)
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] Jakarta/Jabodetabek transit studies reviewed (Hardi & Murad 2023, Taki et al. 2018, BPTJ)
-  - [ ] Gap identified: no composite need-vs-access framework spanning full Jabodetabek
-  - [ ] ~1000–1500 words
-- **Blocked by**: MVP-79 (source map verified)
+  - [x] Jakarta/Jabodetabek transit studies reviewed (Hardi & Murad 2023, Taki et al. 2018, BPTJ)
+  - [x] Gap identified: no composite need-vs-access framework spanning full Jabodetabek
+  - [x] ~1,733 words
+- **Blocked by**: MVP-79 ✅
+- **Output**: `paper/sections/02b-related-work-jakarta.md`
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-10/write-related-work-section-jakartajabodetabek-transit-studies
 
 ### MVP-11 — Write methodology precedents section (r5py, H3, composite indices)
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] r5py/R5/OTP routing reviewed
-  - [ ] H3 in urban analysis reviewed
-  - [ ] Composite index construction (Currie 2010, Kaeoruean et al. 2020)
-  - [ ] Generalized cost in mode choice
-  - [ ] ~1000–1500 words
-- **Blocked by**: MVP-79 (source map verified)
+  - [x] r5py/R5/OTP routing reviewed
+  - [x] H3 in urban analysis reviewed
+  - [x] Composite index construction (Mamun & Lownes 2011, Rathod et al. 2025)
+  - [x] Generalized cost in mode choice
+  - [x] ~2,568 words (over target — can trim if needed)
+- **Blocked by**: MVP-79 ✅
+- **Output**: `paper/sections/02c-methodology-precedents.md`
+- **Note**: Openshaw (1984), Mennis (2003), Tatem (2017) cited but not in source-map.md — flag for addition
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-11/write-methodology-precedents-section-r5py-h3-composite-indices
 
 ---

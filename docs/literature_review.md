@@ -1,9 +1,10 @@
 # Literature Review
 
-**Last updated**: 2026-03-16
-**Status**: v0.1 — written from source-map.md (MVP-2); will be expanded into full paper sections in E3 tickets
-**Version**: v0.1
-**Word count**: ~2,200
+**Last updated**: 2026-03-21
+**Status**: v1.0 — expanded into full paper sections (E3: MVP-9/10/11)
+**Version**: v1.0
+**Word count**: ~7,000 (across 3 sections in paper/sections/)
+**Paper sections**: `paper/sections/02a-theoretical-framework.md`, `paper/sections/02b-related-work-jakarta.md`, `paper/sections/02c-methodology-precedents.md`
 
 ---
 
