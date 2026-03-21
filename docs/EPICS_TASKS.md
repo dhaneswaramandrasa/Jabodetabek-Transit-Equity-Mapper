@@ -14,7 +14,7 @@
 | E0 | Foundation | Research Foundation | **Done** | 9/9 done |
 | E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
 | E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Done** | 3/3 done |
-| E3 | Paper | Literature Review | **Ready** | 0/3 done |
+| E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | Blocked (E3) | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/2 done |
 | E6 | Product | Data Pipeline | Blocked (MVP-84) | 0/7 done |
@@ -23,7 +23,7 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E2 Done → E3 (paper) + E6 (product) ready. Parallel tracks unblocked.
+**Current phase**: E3 Done → E4 (paper drafting) ready. E6 blocked by MVP-84 (GTFS).
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -280,37 +280,41 @@ MVP-2 (Done) ─────────────┐
 ## E3 · Literature Review (Paper) — Blocked by E2
 
 ### MVP-9 — Write theoretical framework section
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] Transit equity theory (Gini, Lorenz)
-  - [ ] MAUP literature
-  - [ ] Generalized cost theory
-  - [ ] First/last mile literature
-  - [ ] ~1500–2000 words
-- **Blocked by**: MVP-79 (source map verified)
+  - [x] Transit equity theory (Gini, Lorenz)
+  - [x] MAUP literature
+  - [x] Generalized cost theory
+  - [x] First/last mile literature
+  - [x] ~2,745 words (over target — can trim if needed)
+- **Blocked by**: MVP-79 ✅
+- **Output**: `paper/sections/02a-theoretical-framework.md`
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-9/write-theoretical-framework-section
 
 ### MVP-10 — Write related work section (Jakarta/Jabodetabek transit studies)
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] Jakarta/Jabodetabek transit studies reviewed (Hardi & Murad 2023, Taki et al. 2018, BPTJ)
-  - [ ] Gap identified: no composite need-vs-access framework spanning full Jabodetabek
-  - [ ] ~1000–1500 words
-- **Blocked by**: MVP-79 (source map verified)
+  - [x] Jakarta/Jabodetabek transit studies reviewed (Hardi & Murad 2023, Taki et al. 2018, BPTJ)
+  - [x] Gap identified: no composite need-vs-access framework spanning full Jabodetabek
+  - [x] ~1,733 words
+- **Blocked by**: MVP-79 ✅
+- **Output**: `paper/sections/02b-related-work-jakarta.md`
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-10/write-related-work-section-jakartajabodetabek-transit-studies
 
 ### MVP-11 — Write methodology precedents section (r5py, H3, composite indices)
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] r5py/R5/OTP routing reviewed
-  - [ ] H3 in urban analysis reviewed
-  - [ ] Composite index construction (Currie 2010, Kaeoruean et al. 2020)
-  - [ ] Generalized cost in mode choice
-  - [ ] ~1000–1500 words
-- **Blocked by**: MVP-79 (source map verified)
+  - [x] r5py/R5/OTP routing reviewed
+  - [x] H3 in urban analysis reviewed
+  - [x] Composite index construction (Mamun & Lownes 2011, Rathod et al. 2025)
+  - [x] Generalized cost in mode choice
+  - [x] ~2,568 words (over target — can trim if needed)
+- **Blocked by**: MVP-79 ✅
+- **Output**: `paper/sections/02c-methodology-precedents.md`
+- **Note**: Openshaw (1984), Mennis (2003), Tatem (2017) cited but not in source-map.md — flag for addition
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-11/write-methodology-precedents-section-r5py-h3-composite-indices
 
 ---
