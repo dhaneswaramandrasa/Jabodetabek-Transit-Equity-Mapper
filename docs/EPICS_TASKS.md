@@ -333,7 +333,7 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-12/write-introduction
 
 ### MVP-13 — Write methods section
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
 - **AC**:
   - [ ] Study area, data sources
