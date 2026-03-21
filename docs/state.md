@@ -1,37 +1,35 @@
 # Project State
 
 **Last updated**: 2026-03-21
-**Active ticket**: MVP-81 — Sign off methodology.md (E2)
-**Branch**: main (will create mvp-81/sign-off-methodology when starting)
+**Active ticket**: None — E2 complete. Next: E3 (paper) or E6 (product)
+**Branch**: e2/sign-off-methodology-schema-architecture
 
 ---
 
 ## Current Focus
 
-**Phase**: E2 (Methodology & Data Design) — sign off methodology and schema docs.
+**Phase**: E2 complete. E3–E5 (paper track) and E6–E9 (product track) now unblocked.
 This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary
 
-- **E1 completed** (3/3 tickets):
-  - MVP-78: research-framing.md confirmed — 6 discrepancies fixed (hypotheses 2→3, gaps 3→4, H3 res confirmed, TAI layers, angkot scope, status)
-  - MVP-79: source map verified — all 15 papers cross-checked, no changes needed
-  - MVP-80: ROADMAP.md rewritten — realistic 9-week timeline, 10 milestones, weekly plans
-- **Phase 3 Linear setup** completed: E1–E10 milestones + MVP-78–84 tickets created in Linear
-- **Previously completed**: E0 (9/9 tickets)
-- **PRs**: #5 (MVP-78), #6 (MVP-80) — both merged
+- **E2 completed** (3/3 tickets):
+  - MVP-81: methodology.md signed off — all formulas verified (TAI 5-layer, TNI, GC three-way, H3 derivation), pipeline steps complete, limitations reviewed
+  - MVP-82: DATA_MODEL.md signed off — all fields traceable to methodology.md, types/ranges verified
+  - MVP-83: ARCHITECTURE.md skeleton generated — stack, directory structure, data flow, frontend architecture, deployment, component hierarchy
+- **Previously completed**: E0 (9/9), E1 (3/3)
 
 ## Blockers
 
 - **MVP-84**: KRL + MRT GTFS must be manually constructed before E6 pipeline
-  - Does NOT block E2 — only blocks E6 execution (MVP-19)
+  - Does NOT block E3–E5 (paper track) — only blocks E6 execution (MVP-19)
 
 ## Next Action
 
-1. **MVP-81**: Sign off methodology.md — verify all formulas, pipeline steps, limitations
-2. **MVP-82**: Sign off DATA_MODEL.md — verify all fields traceable to methodology
-3. **MVP-83**: Generate ARCHITECTURE.md skeleton — stack, directory, data flow
+1. **E3** (paper track): MVP-9, MVP-10, MVP-11 — literature review sections (unblocked)
+2. **E6** (product track): MVP-84 (GTFS construction) → MVP-19–25 (data pipeline)
+3. Paper and product tracks can run in parallel
 
 ## Open Questions
 
-- None blocking E2
+- None blocking E3 or E6

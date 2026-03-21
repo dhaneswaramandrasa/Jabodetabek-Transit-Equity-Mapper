@@ -13,17 +13,17 @@
 |------|-------|------|--------|---------|
 | E0 | Foundation | Research Foundation | **Done** | 9/9 done |
 | E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
-| E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Active** | 0/3 done |
-| E3 | Paper | Literature Review | Blocked (E2) | 0/3 done |
+| E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Done** | 3/3 done |
+| E3 | Paper | Literature Review | **Ready** | 0/3 done |
 | E4 | Paper | Paper Drafting | Blocked (E3) | 0/5 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/2 done |
-| E6 | Product | Data Pipeline | Blocked (E2 + MVP-84) | 0/7 done |
+| E6 | Product | Data Pipeline | Blocked (MVP-84) | 0/7 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/3 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/4 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E1 Done → E2 active. Next: MVP-81 (sign off methodology.md).
+**Current phase**: E2 Done → E3 (paper) + E6 (product) ready. Parallel tracks unblocked.
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -241,38 +241,38 @@ MVP-2 (Done) ─────────────┐
 ## E2 · Methodology & Data Design — Sign Off
 
 ### MVP-81 — Sign off methodology.md
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] All formulas verified (TAI 5-layer, TNI, GC three-way, H3 derivation)
-  - [ ] Methodology.md matches research-framing.md RQ/hypotheses
-  - [ ] Wrangling pipeline steps complete and ordered
-  - [ ] Limitations section reviewed
-  - [ ] Marked as "signed off" with date
-- **Blocked by**: MVP-78
+  - [x] All formulas verified (TAI 5-layer, TNI, GC three-way, H3 derivation)
+  - [x] Methodology.md matches research-framing.md RQ/hypotheses
+  - [x] Wrangling pipeline steps complete and ordered
+  - [x] Limitations section reviewed
+  - [x] Marked as "signed off" with date
+- **Blocked by**: MVP-78 ✅
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-81/sign-off-methodologymd
 
 ### MVP-82 — Sign off DATA_MODEL.md
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: High
 - **AC**:
-  - [ ] All schema fields traceable to methodology.md
-  - [ ] Field types, ranges, and sources verified
-  - [ ] Mock data spec matches schema
-  - [ ] Marked as "signed off" with date
-- **Blocked by**: MVP-81
+  - [x] All schema fields traceable to methodology.md
+  - [x] Field types, ranges, and sources verified
+  - [x] Mock data spec matches schema
+  - [x] Marked as "signed off" with date
+- **Blocked by**: MVP-81 ✅
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-82/sign-off-data-modelmd
 
 ### MVP-83 — Generate ARCHITECTURE.md skeleton
-- **Status**: Todo
+- **Status**: Done
 - **Priority**: Medium
 - **AC**:
-  - [ ] Stack decisions documented (Next.js, deck.gl, MapLibre, Zustand)
-  - [ ] Directory structure documented
-  - [ ] Data flow diagram (pipeline → GeoJSON → frontend)
-  - [ ] Deployment architecture (Vercel)
-  - [ ] docs/ARCHITECTURE.md populated from template
-- **Blocked by**: MVP-82
+  - [x] Stack decisions documented (Next.js 14, deck.gl, MapLibre, Zustand)
+  - [x] Directory structure documented
+  - [x] Data flow diagram (pipeline → GeoJSON → frontend)
+  - [x] Deployment architecture (Vercel)
+  - [x] docs/ARCHITECTURE.md populated from template
+- **Blocked by**: MVP-82 ✅
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-83/generate-architecturemd-skeleton
 
 ---

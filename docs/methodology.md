@@ -1,8 +1,8 @@
 # Scientific Methodology
 ## Jabodetabek Transit Equity Mapper
 
-**Status**: Draft — TNI, H3 pipeline, and GC model finalized (MVP-5/7/8); consolidated (MVP-77)
-**Last updated**: 2026-03-20
+**Status**: **Signed off** — 2026-03-21 (MVP-81). All formulas, pipeline steps, and limitations verified.
+**Last updated**: 2026-03-21
 **Feeds**: Paper Methods section, product data layer, `docs/DATA_MODEL.md`, `docs/ARCHITECTURE.md`
 
 ---
@@ -807,4 +807,4 @@ This means the v1 product can ship without traffic data, and v2 simply adds a pi
 
 ---
 
-*Next step: Confirm this methodology, then proceed to Phase 3 (Linear project setup).*
+*Signed off: 2026-03-21 (MVP-81). All formulas verified, pipeline steps complete and ordered, limitations reviewed. Ready for paper Methods section (E4) and data pipeline implementation (E6).*
