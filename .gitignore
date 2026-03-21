@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Large data files (download via pipeline scripts)
+data/raw/boundaries/gadm41_IDN_4.json.zip
+data/raw/osm/
+data/raw/worldpop/
+data/raw/poi/*.json
+data/processed/networks/jabodetabek_roads.geojson
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+*.env.local
