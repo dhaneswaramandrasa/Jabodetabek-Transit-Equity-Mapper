@@ -1,8 +1,8 @@
 # Source Map
 
-**Last updated**: 2026-03-16
-**Status**: Complete — literature scan done (MVP-2 / E0-001)
-**Papers reviewed**: 15
+**Last updated**: 2026-03-22
+**Status**: Complete — literature scan done (MVP-2 / E0-001), NTL proxy papers added (MVP-22 investigation)
+**Papers reviewed**: 18
 **Search queries used**: 12 queries across Google Scholar, Semantic Scholar, and web (3 rounds)
 
 ---
@@ -43,6 +43,9 @@
 | 13 | Javanmard, R., Lee, J., Kim, J., Liu, L., & Diab, E. (2023). The impacts of the modifiable areal unit problem (MAUP) on social equity analysis of public transit reliability. *Journal of Transport Geography*, 106, 103523. | Tested MAUP effects by comparing transit equity metrics at stop, route, and neighborhood aggregation levels; found route-level analysis showed equitable distribution, while stop/neighborhood-level revealed significant inequity — demonstrating that spatial scale choice changes equity conclusions. | Winnipeg bus on-time performance data, neighborhood demographics | **High** — Directly demonstrates that spatial aggregation level changes equity conclusions; core support for our H2 hypothesis on resolution effects. |
 | 14 | Rathod, R., Joshi, G., & Arkatkar, S. (2025). Composite Accessibility Index: A Novel and Holistic Measure for Evaluating Transit Accessibility. *Transportation Research Record*. doi:10.1177/03611981241270156. | Proposed holistic composite accessibility index encompassing multiple measurement dimensions (proximity, coverage, frequency, connectivity); designed for data-constrained developing-country contexts. | Multi-modal transit data, Surat, India | **Medium** — Recent composite index framework for developing countries; validates multi-indicator approach and addresses data scarcity similar to Jabodetabek. |
 | 15 | Sukor, N.S.A. & Bhayo, A.R. (2024). Unveiling the drivers of modal switch from motorcycles to public transport in Southeast Asia. *Transportation Research Part F*, 101, 197–213. | Investigated factors influencing motorcycle-to-transit modal shift across developing SE Asian cities using behavioral models; found first/last-mile quality and fare affordability as strongest predictors of shift. | Survey data from SE Asian developing cities | **Medium** — Contextualizes motorcycle dominance and transit competitiveness in our study region; supports our Layer 5 cost competitiveness framing. |
+| 16 | Mellander, C., Lobo, J., Stolarick, K., & Matheson, Z. (2015). Night-time light data: A good proxy measure for economic activity? *PLOS ONE*, 10(10), e0139779. | Geographically weighted regression at 250 m grid using full-population Swedish micro-data; found NTL is a reliable proxy for population/establishment density (r~0.76) but a weak proxy for wages (r~0.52); documents urban-core overestimation and peri-urban underestimation. | Swedish full-population geo-coded register; DMSP and calibrated radiance data | **Medium** — Most rigorous sub-city NTL proxy test; calibrates expectations for NTL use in Jabodetabek; confirms NTL alone insufficient for income/poverty estimation at kelurahan scale. |
+| 17 | Utomo, A.J.P., Aini, N.N., Hendayana, Y., & Dewi, R.S. (2023). Spatially granular poverty index (SGPI) for urban poverty mapping in Jakarta metropolitan area (JMA). *Earth Science Informatics*, 16, 3531–3544. | Composite poverty index for JMA at 1 km resolution using NTL + NDBI + CO/NO₂ + POI density; equal-weighted sum with Yeo-Johnson transformation achieves r=0.954 correlation with SUSENAS poverty data; NTL alone performs substantially lower. | VIIRS NTL; Sentinel-5P (CO, NO₂); OSM POIs; SUSENAS poverty validation | **High** — Directly parallel to TNI construction; demonstrates NTL must be combined with multiple covariates and calibrated against survey data to achieve reliable poverty proxy in JMA; supports decision to use BPS-calibrated synthetic data rather than NTL alone. |
+| 18 | Prawira, M., Maulana, E., Bhaskara, A., & Ramdhani, M.F. (2022). Developing Relative Spatial Poverty Index Using Integrated Remote Sensing and Geospatial Big Data Approach: A Case Study of East Java, Indonesia. *ISPRS International Journal of Geo-Information*, 11(5), 275. | Multi-covariate poverty index for East Java using VIIRS NTL + NDVI + built-up index + NDWI + LST + air pollutants; kecamatan-level validation; confirms multi-source approach outperforms NTL alone in Indonesian context. | NOAA-VIIRS NTL; Sentinel-2; MODIS LST; BPS kecamatan poverty statistics | **Medium** — Indonesian-specific validation of NTL + covariate methodology; further supports that NTL alone cannot derive specific TNI indicators (vehicle ownership, dependency ratio). |
 
 ---
 
@@ -63,6 +66,8 @@ Transit equity measurement has matured around two complementary approaches:
 5. **Jakarta-specific transit studies** exist (Hardi & Murad 2023; Taki et al. 2018) but focus narrowly on BRT accessibility or TOD potential within DKI Jakarta only, without equity gap framing and without covering the full Jabodetabek metropolitan region.
 
 6. **Motorcycle-transit competition** is well-documented in Southeast Asia (Ng 2018; Sukor & Bhayo 2024) as a dominant mode choice dynamic not present in Western transit equity studies.
+
+7. **Nighttime lights as socioeconomic proxy** have been investigated for Jakarta (Utomo et al. 2023; Prawira et al. 2022; Mellander et al. 2015). NTL alone is a weak proxy for income/poverty at sub-city scales (r~0.52 for wages); multi-covariate composites (NTL + built-up index + POI density) achieve r=0.954 against SUSENAS data but require survey ground truth for calibration. Critically, NTL cannot proxy vehicle ownership or age-structure indicators at all — these require census data.
 
 ### The gap your research fills
 
@@ -87,6 +92,7 @@ Despite the breadth of transit equity literature, **four specific gaps** remain 
 | Multimodal routing via r5py | Pereira et al. (2021), Fink et al. (2022) | RAPTOR-based routing for travel time matrices; GTFS + OSM input; departure time window sampling |
 | MAUP sensitivity | Javanmard et al. (2023) | Multi-scale comparison to test robustness of equity conclusions; report metrics at multiple aggregation levels |
 | Jakarta spatial analysis | Hardi & Murad (2023), Taki et al. (2018) | Walk-isochrone BRT accessibility method; Jakarta-specific transit network characterization |
+| NTL socioeconomic proxy (evaluated, not adopted) | Mellander et al. (2015), Utomo et al. (2023), Prawira et al. (2022) | NTL alone insufficient for specific TNI indicators; multi-covariate composites need survey calibration; supports BPS-calibrated synthetic data approach |
 
 ### Data sources to consider
 
@@ -101,3 +107,4 @@ From the literature, the following datasets and tools are commonly used for tran
 | r5py/r5r routing engine | Pereira et al. (2021), Fink et al. (2022) | r5py for travel time matrices |
 | H3 hexagonal grid | Referenced in spatial analysis literature | h3-py at resolution 8 |
 | POI locations (hospitals, schools, employment centers) | Jomehpour & Smith-Colin (2020) | Overpass API + manual verification |
+| VIIRS nighttime lights (evaluated, not adopted) | Mellander et al. (2015), Utomo et al. (2023), Prawira et al. (2022) | Investigated as poverty/expenditure proxy; insufficient alone for TNI indicators — kept BPS-calibrated synthetic data |

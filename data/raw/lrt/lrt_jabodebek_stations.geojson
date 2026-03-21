@@ -1,0 +1,476 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.82553,
+          -6.204828
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_001",
+        "name": "Dukuh Atas",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": true,
+        "interchange_with": [
+          "MRT Jakarta (North-South)",
+          "KRL Commuterline",
+          "TransJakarta",
+          "Airport Rail Link"
+        ],
+        "notes": "Major multimodal hub — connects LRT, MRT, KRL, BRT, and airport rail",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.830221,
+          -6.209318
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_002",
+        "name": "Setiabudi",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "CBD area station",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.832237,
+          -6.221609
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_003",
+        "name": "Rasuna Said",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Kuningan CBD area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.833203,
+          -6.228773
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_004",
+        "name": "Kuningan",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Near Mega Kuningan",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.838515,
+          -6.242141
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_005",
+        "name": "Pancoran",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Near Pancoran interchange",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.857072,
+          -6.243485
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_006",
+        "name": "Cikoko",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Residential area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.86397,
+          -6.243446
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_007",
+        "name": "Ciliwung",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Near Ciliwung river",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.87123,
+          -6.245907
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_008",
+        "name": "Cawang",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur",
+          "Bekasi"
+        ],
+        "is_interchange": true,
+        "interchange_with": [
+          "TransJakarta Cawang"
+        ],
+        "notes": "Branch point — Cibubur and Bekasi lines diverge here",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.880558,
+          -6.292909
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_009",
+        "name": "TMII",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Near Taman Mini Indonesia Indah",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.88438,
+          -6.309549
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_010",
+        "name": "Kampung Rambutan",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur"
+        ],
+        "is_interchange": true,
+        "interchange_with": [
+          "TransJakarta Kampung Rambutan"
+        ],
+        "notes": "Near Kampung Rambutan bus terminal",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.886643,
+          -6.323769
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_011",
+        "name": "Ciracas",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Ciracas sub-district",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.89567,
+          -6.373893
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_012",
+        "name": "Harjamukti",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Cibubur"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Cibubur line terminus — Harjamukti, Depok border area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.887287,
+          -6.245866
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_013",
+        "name": "Halim",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Near Halim Perdanakusuma area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.92792,
+          -6.257748
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_014",
+        "name": "Jatibening Baru",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Jatibening area, Bekasi border",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.951873,
+          -6.2566
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_015",
+        "name": "Cikunir 1",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Cikunir area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.963211,
+          -6.25465
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_016",
+        "name": "Cikunir 2",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Cikunir area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.990424,
+          -6.252949
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_017",
+        "name": "Bekasi Barat",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Near Bekasi Barat station area",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.02167,
+          -6.264108
+        ]
+      },
+      "properties": {
+        "station_id": "lrt_jbd_018",
+        "name": "Jati Mulya",
+        "operator": "PT LRT Jabodebek",
+        "mode": "LRT",
+        "lines": [
+          "Bekasi"
+        ],
+        "is_interchange": false,
+        "interchange_with": [],
+        "notes": "Bekasi line terminus — Jati Mulya, Bekasi",
+        "schedule_available": false,
+        "fare_tier": 2
+      }
+    }
+  ],
+  "metadata": {
+    "system": "LRT Jabodebek",
+    "operator": "PT LRT Jabodebek (subsidiary of PT KAI)",
+    "opened": "2023-08-28",
+    "total_stations": 18,
+    "lines": {
+      "Cibubur": "Dukuh Atas - Harjamukti (12 stations)",
+      "Bekasi": "Dukuh Atas - Jati Mulya (14 stations)"
+    },
+    "shared_trunk": "Dukuh Atas - Cawang (8 stations shared by both lines)",
+    "unique_stations": 18,
+    "coordinate_sources": [
+      "OpenStreetMap",
+      "Google Maps (cross-reference)",
+      "Wikipedia station articles"
+    ],
+    "coordinate_accuracy": "Approximate (~50m). Verify against OSM/Google Maps.",
+    "schedule_data": "Not available as GTFS. LRT included as point proximity only.",
+    "fare_range": "Rp 5,000 - Rp 20,000 (distance-based)",
+    "generated": "2026-03-21T14:19:50.674227",
+    "generator": "07_compile_lrt.py"
+  }
+}
