@@ -15,7 +15,7 @@
 | E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
 | E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Done** | 3/3 done |
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
-| E4 | Paper | Paper Drafting | Blocked (E3) | 0/7 done |
+| E4 | Paper | Paper Drafting | Blocked (E3) | 0/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
 | E6 | Product | Data Pipeline | **Ready** | 0/8 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/3 done |
@@ -339,15 +339,30 @@ MVP-2 (Done) ─────────────┐
 ### MVP-86 — Run Phase C Gap Debate agent — novelty stress-test before Introduction
 - **Status**: Todo
 - **Priority**: High
+- **Pattern**: Dual-agent debate loop (Defender vs Skeptic, 2 rounds)
 - **AC**:
-  - [ ] Gap Debate subagent run with source-map + methodology §2.1b-c + cache/lit-gap-report.md
-  - [ ] Four contribution claims each rated STRONG / WEAK / UNSUPPORTED
+  - [ ] Round 1 (parallel): Defender + Skeptic independently assess all 4 contribution claims
+  - [ ] Round 2 (sequential): Defender rebuts Skeptic → Skeptic issues final verdict per claim
+  - [ ] Each claim rated STRONG / WEAK / UNSUPPORTED with justification
   - [ ] WEAK/UNSUPPORTED claims reframed as "we extend X by Y"
-  - [ ] Debate output at `cache/gap-debate-report.md`
+  - [ ] Debate output at `cache/gap-debate-report.md`; intermediate files in `cache/debate-*.md`
   - [ ] Recommended contributions paragraph written (4 claims, revised wording)
   - [ ] Linear comment: per-claim rating + Introduction framing
 - **Blocked by**: MVP-85
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-86/run-phase-c-gap-debate-agent-novelty-stress-test-before-introduction
+
+### MVP-89 — Implement dual-agent convergence drafting for Introduction + Discussion sections
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] Agent 1 (Strategic) + Agent 2 (Technical) draft Introduction independently in parallel
+  - [ ] Reconciler produces `cache/draft-intro-reconciled.md` + `cache/convergence-intro-report.md`
+  - [ ] Same dual-agent pattern applied to Discussion section
+  - [ ] Reconciler produces `cache/draft-discussion-reconciled.md` + `cache/convergence-discussion-report.md`
+  - [ ] Divergence points in both convergence reports reviewed by human before committing to `paper/sections/`
+  - [ ] Linear comment: convergence % per section + divergence points list
+- **Blocked by**: MVP-86 (gap debate — contributions framing settled first)
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-89/implement-dual-agent-convergence-drafting-for-introduction-discussion
 
 ### MVP-12 — Write introduction
 - **Status**: Todo
@@ -357,7 +372,7 @@ MVP-2 (Done) ─────────────┐
   - [ ] Contributions: 5-layer TAI, dual resolution, three-way cost model, what-if simulator
   - [ ] Paper structure overview
   - [ ] ~1500–2000 words
-- **Blocked by**: MVP-9, MVP-10, MVP-11 (literature review sections), **MVP-86** (gap debate)
+- **Blocked by**: MVP-9, MVP-10, MVP-11 (literature review sections), **MVP-86** (gap debate), **MVP-89** (convergence drafts)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-12/write-introduction
 
 ### MVP-13 — Write methods section
@@ -550,16 +565,17 @@ MVP-2 (Done) ─────────────┐
 ### MVP-87 — Run Phase F Hypothesis Validator — results vs H1/H2/H3 before writing Results
 - **Status**: Todo
 - **Priority**: High
+- **Pattern**: Dual-agent independent validation (Stats vs Theory) + reconciler
 - **AC**:
-  - [ ] Hypothesis Validator subagent run against `data/processed/analysis/` + `docs/methodology.md §2.1`
-  - [ ] H1: Q4 spatial concentration verdict (PROCEED/REFINE/PIVOT) with metric
-  - [ ] H2: Resolution effect verdict (PROCEED/REFINE/PIVOT) with metric
-  - [ ] H3: Scenario validation verdict (PROCEED/REFINE/PIVOT) with metric
-  - [ ] PIVOT outcomes escalated to human before proceeding — no unilateral reframing
-  - [ ] Report at `cache/hypothesis-validation-report.md`
-  - [ ] Linear comment: per-hypothesis verdict + next action
+  - [ ] Agent Stats: assesses H1/H2/H3 from numerical data only (`data/processed/analysis/`)
+  - [ ] Agent Theory: assesses H1/H2/H3 from theoretical predictions only (`docs/methodology.md §2.1`)
+  - [ ] Both run in parallel, independently, without seeing each other's output
+  - [ ] Reconciler compares: both PROCEED → confident; both PIVOT → halt + human; disagreement → human review
+  - [ ] Report at `cache/hypothesis-validation-report.md` (both assessments + reconciler verdict)
+  - [ ] PIVOT outcomes escalated to human — no unilateral reframing
+  - [ ] Linear comment: per-hypothesis verdict + confidence level + next action
 - **Blocked by**: MVP-25
-- **Note**: Gate ticket — MVP-14 (Results section) must not begin until all H1/H2/H3 are PROCEED or REFINE-resolved
+- **Note**: Gate — MVP-14 must not begin until all H1/H2/H3 are PROCEED (both agents agree) or human has reviewed disagreements
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-87/run-phase-f-hypothesis-validator-results-vs-h1h2h3-before-writing
 
 ---

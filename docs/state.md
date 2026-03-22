@@ -36,18 +36,23 @@ This is a **portfolio / independent research project** — no academic gating.
 5. **E5 gate**: MVP-88 (consistency check) must complete before MVP-17 (self-review)
 6. Paper and product tracks can run in parallel
 
-## AutoResearchClaw Integration (2026-03-22)
+## AutoResearchClaw + Dual-Agent Integration (2026-03-22/23)
 
-Four new tickets added integrating AutoResearchClaw phases into paper quality pipeline:
-- **MVP-85**: Phase B lit sweep + Phase H citation audit (E4 pre-work, blocks MVP-12)
-- **MVP-86**: Phase C gap debate agent (E4 pre-work, blocks MVP-12)
-- **MVP-87**: Phase F hypothesis validator (E6 gate, blocks MVP-14)
+Five new tickets added integrating AutoResearchClaw phases and dual-agent convergence pattern:
+- **MVP-85**: Phase B lit sweep + Phase H citation audit (E4 pre-work, blocks MVP-86)
+- **MVP-86**: Phase C gap debate — Defender vs Skeptic 2-round debate loop (blocks MVP-89)
+- **MVP-87**: Phase F hypothesis validator — Stats vs Theory dual assessment (blocks MVP-14)
 - **MVP-88**: Phase G+H consistency check + quality gate (E5 gate, blocks MVP-17)
+- **MVP-89**: Dual-agent convergence drafting for Introduction + Discussion (blocks MVP-12)
 
-Install: `pip install researchclaw && researchclaw setup`
-Full subagent prompts in CLAUDE.md — AutoResearchClaw Integration section.
-Cache outputs go to: `cache/lit-gap-report.md`, `cache/gap-debate-report.md`,
-`cache/hypothesis-validation-report.md`, `cache/section-consistency-report.md`
+Full dependency chain: MVP-85 → MVP-86 → MVP-89 → MVP-12 (Introduction)
+                       MVP-25 → MVP-87 → MVP-14 (Results)
+                       MVP-16 → MVP-88 → MVP-17 (E5 self-review)
+
+Install AutoResearchClaw: `pip install researchclaw && researchclaw setup`
+Pattern 4 (Dual-Agent Convergence) documented in CLAUDE.md — AutoResearchClaw Integration section.
+All cache outputs: `cache/debate-*.md`, `cache/hypothesis-*.md`, `cache/draft-*.md`,
+`cache/convergence-*.md`, `cache/section-consistency-report.md`
 
 ## Open Questions
 

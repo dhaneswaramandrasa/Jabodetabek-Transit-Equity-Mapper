@@ -382,75 +382,156 @@ After running:
 
 ### Phase C: Gap Debate Agent (MVP-86)
 
-**Trigger**: After MVP-85 (lit sweep). Before MVP-12 (Introduction writing).
+**Trigger**: After MVP-85 (lit sweep). Before MVP-89 (convergence drafting). Before MVP-12.
+**Pattern**: Pattern 4 — Dual-Agent Convergence (Defender vs. Skeptic, 2-round debate loop).
 
-Spawn as subagent (Pattern 3):
+**Round 1 — parallel:**
 
 ```
-## Context
-Read docs/source-map.md, docs/methodology.md §2.1b–2.1c,
-paper/sections/02a-theoretical-framework.md, cache/lit-gap-report.md.
+Agent Defender:
+  Role: build the strongest case FOR each novelty claim
+  Read: docs/source-map.md, docs/methodology.md §2.1b-2.1c, cache/lit-gap-report.md
+  For each claim: cite supporting evidence; explain what prior work does NOT do
+  Save to: cache/debate-round1-defender.md
 
-## Task
-You are a skeptical peer reviewer stress-testing novelty claims.
-For each of the 4 contribution claims:
-  1. 5-layer TAI as journey-chain model (vs Mamun & Lownes composite)
-  2. Motorcycle cost layer in generalized cost (vs Ng 2018, Sukor 2024)
-  3. Scenario simulation within equity quadrant framework
-  4. Dual-resolution H3 vs kelurahan MAUP comparison (vs Javanmard 2023)
-
-For each claim:
-- What prior work does/doesn't address this?
-- Is this genuinely novel or an extension?
-- Rate STRONG / WEAK / UNSUPPORTED + one-line justification
-- For WEAK: propose "we extend X by Y" reframing
-
-## Output
-Save to cache/gap-debate-report.md
-Include: per-claim rating table + recommended contributions paragraph for Introduction
+Agent Skeptic:
+  Role: find the strongest counterargument to each claim
+  Read: same inputs — do NOT read Defender output yet
+  For each claim: find the closest prior paper; argue claim is already addressed or overstated
+  Save to: cache/debate-round1-skeptic.md
 ```
+
+**Round 2 — sequential:**
+
+```
+Agent Defender reads cache/debate-round1-skeptic.md:
+  Rebut each point OR concede and propose reframing
+  Save to: cache/debate-round2-rebuttal.md
+
+Agent Skeptic reads cache/debate-round2-rebuttal.md:
+  Issue final verdict: STRONG / WEAK / UNSUPPORTED
+  Save to: cache/debate-final-verdicts.md
+```
+
+Orchestrator reads final verdicts → writes `cache/gap-debate-report.md` with recommended
+contributions framing for Introduction.
+
+- **STRONG** = survived debate → use as-is in Introduction
+- **WEAK** = Defender conceded → reframe as "we extend X by Y" before MVP-12
+- **UNSUPPORTED** = needs new literature search or should be dropped
 
 ---
 
 ### Phase F: Hypothesis Validator (MVP-87)
 
 **Trigger**: After MVP-25 (equity analysis complete). Gate before MVP-14 (Results writing).
-MVP-14 must NOT begin until all three hypotheses are PROCEED or REFINE-resolved.
+**Pattern**: Pattern 4 — Dual-Agent Convergence (Stats vs. Theory, independent assessment).
+MVP-14 must NOT begin until all three hypotheses are PROCEED (both agents agree) or human
+has reviewed any disagreement/PIVOT cases.
 
-Spawn as subagent:
+**Run parallel:**
 
 ```
-## Context
-Read docs/methodology.md §2.1 (H1/H2/H3) and data/processed/analysis/ outputs.
+Agent Stats:
+  Role: pure data analyst — assess only what the numbers show
+  Read: data/processed/analysis/ outputs ONLY — do NOT read methodology.md hypotheses first
+  For H1: what does Q4 spatial distribution actually show? (metric + value)
+  For H2: what do Gini_H3 vs Gini_kelurahan and Cohen's kappa actually show?
+  For H3: what does delta_Equity_Gap_Score Q4 vs Q1/Q2 actually show?
+  Output PROCEED/REFINE/PIVOT per hypothesis with specific metric value
+  Save to: cache/hypothesis-stats-assessment.md
 
-## Task
-For each hypothesis, extract the relevant metric and output PROCEED / REFINE / PIVOT:
-
-H1 — Spatial mismatch (Q4 concentrated in Bodetabek periphery):
-  Metric: Q4 unit count by municipality
-  PROCEED if Q4 ≥ 60% in Bodetabek
-  REFINE if distribution is mixed — check if median-split threshold is too coarse
-  PIVOT if Q4 concentrated in inner Jakarta — escalate to human, do NOT reframe
-
-H2 — Resolution effect (H3 reveals higher Gini than kelurahan):
-  Metric: Gini_H3 vs Gini_kelurahan; Cohen's kappa
-  PROCEED if Gini_H3 > Gini_kelurahan
-  REFINE if diff < 0.05 — discuss as MAUP sensitivity rather than directional finding
-  PIVOT if Gini_kelurahan > Gini_H3 — interesting reversal, escalate to human
-
-H3 — Scenario validation (Q4 intervention > Q1/Q2 improvement):
-  Metric: delta_Equity_Gap_Score Q4 vs Q1/Q2 scenario
-  PROCEED if Q4 improvement > 1.5× Q1/Q2
-  REFINE if marginal — check if scenario location was genuinely deep Q4
-  PIVOT if no meaningful difference — escalate to human
-
-## Constraints
-PIVOT = stop and flag for human review. Never reframe a hypothesis unilaterally.
-REFINE = specify exact adjustment needed (parameter, threshold, re-run scope).
-
-## Output
-Save to cache/hypothesis-validation-report.md
+Agent Theory:
+  Role: theoretical evaluator — assess based on what methodology predicted
+  Read: docs/methodology.md §2.1 ONLY — do NOT read actual data outputs first
+  For each hypothesis: what result range would confirm/refute/be ambiguous?
+  Define PROCEED/REFINE/PIVOT thresholds from theory alone
+  Save to: cache/hypothesis-theory-assessment.md
 ```
+
+**Then reconciler:**
+
+```
+Agent Reconciler reads both assessments:
+  Both PROCEED → confident PROCEED
+  Both PIVOT    → immediate human escalation, halt MVP-14
+  Disagreement  → flag as uncertain, describe the gap, require human review
+Save to: cache/hypothesis-validation-report.md
+```
+
+Thresholds: H1 PROCEED ≥ 60% Q4 in Bodetabek; H2 PROCEED Gini_H3 > Gini_kelurahan;
+H3 PROCEED Q4 improvement > 1.5× Q1/Q2. PIVOT = never reframe unilaterally.
+
+---
+
+### Pattern 4: Dual-Agent Convergence
+
+Use for high-stakes writing or analysis decisions where framing choices matter.
+Spawn two agents with DIFFERENT role briefs on the SAME task — they must NOT see each other's
+output during drafting. Orchestrator reconciles: agreement = keep, divergence = flag for human.
+
+**When to use:**
+- Writing sections where framing is contested (Introduction, Discussion)
+- Validating results against hypotheses (data evidence vs. theoretical expectation)
+- Debating novelty claims (Defender vs. Skeptic)
+
+**Role pairings used in this project:**
+| Task | Agent A | Agent B |
+|---|---|---|
+| Paper drafting (MVP-89) | Strategic — framing, RQ alignment | Technical — citations, methodology precision |
+| Hypothesis validation (MVP-87) | Stats — numerical evidence only | Theory — theoretical predictions only |
+| Gap debate (MVP-86) | Defender — strongest case FOR claims | Skeptic — strongest counterargument |
+
+**Communication channel:** `cache/` directory — shared file system, not real-time.
+Agents write outputs to separate files; orchestrator reads both and reconciles.
+
+**Convergence output template:**
+```
+cache/convergence-[task]-report.md:
+  For each paragraph/claim/hypothesis:
+    AGREE: [what both said] → keep as-is
+    DIVERGE: [A said X, B said Y] → human decision required
+```
+
+Divergence is not a failure — it surfaces genuine ambiguity before it reaches the paper or
+the results section. A 100% convergence rate on a contested decision is suspicious.
+
+---
+
+### Dual-Agent Convergence Drafting — Introduction + Discussion (MVP-89)
+
+**Trigger**: After MVP-86 (gap debate, contributions framing settled). Produces drafts for
+MVP-12 (Introduction) and MVP-15 (Discussion). Pattern: Pattern 4.
+
+**Run Agents 1 and 2 in parallel, then Agent 3 sequentially:**
+
+```
+Agent 1 — Strategic drafter:
+  Role: argument structure, RQ framing, contribution positioning
+  Read: docs/methodology.md, docs/source-map.md, cache/gap-debate-report.md
+  Do NOT read Agent 2 output before completing draft
+  Save Introduction draft to: cache/draft-intro-strategic.md
+  Save Discussion draft to:   cache/draft-discussion-strategic.md
+
+Agent 2 — Technical drafter:
+  Role: citation accuracy, methodology precision, prior work connections
+  Read: docs/methodology.md, docs/source-map.md, paper/sections/03-methodology.md
+  Do NOT read Agent 1 output before completing draft
+  Save Introduction draft to: cache/draft-intro-technical.md
+  Save Discussion draft to:   cache/draft-discussion-technical.md
+
+Agent 3 — Reconciler (after both complete):
+  For each paragraph/claim in both drafts:
+    Both say same thing → keep in reconciled draft
+    Different framing/emphasis → flag in convergence report for human decision
+  Save reconciled Introduction to: cache/draft-intro-reconciled.md
+  Save convergence report to:      cache/convergence-intro-report.md
+  Save reconciled Discussion to:   cache/draft-discussion-reconciled.md
+  Save convergence report to:      cache/convergence-discussion-report.md
+```
+
+Human reviews convergence reports → approves reconciled drafts → commits to `paper/sections/`.
+Divergence points in the convergence report are the human-review checklist.
 
 ---
 
