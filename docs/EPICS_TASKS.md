@@ -15,9 +15,9 @@
 | E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
 | E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Done** | 3/3 done |
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
-| E4 | Paper | Paper Drafting | Blocked (E3) | 0/5 done |
-| E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/2 done |
-| E6 | Product | Data Pipeline | **Ready** | 0/7 done |
+| E4 | Paper | Paper Drafting | Blocked (E3) | 0/7 done |
+| E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
+| E6 | Product | Data Pipeline | **Ready** | 0/8 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/3 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/4 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
@@ -321,6 +321,34 @@ MVP-2 (Done) ─────────────┐
 
 ## E4 · Paper Drafting (Paper)
 
+### MVP-85 — AutoResearchClaw lit sweep + citation audit
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] AutoResearchClaw installed + configured
+  - [ ] Phase B sweep run against project RQ; new papers extracted to source-map format
+  - [ ] New papers merged into `docs/source-map.md` (deduplicated)
+  - [ ] `docs/literature_review.md` synthesis updated if gap framing changes
+  - [ ] Phase H citation verifier run on all `paper/sections/*.md`
+  - [ ] Red-flagged citations corrected
+  - [ ] Gap-analysis report at `cache/lit-gap-report.md` (novelty claims status + framing adjustments)
+  - [ ] Linear comment: new paper count, citation issues count, gap-analysis summary
+- **Blocked by**: MVP-11 ✅
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-85/autoresearchclaw-lit-sweep-citation-audit
+
+### MVP-86 — Run Phase C Gap Debate agent — novelty stress-test before Introduction
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] Gap Debate subagent run with source-map + methodology §2.1b-c + cache/lit-gap-report.md
+  - [ ] Four contribution claims each rated STRONG / WEAK / UNSUPPORTED
+  - [ ] WEAK/UNSUPPORTED claims reframed as "we extend X by Y"
+  - [ ] Debate output at `cache/gap-debate-report.md`
+  - [ ] Recommended contributions paragraph written (4 claims, revised wording)
+  - [ ] Linear comment: per-claim rating + Introduction framing
+- **Blocked by**: MVP-85
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-86/run-phase-c-gap-debate-agent-novelty-stress-test-before-introduction
+
 ### MVP-12 — Write introduction
 - **Status**: Todo
 - **Priority**: Medium
@@ -329,7 +357,7 @@ MVP-2 (Done) ─────────────┐
   - [ ] Contributions: 5-layer TAI, dual resolution, three-way cost model, what-if simulator
   - [ ] Paper structure overview
   - [ ] ~1500–2000 words
-- **Blocked by**: MVP-9, MVP-10, MVP-11 (literature review sections)
+- **Blocked by**: MVP-9, MVP-10, MVP-11 (literature review sections), **MVP-86** (gap debate)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-12/write-introduction
 
 ### MVP-13 — Write methods section
@@ -357,7 +385,7 @@ MVP-2 (Done) ─────────────┐
   - [ ] Cost competitiveness map
   - [ ] What-if scenarios
   - [ ] ~2000–3000 words
-- **Blocked by**: MVP-25 (E6 data pipeline complete)
+- **Blocked by**: MVP-25 (E6 data pipeline complete), **MVP-87** (hypothesis validator — gate before Results)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-14/write-results-section
 
 ### MVP-15 — Write discussion section
@@ -387,6 +415,21 @@ MVP-2 (Done) ─────────────┐
 
 ## E5 · Paper Review & Revision (Paper)
 
+### MVP-88 — Run Phase G+H section consistency check + quality gate on all paper sections
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] Argument reviewer subagent: ✅/⚠️/❌ per Phase 5P check
+  - [ ] Consistency checker subagent: paper ↔ methodology.md ↔ source-map all aligned
+  - [ ] Citation verifier subagent: `researchclaw verify-citations` — zero red flags
+  - [ ] Word count audit: all sections within targets (Introduction 1,500–2,000; Methods 3,000–4,000; Results 2,000–3,000; Discussion 2,000–2,500)
+  - [ ] Consistency report at `cache/section-consistency-report.md`
+  - [ ] All ⚠️/❌ items fixed before Done
+  - [ ] Linear comment: consistency report summary + citation verification result + word count table
+- **Blocked by**: MVP-16 (all paper sections complete)
+- **Note**: Must complete before MVP-17. Methods section currently ~5,450 words — GC detail may move to appendix, requires human approval.
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-88/run-phase-gh-section-consistency-check-quality-gate-on-all-paper
+
 ### MVP-17 — Self-review against Phase 5P checklist
 - **Status**: Todo
 - **Priority**: Medium
@@ -398,7 +441,7 @@ MVP-2 (Done) ─────────────┐
   - [ ] Claims cited
   - [ ] Limitations acknowledged
   - [ ] Figures numbered and matching product
-- **Blocked by**: MVP-16 (all paper sections complete)
+- **Blocked by**: MVP-88 (consistency check + quality gate)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-17/self-review-against-phase-5p-checklist
 
 ### MVP-18 — Final review and revision
@@ -503,6 +546,21 @@ MVP-2 (Done) ─────────────┐
   - [ ] Output: `data/processed/analysis/`
 - **Blocked by**: MVP-23, MVP-24
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
+
+### MVP-87 — Run Phase F Hypothesis Validator — results vs H1/H2/H3 before writing Results
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] Hypothesis Validator subagent run against `data/processed/analysis/` + `docs/methodology.md §2.1`
+  - [ ] H1: Q4 spatial concentration verdict (PROCEED/REFINE/PIVOT) with metric
+  - [ ] H2: Resolution effect verdict (PROCEED/REFINE/PIVOT) with metric
+  - [ ] H3: Scenario validation verdict (PROCEED/REFINE/PIVOT) with metric
+  - [ ] PIVOT outcomes escalated to human before proceeding — no unilateral reframing
+  - [ ] Report at `cache/hypothesis-validation-report.md`
+  - [ ] Linear comment: per-hypothesis verdict + next action
+- **Blocked by**: MVP-25
+- **Note**: Gate ticket — MVP-14 (Results section) must not begin until all H1/H2/H3 are PROCEED or REFINE-resolved
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-87/run-phase-f-hypothesis-validator-results-vs-h1h2h3-before-writing
 
 ---
 

@@ -30,10 +30,25 @@ This is a **portfolio / independent research project** — no academic gating.
 ## Next Action
 
 1. **Review**: MVP-13 methods section PR pending review
-2. **E4 continues**: MVP-12 (introduction) — unblocked
+2. **E4 pre-work**: MVP-85 (lit sweep) → MVP-86 (gap debate) must run before MVP-12 (Introduction)
 3. **E6 continues**: MVP-23 (compute TAI/TNI) — unblocked after PR #10 merge
-4. Paper and product tracks can run in parallel
+4. **E6 gate**: MVP-87 (hypothesis validator) must complete before MVP-14 (Results)
+5. **E5 gate**: MVP-88 (consistency check) must complete before MVP-17 (self-review)
+6. Paper and product tracks can run in parallel
+
+## AutoResearchClaw Integration (2026-03-22)
+
+Four new tickets added integrating AutoResearchClaw phases into paper quality pipeline:
+- **MVP-85**: Phase B lit sweep + Phase H citation audit (E4 pre-work, blocks MVP-12)
+- **MVP-86**: Phase C gap debate agent (E4 pre-work, blocks MVP-12)
+- **MVP-87**: Phase F hypothesis validator (E6 gate, blocks MVP-14)
+- **MVP-88**: Phase G+H consistency check + quality gate (E5 gate, blocks MVP-17)
+
+Install: `pip install researchclaw && researchclaw setup`
+Full subagent prompts in CLAUDE.md — AutoResearchClaw Integration section.
+Cache outputs go to: `cache/lit-gap-report.md`, `cache/gap-debate-report.md`,
+`cache/hypothesis-validation-report.md`, `cache/section-consistency-report.md`
 
 ## Open Questions
 
-- Methods section is ~5,450 words (above 3,000-4,000 target). May need trimming — GC model details could move to supplementary appendix.
+- Methods section is ~5,450 words (above 3,000-4,000 target). May need trimming — GC model details could move to supplementary appendix. MVP-88 will flag this for human decision.

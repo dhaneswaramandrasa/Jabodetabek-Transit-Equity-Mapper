@@ -338,6 +338,164 @@ Set status → In Review for supervisor feedback.
 
 ---
 
+## AutoResearchClaw Integration
+
+AutoResearchClaw (https://github.com/aiming-lab/AutoResearchClaw) is integrated into this project
+as a selective enhancement for four research-quality gates. Install once:
+
+```bash
+pip install researchclaw
+researchclaw setup  # configure LLM provider in config.arc.yaml
+```
+
+It is ACP-compatible with Claude Code. Do NOT run the full 23-stage pipeline — this project is
+not an ML experiment paper. Use only the phases below.
+
+---
+
+### Phase B + H: Literature Sweep + Citation Audit (MVP-85)
+
+**Trigger**: Before writing the Introduction (MVP-12). After E3 literature sections are Done.
+
+```bash
+# Phase B — literature discovery sweep
+researchclaw run \
+  --topic "transit accessibility equity GTFS composite index developing country megacity dual resolution" \
+  --phases B \
+  --auto-approve \
+  --output cache/autoresclaw-lit/
+
+# Phase H — citation verification
+researchclaw verify-citations \
+  --input paper/sections/ \
+  --output cache/citation-verification-report.json
+```
+
+After running:
+1. Review sweep output — extract new papers in source-map format
+2. Merge into `docs/source-map.md` (deduplicate against existing 18+ papers)
+3. Update `docs/literature_review.md` synthesis if gap framing changes
+4. Fix any red-flagged citations in paper sections
+5. Write `cache/lit-gap-report.md`: new papers found, novelty claims status, framing adjustments
+
+---
+
+### Phase C: Gap Debate Agent (MVP-86)
+
+**Trigger**: After MVP-85 (lit sweep). Before MVP-12 (Introduction writing).
+
+Spawn as subagent (Pattern 3):
+
+```
+## Context
+Read docs/source-map.md, docs/methodology.md §2.1b–2.1c,
+paper/sections/02a-theoretical-framework.md, cache/lit-gap-report.md.
+
+## Task
+You are a skeptical peer reviewer stress-testing novelty claims.
+For each of the 4 contribution claims:
+  1. 5-layer TAI as journey-chain model (vs Mamun & Lownes composite)
+  2. Motorcycle cost layer in generalized cost (vs Ng 2018, Sukor 2024)
+  3. Scenario simulation within equity quadrant framework
+  4. Dual-resolution H3 vs kelurahan MAUP comparison (vs Javanmard 2023)
+
+For each claim:
+- What prior work does/doesn't address this?
+- Is this genuinely novel or an extension?
+- Rate STRONG / WEAK / UNSUPPORTED + one-line justification
+- For WEAK: propose "we extend X by Y" reframing
+
+## Output
+Save to cache/gap-debate-report.md
+Include: per-claim rating table + recommended contributions paragraph for Introduction
+```
+
+---
+
+### Phase F: Hypothesis Validator (MVP-87)
+
+**Trigger**: After MVP-25 (equity analysis complete). Gate before MVP-14 (Results writing).
+MVP-14 must NOT begin until all three hypotheses are PROCEED or REFINE-resolved.
+
+Spawn as subagent:
+
+```
+## Context
+Read docs/methodology.md §2.1 (H1/H2/H3) and data/processed/analysis/ outputs.
+
+## Task
+For each hypothesis, extract the relevant metric and output PROCEED / REFINE / PIVOT:
+
+H1 — Spatial mismatch (Q4 concentrated in Bodetabek periphery):
+  Metric: Q4 unit count by municipality
+  PROCEED if Q4 ≥ 60% in Bodetabek
+  REFINE if distribution is mixed — check if median-split threshold is too coarse
+  PIVOT if Q4 concentrated in inner Jakarta — escalate to human, do NOT reframe
+
+H2 — Resolution effect (H3 reveals higher Gini than kelurahan):
+  Metric: Gini_H3 vs Gini_kelurahan; Cohen's kappa
+  PROCEED if Gini_H3 > Gini_kelurahan
+  REFINE if diff < 0.05 — discuss as MAUP sensitivity rather than directional finding
+  PIVOT if Gini_kelurahan > Gini_H3 — interesting reversal, escalate to human
+
+H3 — Scenario validation (Q4 intervention > Q1/Q2 improvement):
+  Metric: delta_Equity_Gap_Score Q4 vs Q1/Q2 scenario
+  PROCEED if Q4 improvement > 1.5× Q1/Q2
+  REFINE if marginal — check if scenario location was genuinely deep Q4
+  PIVOT if no meaningful difference — escalate to human
+
+## Constraints
+PIVOT = stop and flag for human review. Never reframe a hypothesis unilaterally.
+REFINE = specify exact adjustment needed (parameter, threshold, re-run scope).
+
+## Output
+Save to cache/hypothesis-validation-report.md
+```
+
+---
+
+### Phase G + H: Section Consistency Check + Quality Gate (MVP-88)
+
+**Trigger**: After MVP-16 (all sections drafted). Gate before MVP-17 (Phase 5P self-review).
+
+Spawn three parallel subagents (Pattern 3):
+
+```
+Agent 1 — Argument reviewer:
+  Read paper/sections/*.md + docs/methodology.md
+  Check:
+    [ ] RQ stated in Introduction, answered in Discussion
+    [ ] H1, H2, H3 each explicitly addressed in Discussion
+    [ ] Methods section matches docs/methodology.md exactly
+    [ ] Results metrics all have corresponding methodology subsections
+    [ ] All claims cited or derived from data
+  Report: ✅/⚠️/❌ per check + one-line fix
+
+Agent 2 — Consistency checker:
+  Read paper/sections/03-methodology.md vs docs/methodology.md
+  Read all paper/sections/*.md — check every in-text citation exists in docs/source-map.md
+  Flag: any citation NOT in source-map (potential hallucination)
+  Flag: any method claim in paper that diverges from methodology.md
+  Report: divergences + files to fix
+
+Agent 3 — Citation verifier:
+  Run: researchclaw verify-citations --input paper/sections/ --output cache/citation-verification-final.json
+  Cross-check report against docs/source-map.md
+  Report: red-flagged citations + corrections needed
+```
+
+Word count targets (flag outside range, do not trim without human approval):
+- Introduction: 1,500–2,000 words
+- Methods: 3,000–4,000 words (current ~5,450 — GC details may move to appendix)
+- Results: 2,000–3,000 words
+- Discussion: 2,000–2,500 words
+- Conclusion + Abstract: ~800 words
+
+Orchestrator saves consolidated report to `cache/section-consistency-report.md`.
+All ⚠️/❌ items must be resolved before MVP-88 is marked Done.
+
+---
+
 ## Phase 4D: Data Pipeline + Product Build
 
 Work ticket by ticket through E6–E9. Always pull ticket, read handoff notes, set In Progress,
@@ -396,8 +554,10 @@ If the schema changes during implementation:
 
 ## Phase 5P: Paper Review
 
-Run this checklist before marking any paper ticket Done:
+Run MVP-88 (Phase G+H consistency check) before this checklist. Then run this checklist
+before marking any paper ticket Done:
 
+- [ ] MVP-88 complete — all ⚠️/❌ items resolved, citation-verification-final.json clean
 - [ ] Research question stated clearly in the introduction
 - [ ] Hypothesis is testable and the paper actually tests it
 - [ ] Methods section matches `docs/methodology.md` exactly
@@ -407,6 +567,7 @@ Run this checklist before marking any paper ticket Done:
 - [ ] Limitations acknowledged (from methodology.md)
 - [ ] Figures match those used in the product
 - [ ] `docs/methodology.md` and paper Methods section are in sync
+- [ ] Word counts within targets (see AutoResearchClaw Integration section)
 
 Output: ✅ / ⚠️ / ❌ — one line + fix per item.
 
