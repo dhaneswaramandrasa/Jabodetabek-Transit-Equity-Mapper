@@ -338,6 +338,245 @@ Set status → In Review for supervisor feedback.
 
 ---
 
+## AutoResearchClaw Integration
+
+AutoResearchClaw (https://github.com/aiming-lab/AutoResearchClaw) is integrated into this project
+as a selective enhancement for four research-quality gates. Install once:
+
+```bash
+pip install researchclaw
+researchclaw setup  # configure LLM provider in config.arc.yaml
+```
+
+It is ACP-compatible with Claude Code. Do NOT run the full 23-stage pipeline — this project is
+not an ML experiment paper. Use only the phases below.
+
+---
+
+### Phase B + H: Literature Sweep + Citation Audit (MVP-85)
+
+**Trigger**: Before writing the Introduction (MVP-12). After E3 literature sections are Done.
+
+```bash
+# Phase B — literature discovery sweep
+researchclaw run \
+  --topic "transit accessibility equity GTFS composite index developing country megacity dual resolution" \
+  --phases B \
+  --auto-approve \
+  --output cache/autoresclaw-lit/
+
+# Phase H — citation verification
+researchclaw verify-citations \
+  --input paper/sections/ \
+  --output cache/citation-verification-report.json
+```
+
+After running:
+1. Review sweep output — extract new papers in source-map format
+2. Merge into `docs/source-map.md` (deduplicate against existing 18+ papers)
+3. Update `docs/literature_review.md` synthesis if gap framing changes
+4. Fix any red-flagged citations in paper sections
+5. Write `cache/lit-gap-report.md`: new papers found, novelty claims status, framing adjustments
+
+---
+
+### Phase C: Gap Debate Agent (MVP-86)
+
+**Trigger**: After MVP-85 (lit sweep). Before MVP-89 (convergence drafting). Before MVP-12.
+**Pattern**: Pattern 4 — Dual-Agent Convergence (Defender vs. Skeptic, 2-round debate loop).
+
+**Round 1 — parallel:**
+
+```
+Agent Defender:
+  Role: build the strongest case FOR each novelty claim
+  Read: docs/source-map.md, docs/methodology.md §2.1b-2.1c, cache/lit-gap-report.md
+  For each claim: cite supporting evidence; explain what prior work does NOT do
+  Save to: cache/debate-round1-defender.md
+
+Agent Skeptic:
+  Role: find the strongest counterargument to each claim
+  Read: same inputs — do NOT read Defender output yet
+  For each claim: find the closest prior paper; argue claim is already addressed or overstated
+  Save to: cache/debate-round1-skeptic.md
+```
+
+**Round 2 — sequential:**
+
+```
+Agent Defender reads cache/debate-round1-skeptic.md:
+  Rebut each point OR concede and propose reframing
+  Save to: cache/debate-round2-rebuttal.md
+
+Agent Skeptic reads cache/debate-round2-rebuttal.md:
+  Issue final verdict: STRONG / WEAK / UNSUPPORTED
+  Save to: cache/debate-final-verdicts.md
+```
+
+Orchestrator reads final verdicts → writes `cache/gap-debate-report.md` with recommended
+contributions framing for Introduction.
+
+- **STRONG** = survived debate → use as-is in Introduction
+- **WEAK** = Defender conceded → reframe as "we extend X by Y" before MVP-12
+- **UNSUPPORTED** = needs new literature search or should be dropped
+
+---
+
+### Phase F: Hypothesis Validator (MVP-87)
+
+**Trigger**: After MVP-25 (equity analysis complete). Gate before MVP-14 (Results writing).
+**Pattern**: Pattern 4 — Dual-Agent Convergence (Stats vs. Theory, independent assessment).
+MVP-14 must NOT begin until all three hypotheses are PROCEED (both agents agree) or human
+has reviewed any disagreement/PIVOT cases.
+
+**Run parallel:**
+
+```
+Agent Stats:
+  Role: pure data analyst — assess only what the numbers show
+  Read: data/processed/analysis/ outputs ONLY — do NOT read methodology.md hypotheses first
+  For H1: what does Q4 spatial distribution actually show? (metric + value)
+  For H2: what do Gini_H3 vs Gini_kelurahan and Cohen's kappa actually show?
+  For H3: what does delta_Equity_Gap_Score Q4 vs Q1/Q2 actually show?
+  Output PROCEED/REFINE/PIVOT per hypothesis with specific metric value
+  Save to: cache/hypothesis-stats-assessment.md
+
+Agent Theory:
+  Role: theoretical evaluator — assess based on what methodology predicted
+  Read: docs/methodology.md §2.1 ONLY — do NOT read actual data outputs first
+  For each hypothesis: what result range would confirm/refute/be ambiguous?
+  Define PROCEED/REFINE/PIVOT thresholds from theory alone
+  Save to: cache/hypothesis-theory-assessment.md
+```
+
+**Then reconciler:**
+
+```
+Agent Reconciler reads both assessments:
+  Both PROCEED → confident PROCEED
+  Both PIVOT    → immediate human escalation, halt MVP-14
+  Disagreement  → flag as uncertain, describe the gap, require human review
+Save to: cache/hypothesis-validation-report.md
+```
+
+Thresholds: H1 PROCEED ≥ 60% Q4 in Bodetabek; H2 PROCEED Gini_H3 > Gini_kelurahan;
+H3 PROCEED Q4 improvement > 1.5× Q1/Q2. PIVOT = never reframe unilaterally.
+
+---
+
+### Pattern 4: Dual-Agent Convergence
+
+Use for high-stakes writing or analysis decisions where framing choices matter.
+Spawn two agents with DIFFERENT role briefs on the SAME task — they must NOT see each other's
+output during drafting. Orchestrator reconciles: agreement = keep, divergence = flag for human.
+
+**When to use:**
+- Writing sections where framing is contested (Introduction, Discussion)
+- Validating results against hypotheses (data evidence vs. theoretical expectation)
+- Debating novelty claims (Defender vs. Skeptic)
+
+**Role pairings used in this project:**
+| Task | Agent A | Agent B |
+|---|---|---|
+| Paper drafting (MVP-89) | Strategic — framing, RQ alignment | Technical — citations, methodology precision |
+| Hypothesis validation (MVP-87) | Stats — numerical evidence only | Theory — theoretical predictions only |
+| Gap debate (MVP-86) | Defender — strongest case FOR claims | Skeptic — strongest counterargument |
+
+**Communication channel:** `cache/` directory — shared file system, not real-time.
+Agents write outputs to separate files; orchestrator reads both and reconciles.
+
+**Convergence output template:**
+```
+cache/convergence-[task]-report.md:
+  For each paragraph/claim/hypothesis:
+    AGREE: [what both said] → keep as-is
+    DIVERGE: [A said X, B said Y] → human decision required
+```
+
+Divergence is not a failure — it surfaces genuine ambiguity before it reaches the paper or
+the results section. A 100% convergence rate on a contested decision is suspicious.
+
+---
+
+### Dual-Agent Convergence Drafting — Introduction + Discussion (MVP-89)
+
+**Trigger**: After MVP-86 (gap debate, contributions framing settled). Produces drafts for
+MVP-12 (Introduction) and MVP-15 (Discussion). Pattern: Pattern 4.
+
+**Run Agents 1 and 2 in parallel, then Agent 3 sequentially:**
+
+```
+Agent 1 — Strategic drafter:
+  Role: argument structure, RQ framing, contribution positioning
+  Read: docs/methodology.md, docs/source-map.md, cache/gap-debate-report.md
+  Do NOT read Agent 2 output before completing draft
+  Save Introduction draft to: cache/draft-intro-strategic.md
+  Save Discussion draft to:   cache/draft-discussion-strategic.md
+
+Agent 2 — Technical drafter:
+  Role: citation accuracy, methodology precision, prior work connections
+  Read: docs/methodology.md, docs/source-map.md, paper/sections/03-methodology.md
+  Do NOT read Agent 1 output before completing draft
+  Save Introduction draft to: cache/draft-intro-technical.md
+  Save Discussion draft to:   cache/draft-discussion-technical.md
+
+Agent 3 — Reconciler (after both complete):
+  For each paragraph/claim in both drafts:
+    Both say same thing → keep in reconciled draft
+    Different framing/emphasis → flag in convergence report for human decision
+  Save reconciled Introduction to: cache/draft-intro-reconciled.md
+  Save convergence report to:      cache/convergence-intro-report.md
+  Save reconciled Discussion to:   cache/draft-discussion-reconciled.md
+  Save convergence report to:      cache/convergence-discussion-report.md
+```
+
+Human reviews convergence reports → approves reconciled drafts → commits to `paper/sections/`.
+Divergence points in the convergence report are the human-review checklist.
+
+---
+
+### Phase G + H: Section Consistency Check + Quality Gate (MVP-88)
+
+**Trigger**: After MVP-16 (all sections drafted). Gate before MVP-17 (Phase 5P self-review).
+
+Spawn three parallel subagents (Pattern 3):
+
+```
+Agent 1 — Argument reviewer:
+  Read paper/sections/*.md + docs/methodology.md
+  Check:
+    [ ] RQ stated in Introduction, answered in Discussion
+    [ ] H1, H2, H3 each explicitly addressed in Discussion
+    [ ] Methods section matches docs/methodology.md exactly
+    [ ] Results metrics all have corresponding methodology subsections
+    [ ] All claims cited or derived from data
+  Report: ✅/⚠️/❌ per check + one-line fix
+
+Agent 2 — Consistency checker:
+  Read paper/sections/03-methodology.md vs docs/methodology.md
+  Read all paper/sections/*.md — check every in-text citation exists in docs/source-map.md
+  Flag: any citation NOT in source-map (potential hallucination)
+  Flag: any method claim in paper that diverges from methodology.md
+  Report: divergences + files to fix
+
+Agent 3 — Citation verifier:
+  Run: researchclaw verify-citations --input paper/sections/ --output cache/citation-verification-final.json
+  Cross-check report against docs/source-map.md
+  Report: red-flagged citations + corrections needed
+```
+
+Word count targets (flag outside range, do not trim without human approval):
+- Introduction: 1,500–2,000 words
+- Methods: 3,000–4,000 words (current ~5,450 — GC details may move to appendix)
+- Results: 2,000–3,000 words
+- Discussion: 2,000–2,500 words
+- Conclusion + Abstract: ~800 words
+
+Orchestrator saves consolidated report to `cache/section-consistency-report.md`.
+All ⚠️/❌ items must be resolved before MVP-88 is marked Done.
+
+---
+
 ## Phase 4D: Data Pipeline + Product Build
 
 Work ticket by ticket through E6–E9. Always pull ticket, read handoff notes, set In Progress,
@@ -396,8 +635,10 @@ If the schema changes during implementation:
 
 ## Phase 5P: Paper Review
 
-Run this checklist before marking any paper ticket Done:
+Run MVP-88 (Phase G+H consistency check) before this checklist. Then run this checklist
+before marking any paper ticket Done:
 
+- [ ] MVP-88 complete — all ⚠️/❌ items resolved, citation-verification-final.json clean
 - [ ] Research question stated clearly in the introduction
 - [ ] Hypothesis is testable and the paper actually tests it
 - [ ] Methods section matches `docs/methodology.md` exactly
@@ -407,6 +648,7 @@ Run this checklist before marking any paper ticket Done:
 - [ ] Limitations acknowledged (from methodology.md)
 - [ ] Figures match those used in the product
 - [ ] `docs/methodology.md` and paper Methods section are in sync
+- [ ] Word counts within targets (see AutoResearchClaw Integration section)
 
 Output: ✅ / ⚠️ / ❌ — one line + fix per item.
 
