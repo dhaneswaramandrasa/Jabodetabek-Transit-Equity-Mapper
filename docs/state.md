@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated**: 2026-03-22
+**Last updated**: 2026-03-23
 **Active ticket**: MVP-13 (methods section) — In Review
 **Branch**: e4/mvp-13-methods-section
 
@@ -29,7 +29,8 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **Review**: MVP-13 methods section PR pending review
+1. **Review**: PR #12 pending review — AutoResearchClaw integration (MVP-85–89) + UX persona-first redesign (MVP-90–92)
+2. **On merge**: MVP-23 (compute TAI/TNI) is next in E6 — unblocked
 2. **E4 pre-work**: MVP-85 (lit sweep) → MVP-86 (gap debate) must run before MVP-12 (Introduction)
 3. **E6 continues**: MVP-23 (compute TAI/TNI) — unblocked after PR #10 merge
 4. **E6 gate**: MVP-87 (hypothesis validator) must complete before MVP-14 (Results)

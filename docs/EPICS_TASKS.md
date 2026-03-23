@@ -18,8 +18,8 @@
 | E4 | Paper | Paper Drafting | Blocked (E3) | 0/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
 | E6 | Product | Data Pipeline | **Ready** | 0/8 done |
-| E7 | Product | UI Foundation | Blocked (E6) | 0/3 done |
-| E8 | Product | Core Features | Blocked (E7) | 0/4 done |
+| E7 | Product | UI Foundation | Blocked (E6) | 0/4 done |
+| E8 | Product | Core Features | Blocked (E7) | 0/6 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
@@ -582,6 +582,20 @@ MVP-2 (Done) ─────────────┐
 
 ## E7 · UI Foundation (Product)
 
+### MVP-90 — Implement persona/goal selection entry screen
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] Entry screen on first load with 4 goal cards: Plan My Commute, Explore Transit Equity, Analyze & Download, Plan Infrastructure
+  - [ ] Each card routes to distinct initial map state with correct panels pre-opened
+  - [ ] "Skip — show full tool" option for power users
+  - [ ] `selectedPersona` field added to Zustand store ('commuter' | 'explorer' | 'researcher' | 'planner' | null)
+  - [ ] Selection persisted in localStorage — returning users skip entry screen
+  - [ ] Mobile-responsive layout
+- **Blocked by**: MVP-26 (UI audit — know what panels exist before wiring entry paths)
+- **Component**: `components/EntryScreen.tsx`
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-90/implement-personagoal-selection-entry-screen
+
 ### MVP-26 — Audit existing prototype against new methodology
 - **Status**: Todo
 - **Priority**: High
@@ -624,6 +638,32 @@ MVP-2 (Done) ─────────────┐
 ---
 
 ## E8 · Core Features (Product)
+
+### MVP-91 — Implement Journey Planner — coordinate picker with transit + ride-hailing cost comparison
+- **Status**: Todo
+- **Priority**: High
+- **AC**:
+  - [ ] Origin pin (click or type) → snapped to nearest H3 centroid
+  - [ ] Destination pin → defaults to Sudirman–Thamrin CBD
+  - [ ] Results panel: Transit / GoRide / GoCar side by side with time + cost
+  - [ ] "Recommended" badge on lowest-cost mode
+  - [ ] Transit legs polyline rendered on map
+  - [ ] "View equity context" link → shows Q1–Q4 quadrant of origin zone
+  - [ ] Disclaimer on ride-hailing estimates
+- **Blocked by**: MVP-90 (entry screen), MVP-27 (real data migrated)
+- **Components**: `components/JourneyPlanner.tsx`, `lib/journey-planner.ts`
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-91/implement-journey-planner-coordinate-picker-with-transit-ride-hailing
+
+### MVP-92 — Add ride-hailing cost estimates to CBD Journey Chain panel
+- **Status**: Todo
+- **Priority**: Medium
+- **AC**:
+  - [ ] GC comparison table gains GoRide + GoCar rows (brand-neutral labels)
+  - [ ] Costs from `lib/journey-planner.ts` `estimateRideHailingCost()`
+  - [ ] Disclaimer row: "Ride-hailing estimates based on standard tariffs. Actual fares vary."
+  - [ ] "Lowest cost" highlight updated to include ride-hailing
+- **Blocked by**: MVP-91 (`lib/journey-planner.ts` must exist), MVP-28 (CBD Journey Chain panel built)
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-92/add-ride-hailing-cost-estimates-to-cbd-journey-chain-panel
 
 ### MVP-29 — Implement quadrant map with dual-resolution toggle
 - **Status**: Todo
