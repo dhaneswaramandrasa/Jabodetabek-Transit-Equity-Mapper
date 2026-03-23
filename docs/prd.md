@@ -11,6 +11,8 @@
 
 An interactive web-based map tool that diagnoses transit equity gaps across the Jabodetabek metropolitan region (Jakarta + Bogor, Depok, Tangerang, Bekasi). The product visualizes where public transit accessibility fails to match socioeconomic need, using a 5-layer Transit Accessibility Index (TAI) and a Transit Need Index (TNI) at both administrative (kelurahan) and hexagonal (H3 resolution 8) spatial resolutions.
 
+Users are greeted by a **persona-first entry screen** — they select their goal before entering the tool, which loads a tailored feature set and default map state. Power users can skip to the full tool. Four entry paths are provided: Plan My Commute, Explore Transit Equity, Analyze & Download, and Plan Infrastructure.
+
 It is the deployed companion to a research paper analyzing the same data and methodology. Both outputs share the same scoring engine, data pipeline, and analytical framework defined in `docs/methodology.md`.
 
 ---
@@ -81,12 +83,15 @@ Transit equity research in developing countries has grown significantly (Delmell
 - **Technical level**: Moderate — uses dashboards, not GIS
 - **Key features**: What-If Simulator, CBD Journey Chain, Road Network Layer
 
-### 4.4 Sari — Student / General Public
-- **Role**: Graduate student or curious citizen
-- **Primary goal**: Understand how transit equity varies across Jabodetabek
-- **Key need**: Simple, intuitive map with clear color coding and click-to-explore detail panels
+### 4.4 Sari — General Public / Commuter
+- **Role**: Everyday commuter or curious citizen (e.g., BSD resident commuting to Sudirman)
+- **Primary goal (Mode A — Plan My Commute)**: Find the optimal way to get to work — compare transit, GoRide, and GoCar costs from home coordinates to office
+- **Primary goal (Mode B — Explore Transit Equity)**: Understand how transit equity varies across Jabodetabek
+- **Key need (Mode A)**: Enter home + work location, get side-by-side cost + time comparison across modes, understand which transit options exist and at what cost versus ride-hailing
+- **Key need (Mode B)**: Simple, intuitive map with clear color coding and click-to-explore detail panels
 - **Technical level**: Low — expects consumer-grade UX
-- **Key features**: Quadrant Map, POI Accessibility Heatmaps
+- **Key features (Mode A)**: Journey Planner (5.10), CBD Journey Chain
+- **Key features (Mode B)**: Quadrant Map, POI Accessibility Heatmaps
 
 ---
 
@@ -123,8 +128,11 @@ Transit equity research in developing countries has grown significantly (Delmell
   - [ ] Journey legs displayed: first-mile walk → station → ride → transfer → ride → last-mile walk
   - [ ] Each leg shows mode, time (minutes), fare (IDR)
   - [ ] Path rendered on map as polyline with mode-colored segments
-  - [ ] Side panel compares three-way generalized cost: transit vs car vs motorcycle
+  - [ ] Side panel compares **five-way** generalized cost: transit vs car vs motorcycle vs GoRide (est.) vs GoCar (est.)
+  - [ ] GoRide/GoCar rows use static tariff estimates from `lib/journey-planner.ts` (MVP-92)
+  - [ ] Disclaimer on ride-hailing rows: "Estimated — actual fare varies with surge pricing"
   - [ ] Transit competitive zone badge shown (transit_wins / swing / private_wins / transit_not_available)
+  - [ ] "Lowest cost" highlight across all five modes
 
 ### 5.4 Transit Competitive Zone Map
 - **Description**: Choropleth showing where transit beats private transport in generalized cost, using the three-way GC model (transit vs. car vs. motorcycle)
@@ -176,6 +184,25 @@ Transit equity research in developing countries has grown significantly (Delmell
   - [ ] Top 10 / bottom 10 kelurahan by equity gap
   - [ ] LISA cluster count (High-High, Low-Low, High-Low, Low-High)
 
+### 5.10 Journey Planner (Plan My Commute)
+- **Description**: Consumer-facing commute tool — user drops origin + destination pins, gets transit vs GoRide vs GoCar comparison with costs and journey time
+- **User story**: As Sari (Mode A), I want to enter my home in BSD and office in Sudirman so that I can see whether taking the KRL is actually cheaper than Gojek
+- **Methodology link**: Uses pre-computed TAI Layer 3 CBD journey chain data for the origin zone (snapped to nearest H3 centroid) + static ride-hailing tariff model in `lib/journey-planner.ts`
+- **Architecture note**: Fully static — no real-time routing or API calls. Origin/destination snapped to nearest pre-computed H3 cell; live fare estimation would require Grab/Gojek API (out of scope)
+- **Acceptance criteria**:
+  - [ ] Origin pin: click map or type area name → snapped to nearest H3 centroid
+  - [ ] Destination pin: defaults to Sudirman–Thamrin CBD, user can change
+  - [ ] Results panel shows 3 modes side by side with time and cost:
+    - **Transit**: journey time (min), total fare (IDR), legs breakdown
+    - **GoRide**: estimated time, estimated cost (Rp 5,000 base + Rp 2,000/km)
+    - **GoCar**: estimated time, estimated cost (Rp 10,000 base + Rp 3,500/km)
+  - [ ] "Recommended" badge on lowest-cost option
+  - [ ] Transit journey legs polyline rendered on map
+  - [ ] "View equity context" link → shows Q1–Q4 quadrant of origin zone
+  - [ ] Disclaimer: "GoRide/GoCar prices estimated from standard tariffs. Actual fares vary with surge pricing."
+  - [ ] Triggered from Entry Screen "Plan My Commute" path (MVP-90) or floating "Plan journey" button
+- **Tickets**: MVP-91 (component + lib), MVP-90 (entry screen wiring)
+
 ### 5.9 Data Download
 - **Description**: Cleaned dataset available for public download under CC BY 4.0
 - **User story**: As Adi, I want to download the raw equity scores so that I can run my own analysis
@@ -214,7 +241,7 @@ All data sources verified in MVP-6 (E0-007). See `src/ingestion/VERIFICATION_REP
 
 | Constraint | Details |
 |-----------|---------|
-| No API keys client-side | All data pre-computed server-side; static GeoJSON served from `public/` |
+| No API keys client-side | All data pre-computed server-side; static GeoJSON served from `public/` — ride-hailing costs use static tariff model, not Grab/Gojek API |
 | GeoJSON budget | Total GeoJSON < 15 MB for acceptable load times |
 | Static GTFS only | Schedule-based analysis (no GTFS-RT) |
 | No informal transit | Angkot/ojek excluded due to data gaps |
@@ -245,6 +272,7 @@ All data sources verified in MVP-6 (E0-007). See `src/ingestion/VERIFICATION_REP
 
 - Informal transport (ojek, non-app ride-hailing)
 - Real-time transit data (GTFS-RT)
+- Real-time ride-hailing pricing (Grab/Gojek API) — static tariff estimates only
 - Causal inference on transit investment outcomes
 - Fare optimization or pricing analysis
 - Historical time-series analysis
@@ -260,6 +288,8 @@ All data sources verified in MVP-6 (E0-007). See `src/ingestion/VERIFICATION_REP
 | Criterion | Measure |
 |-----------|---------|
 | Research question answerable from UI | User can identify Q4 transit deserts, compare resolutions, and run what-if scenarios |
+| Consumer usability | Public user can enter home + work coordinates and get actionable transit vs ride-hailing cost comparison within 3 clicks |
+| Persona entry flow | All 4 persona paths load correct default state; "Skip" option available |
 | All 3 hypotheses testable | H1 via quadrant map, H2 via resolution toggle, H3 via what-if simulator |
 | Data integrity | `lib/types.ts` = `docs/DATA_MODEL.md` = `lib/mock-data.ts` — all three match |
 | Methodology fidelity | Product computes TAI/TNI/GC exactly as `docs/methodology.md` specifies |
