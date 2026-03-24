@@ -1,7 +1,7 @@
 # Project State
 
-**Last updated**: 2026-03-23
-**Active ticket**: MVP-13 (methods section) — In Review
+**Last updated**: 2026-03-25
+**Active ticket**: MVP-85 (lit sweep + citation audit) — Done
 **Branch**: e4/mvp-13-methods-section
 
 ---
@@ -29,13 +29,10 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **Review**: PR #12 pending review — AutoResearchClaw integration (MVP-85–89) + UX persona-first redesign (MVP-90–92)
-2. **On merge**: MVP-23 (compute TAI/TNI) is next in E6 — unblocked
-2. **E4 pre-work**: MVP-85 (lit sweep) → MVP-86 (gap debate) must run before MVP-12 (Introduction)
-3. **E6 continues**: MVP-23 (compute TAI/TNI) — unblocked after PR #10 merge
-4. **E6 gate**: MVP-87 (hypothesis validator) must complete before MVP-14 (Results)
-5. **E5 gate**: MVP-88 (consistency check) must complete before MVP-17 (self-review)
-6. Paper and product tracks can run in parallel
+1. **MVP-86**: Gap debate (Defender vs. Skeptic) — now unblocked. Inputs: cache/lit-gap-report.md, docs/source-map.md, docs/methodology.md §2.1b-2.1c
+2. **E6 continues**: MVP-23 (compute TAI/TNI) — unblocked after PR #10 merge
+3. **E6 gate**: MVP-87 (hypothesis validator) must complete before MVP-14 (Results)
+4. **E5 gate**: MVP-88 (consistency check) must complete before MVP-17 (self-review)
 
 ## AutoResearchClaw + Dual-Agent Integration (2026-03-22/23)
 
