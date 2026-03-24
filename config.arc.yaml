@@ -37,7 +37,27 @@ openclaw_bridge:
   use_browser: false
 
 llm:
-  provider: "acp"
+  # ── Provider selection ────────────────────────────────────────────────────
+  # Option A (default): OpenRouter API — use this when running researchclaw
+  #   from INSIDE a Claude Code session (ACP would create a nested session
+  #   which fails with "Internal error").
+  #   Requires: export OPENROUTER_API_KEY="sk-or-..."
+  #
+  # Option B: ACP via acpx — use this when running researchclaw from an
+  #   EXTERNAL terminal (not inside Claude Code). acpx spawns a fresh Claude
+  #   Code session in the background using your Pro subscription (no API key).
+  #   Switch to: provider: "acp"  (and comment out the openai-compatible block)
+  # ─────────────────────────────────────────────────────────────────────────
+  provider: "openai-compatible"
+  base_url: "https://openrouter.ai/api/v1"
+  api_key_env: "OPENROUTER_API_KEY"
+  api_key: ""
+  primary_model: "anthropic/claude-sonnet-4-5"
+  fallback_models:
+    - "anthropic/claude-haiku-4-5"
+    - "openai/gpt-4o-mini"
+
+  # ACP config (active when provider: "acp") ─────────────────────────────
   acp:
     agent: "claude"
     cwd: "."
@@ -45,7 +65,7 @@ llm:
     timeout_sec: 1800
 
 security:
-  hitl_required_stages: [5, 9, 20]
+  hitl_required_stages: [9, 20]
   allow_publish_without_approval: false
   redact_sensitive_logs: true
 
