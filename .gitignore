@@ -13,6 +13,13 @@ data/raw/worldpop/
 data/raw/poi/*.json
 data/processed/networks/jabodetabek_roads.geojson
 
+# AutoResearchClaw runtime cache (WebFetch cache — not research outputs)
+cache/*.json
+
+# Claude Code internals
+.claude/agent-memory/
+.claude/settings.json
+
 # IDE
 .vscode/
 .idea/
