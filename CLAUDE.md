@@ -103,10 +103,28 @@ Full conventions in `docs/references/linear-workflow.md`. Summary:
 - Add implementation notes as Linear comments
 - If a blocker is found: comment with details, leave status In Progress
 
+### Before every commit — MANDATORY
+```
+1. Update docs/EPICS_TASKS.md:
+   - Set ticket Status to match current reality
+   - Check off completed ACs [x]
+   - Add Completed date if Done
+   - Update epic overview ticket count (e.g. "3/8 done")
+2. Stage EPICS_TASKS.md: git add docs/EPICS_TASKS.md
+3. Sync to Linear: ./scripts/sync-linear.sh MVP-NN "New Status" "optional comment"
+   OR post comment manually via GraphQL if detailed comment needed
+4. The pre-commit hook will block the commit if EPICS_TASKS.md is not staged
+   (bypass with --no-verify ONLY for pure cache/config changes with no ticket impact)
+```
+
+Linear API key (personal workspace): stored in `~/.claude/settings.json` under `linear-personal`.
+Sync script: `scripts/sync-linear.sh` — run `--all` to sync every ticket from EPICS_TASKS.md.
+
 ### After completing a ticket
 ```
 1. Run any API tests listed in the ticket
-2. Post completion comment on Linear ticket:
+2. Update docs/EPICS_TASKS.md → mark Done, check off all ACs, add Completed date
+3. Post completion comment on Linear ticket:
 
    **What was done**
    - [bullet]
@@ -118,7 +136,7 @@ Full conventions in `docs/references/linear-workflow.md`. Summary:
    - what the next ticket needs to know
    - any deviations from spec and why
 
-3. Atomic commits — Conventional Commits format:
+4. Atomic commits — Conventional Commits format:
    feat(scope): description
    fix(scope): description
    refactor(scope): description
