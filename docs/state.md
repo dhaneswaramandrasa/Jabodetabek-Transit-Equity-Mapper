@@ -57,9 +57,4 @@ All cache outputs: `cache/debate-*.md`, `cache/hypothesis-*.md`, `cache/draft-*.
 ## Open Questions
 
 - Methods section is ~5,450 words (above 3,000-4,000 target). May need trimming — GC model details could move to supplementary appendix. MVP-88 will flag this for human decision.
-- **INTRO DIVERGE-1**: Gelb & Alizadeh (2025) — cite in both Introduction AND Discussion (current), or Discussion only? Reconciler included both; gap-debate-report.md said Methods §2.4 only.
-- **INTRO DIVERGE-2**: Add Delling et al. (2012) for RAPTOR algorithm to source-map.md? (Currently excluded — not in source map.)
-- **INTRO DIVERGE-3**: Confirm narrative vs. citation-density balance for target venue.
-- **DISC DIVERGE-1**: Bangkok 2026 Railway Scenarios study — if real, add to source-map.md to re-include in Discussion.
-- **DISC DIVERGE-2**: Discussion Section 5.8 renamed to "Generalisability and Future Research" (not "Conclusion"). Confirm this is preferred.
-- **DISC DIVERGE-3**: GC model discussion — standalone Section 5.4 (current) or embedded in 5.5 Methodological Implications?
+- MVP-89 convergence decisions all resolved 2026-03-25. paper/sections/01-introduction.md and paper/sections/05-discussion.md are approved v0.1 drafts ready for MVP-12 finalization.

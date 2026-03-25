@@ -28,25 +28,25 @@
    - Agent 1 (Strategic): Includes a reference to a "Bangkok parallel (2026 Bangkok Railway Scenarios study)" in the H3 discussion, stating it "suggests [the pattern of investment benefiting higher-income groups] may be widespread in Southeast Asia."
    - Agent 2 (Technical): Does not reference any Bangkok study.
    - Reconciler decision: **Removed.** This reference does not appear in docs/source-map.md and cannot be verified. Agent 1 appears to have fabricated or confused this citation. The Pereira et al. (2019) Rio reference is sufficient to make the same point and is in the source map.
-   - **Decision needed:** If this is a real paper the human wants to cite, it must be added to docs/source-map.md first.
+   - **RESOLVED 2026-03-25:** Drop — Pereira et al. (2019) sufficient for this point. ✅
 
 2. **Section 5.8 --- Conclusion subsection within Discussion:**
    - Agent 1 (Strategic): Includes a "5.8 Conclusion" subsection at the end of Discussion that reads like a conclusion paragraph.
    - Agent 2 (Technical): Also includes a "5.8 Conclusion" subsection.
    - Reconciler decision: Renamed to "5.8 Generalisability and Future Research" to avoid overlap with the standalone Section 6 (Conclusion) required by the paper structure. The summarising language from both agents' 5.8 was moved to inform Section 6 when it is written. The current 5.8 covers transferability and future work instead.
-   - **Decision needed:** Human should confirm whether the Discussion should end with a brief summary paragraph or transition directly to Section 6.
+   - **RESOLVED 2026-03-25:** Keep "Generalisability and Future Research" as §5.8. ✅
 
 3. **Generalisability section:**
    - Agent 1 (Strategic): Includes a dedicated "5.7 Generalisability" subsection discussing transferability to other SE Asian megacities, open-source pipeline, and parameterised GTFS feeds.
    - Agent 2 (Technical): Does not include a generalisability section; mentions transferability only briefly in the conclusion subsection.
    - Reconciler decision: Included the generalisability content as part of Section 5.8, merged with future research directions. This material is valuable but should be concise to stay within word target.
-   - **Decision needed:** Human should confirm whether generalisability merits its own subsection or can be combined with future research.
+   - **RESOLVED 2026-03-25:** Combined with future research in §5.8 accepted. ✅
 
 4. **Three-mode GC model insights --- standalone section vs. embedded:**
    - Agent 1 (Strategic): Embeds GC model discussion within the "Implications for Methodology and Policy" section (5.5).
    - Agent 2 (Technical): Embeds GC model discussion within the "Methodological Implications" section (5.5), specifically as the third of three implications.
    - Reconciler decision: Created a standalone Section 5.4 ("Three-Mode Generalised Cost Model Insights") to give this contribution appropriate visibility, then retained the methodological implications and planning implications as separate sections (5.5 and 5.6). This adds slight length but ensures the GC model contribution is not buried.
-   - **Decision needed:** Human should confirm whether the GC model discussion warrants its own subsection or should be folded into methodological implications.
+   - **RESOLVED 2026-03-25:** Keep as standalone §5.4 (current). ✅
 
 5. **Layer-specific diagnostic point:**
    - Agent 1 (Strategic): Does not explicitly discuss how different TAI layers bind in different zones.
@@ -58,7 +58,7 @@
    - Agent 2 (Technical): Cites "Landis & Koch, 1977" for Cohen's kappa interpretation thresholds (0.61-0.80 "substantial agreement").
    - Agent 1 (Strategic): References kappa thresholds without citation.
    - Reconciler decision: **Removed the citation.** Landis & Koch (1977) is not in docs/source-map.md. The Discussion references Cohen's kappa results without citing specific threshold benchmarks by name, which is acceptable as these thresholds are widely known.
-   - **Decision needed:** If human wants the Landis & Koch citation, it must be added to docs/source-map.md first.
+   - **RESOLVED 2026-03-25:** Skip — already removed by Reconciler, accepted. ✅
 
 ---
 

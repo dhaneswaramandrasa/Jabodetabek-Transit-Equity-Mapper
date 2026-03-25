@@ -28,19 +28,19 @@
    - Agent 1 (Strategic): Does NOT cite Gelb & Alizadeh in the Introduction at all. Reserves them entirely for Discussion.
    - Agent 2 (Technical): Includes a full paragraph on Gelb & Alizadeh (2025) in Section 1.2, using their finding to motivate the quadrant-based vertical equity analysis.
    - Reconciler decision: Included Gelb & Alizadeh in the Introduction (Section 1.2) as Agent 2 proposed. Rationale: the gap-debate-report.md explicitly states "Cite Gelb & Alizadeh (2025) in Methods S2.4 to justify quadrant beyond Gini," and their finding directly strengthens the Introduction's case for why the quadrant framework adds value beyond Gini. Both sections (Intro and Discussion) now cite them, which is standard academic practice.
-   - **Decision needed:** Human should confirm whether Gelb & Alizadeh appear in both Introduction and Discussion, or only Discussion.
+   - **RESOLVED 2026-03-25:** Both sections. ✅
 
 2. **Delling et al. (2012) RAPTOR citation:**
    - Agent 1 (Strategic): Does not cite Delling et al. for the RAPTOR algorithm.
    - Agent 2 (Technical): Cites "the RAPTOR algorithm (Delling et al., 2012)" in Section 1.2.
    - Reconciler decision: Mentioned RAPTOR algorithm without the Delling et al. citation, because Delling et al. (2012) does NOT appear in docs/source-map.md. Including it would violate citation rules. The r5py/RAPTOR connection is established through Fink et al. (2022) and Pereira et al. (2021), both of which are in the source map.
-   - **Decision needed:** If human wants the Delling citation, it must first be added to docs/source-map.md.
+   - **RESOLVED 2026-03-25:** Skip — Fink et al. and Pereira et al. sufficient. ✅
 
 3. **Depth of prior work coverage:**
    - Agent 1 (Strategic): Provides a more narrative treatment of Currie, Mamun & Lownes, Jiao & Dillivan, and Pereira et al. in a single flowing paragraph.
    - Agent 2 (Technical): Provides more granular, citation-dense coverage including specific methodological details (e.g., Mamun & Lownes' five indicators listed, r5r/R5 routing chain).
    - Reconciler decision: Used a hybrid approach --- Agent 1's narrative flow with Agent 2's key technical specifics (Mamun & Lownes indicator list, r5py/RAPTOR mention). The Introduction should establish foundations without exhaustive detail (that belongs in Section 2 Literature Review).
-   - **Decision needed:** Human should confirm the balance between narrative and citation density is appropriate for the target venue.
+   - **RESOLVED 2026-03-25:** Current hybrid balance accepted. ✅
 
 4. **H2 hypothesis phrasing precision:**
    - Agent 1 (Strategic): States H2 in general terms ("systematically underestimates equity gaps").
