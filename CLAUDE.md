@@ -92,10 +92,12 @@ Full conventions in `docs/references/linear-workflow.md`. Summary:
 
 ### Before starting any ticket
 ```
-1. Pull ticket: get_issue {TICKET-ID}
-2. Read previous ticket's comments for handoff notes
-3. Set status → In Progress
-4. Create branch: git checkout -b {ticket-id}/{short-description}
+1. Pull ticket:           mcp__linear-server__get_issue {TICKET-ID}
+2. Read previous ticket comments (handoff notes):
+                          mcp__linear-server__list_comments {PREV-TICKET-ID}
+3. Set status → In Progress:
+                          mcp__linear-server__save_issue {id, status: "In Progress"}
+4. Create branch:         git checkout -b {ticket-id}/{short-description}
    (branch off main unless ticket is blocked by unmerged branch — then branch off that)
 ```
 
