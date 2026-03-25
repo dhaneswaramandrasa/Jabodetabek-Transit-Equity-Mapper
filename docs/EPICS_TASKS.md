@@ -3,7 +3,7 @@
 **Project**: Jabodetabek Transit Equity Mapper
 **Linear workspace**: https://linear.app/dhaneswaramandrasa/project/jabodetabek-transit-equity-mapper-64fadf43f309
 **Team**: Product-MVP (MVP)
-**Last synced**: 2026-03-21
+**Last synced**: 2026-03-26
 
 ---
 

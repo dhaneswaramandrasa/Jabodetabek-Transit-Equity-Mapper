@@ -101,6 +101,15 @@ Full conventions in `docs/references/linear-workflow.md`. Summary:
    (branch off main unless ticket is blocked by unmerged branch — then branch off that)
 ```
 
+**MANDATORY — No standalone tickets:**
+Every ticket created via `save_issue` MUST include both:
+- `milestone`: the epic it belongs to (e.g. `"E4 · Paper Drafting"`)
+- `project`: `"Jabodetabek Transit Equity Mapper"`
+
+A ticket without a milestone is invisible in the Linear epic view. Never create one.
+If you're unsure which epic a ticket belongs to, check `docs/EPICS_TASKS.md` — every ticket
+must appear under an `## E{N}` section header before it is created in Linear.
+
 ### While working
 - Add implementation notes as Linear comments
 - If a blocker is found: comment with details, leave status In Progress
@@ -300,6 +309,13 @@ Title: [action-oriented verb phrase]
 
 ## Blocked by
 [ticket ID or "none"]
+```
+
+**When calling `save_issue` to create this ticket, always pass:**
+```
+milestone: "E{N} · {epic name}"          ← required, matches ## header in EPICS_TASKS.md
+project:   "Jabodetabek Transit Equity Mapper"   ← required
+team:      "Product-MVP"                  ← required
 ```
 
 After confirming the full epic/ticket list, create in Linear and bootstrap `docs/`
