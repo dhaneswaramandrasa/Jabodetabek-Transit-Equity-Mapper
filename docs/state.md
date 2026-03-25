@@ -1,7 +1,7 @@
 # Project State
 
 **Last updated**: 2026-03-25
-**Active ticket**: MVP-85 (lit sweep + citation audit) — Done
+**Active ticket**: MVP-86 (gap debate) — Done
 **Branch**: e4/mvp-13-methods-section
 
 ---
@@ -29,7 +29,7 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **MVP-86**: Gap debate (Defender vs. Skeptic) — now unblocked. Inputs: cache/lit-gap-report.md, docs/source-map.md, docs/methodology.md §2.1b-2.1c
+1. **MVP-89**: Dual-agent convergence drafting — Introduction + Discussion (now unblocked). Input: cache/gap-debate-report.md
 2. **E6 continues**: MVP-23 (compute TAI/TNI) — unblocked after PR #10 merge
 3. **E6 gate**: MVP-87 (hypothesis validator) must complete before MVP-14 (Results)
 4. **E5 gate**: MVP-88 (consistency check) must complete before MVP-17 (self-review)
