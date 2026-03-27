@@ -17,14 +17,14 @@
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
-| E6 | Product | Data Pipeline | **In Progress** | 4/8 done |
+| E6 | Product | Data Pipeline | **In Progress** | 5/8 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/4 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/6 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 In Progress) + E6 active (MVP-19–22 Done, MVP-23 next). Parallel tracks running.
-**Last synced**: 2026-03-25
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23 In Review, MVP-24 next). Parallel tracks running.
+**Last synced**: 2026-03-28
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -530,14 +530,19 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-22/assemble-bps-demographics-disaggregate-to-kelurahan-via-worldpop
 
 ### MVP-23 — Compute 5-layer TAI and TNI per kelurahan
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: Urgent
+- **Completed**: 2026-03-28
 - **AC**:
-  - [ ] All 5 TAI layers computed per kelurahan via r5py
-  - [ ] TNI computed (5 indicators)
-  - [ ] Equity gap + quadrant classification
-  - [ ] ~16,200 route queries budgeted (2–4 hours compute)
-  - [ ] Output: `data/processed/scores/`
+  - [x] All 5 TAI layers computed per kelurahan via r5py
+  - [x] TNI computed (5 indicators)
+  - [x] Equity gap + quadrant classification
+  - [x] ~16,200 route queries budgeted (2–4 hours compute)
+  - [x] Output: `data/processed/scores/`
+- **Key files**:
+  - `src/processing/gc_model.py` — Layer 5 generalized cost (transit vs car vs motorcycle)
+  - `src/processing/r5py_batch.py` — Layer 3 CBD journey chain with checkpoint/resume
+  - `src/processing/compute_tai_tni.py` — main pipeline orchestrator (5-layer TAI + TNI)
 - **Blocked by**: MVP-19, MVP-20, MVP-21, MVP-22 (all data acquired)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-23/compute-5-layer-tai-and-tni-per-kelurahan
 
