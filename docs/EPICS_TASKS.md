@@ -15,7 +15,7 @@
 | E1 | Research Framing | Confirm & Formalize E0 Outputs | **Done** | 3/3 done |
 | E2 | Methodology & Data Design | Sign Off Methodology & Schema | **Done** | 3/3 done |
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
-| E4 | Paper | Paper Drafting | **In Progress** | 3/8 done |
+| E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
 | E6 | Product | Data Pipeline | **In Progress** | 4/8 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/4 done |
@@ -368,14 +368,15 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-89/implement-dual-agent-convergence-drafting-for-introduction-discussion
 
 ### MVP-12 — Write introduction
-- **Status**: In Progress
+- **Status**: In Review
 - **Priority**: Medium
+- **Completed**: 2026-03-28
 - **AC**:
   - [x] Problem statement, motivation, RQ (v0.1 at `paper/sections/01-introduction.md` from MVP-89)
   - [x] Contributions framing locked (Gap #2 primary, Gaps #1/#3/#4 extend/integrate)
   - [x] Paper structure overview
   - [x] ~1,820 words (within 1,500–2,000 target)
-  - [ ] Human review + finalization pass
+  - [x] Human review + finalization pass — motorcycle clause added, Section 1.5 expanded, Openshaw added to source-map
 - **Blocked by**: MVP-9 ✅, MVP-10 ✅, MVP-11 ✅, MVP-86 ✅, MVP-89 ✅
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-12/write-introduction
 
