@@ -17,13 +17,13 @@
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
-| E6 | Product | Data Pipeline | **In Progress** | 5/8 done |
+| E6 | Product | Data Pipeline | **In Progress** | 6/8 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/4 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/6 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23 In Review, MVP-24 next). Parallel tracks running.
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23 In Review, MVP-24 In Review, MVP-25 next). Parallel tracks running.
 **Last synced**: 2026-03-28
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
@@ -547,17 +547,20 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-23/compute-5-layer-tai-and-tni-per-kelurahan
 
 ### MVP-24 — Generate H3 grid + derive all indicators via dual methods
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: Urgent
+- **Completed**: 2026-03-28
 - **AC**:
-  - [ ] H3 res-8 grid generated (~15–20k cells)
-  - [ ] Socioeconomic derived via dasymetric (WorldPop)
-  - [ ] Road network via spatial clip
-  - [ ] Stops/POIs via point-in-polygon
-  - [ ] Travel times via r5py from H3 centroids
-  - [ ] TAI/TNI/quadrant at H3 level
-  - [ ] Batch in chunks of 1000; budget 8–16 hours
-  - [ ] Output: `data/processed/scores/`
+  - [x] H3 res-8 grid generated (~15–20k cells)
+  - [x] Socioeconomic derived via dasymetric (WorldPop)
+  - [x] Road network via spatial clip
+  - [x] Stops/POIs via point-in-polygon
+  - [x] Travel times via r5py from H3 centroids
+  - [x] TAI/TNI/quadrant at H3 level
+  - [x] Batch in chunks of 1000; budget 8–16 hours
+  - [x] Output: `data/processed/scores/`
+- **Key files**:
+  - `src/processing/compute_h3.py` — full H3 pipeline (grid gen, dasymetric, road clip, PiP, r5py, TAI/TNI)
 - **Blocked by**: MVP-23 (kelurahan pipeline validated first)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-24/generate-h3-grid-derive-all-indicators-via-dual-methods
 
