@@ -217,7 +217,7 @@ def clip_road_metrics(
     ROAD_FIELDS = [
         "road_length_km",
         "road_density_km_per_km2",
-        "pct_footway",
+        "pct_footway_pedestrian",
         "network_connectivity",
     ]
 
@@ -249,7 +249,7 @@ def clip_road_metrics(
         row["road_length_km"] = grp["road_length_km_h3"].sum()
         row["road_density_km_per_km2"] = row["road_length_km"] / 0.7373  # constant H3 area
         # Area-weighted average for fractional/density metrics
-        for field in ["pct_footway", "network_connectivity"]:
+        for field in ["pct_footway_pedestrian", "network_connectivity"]:
             row[field] = (grp[field] * grp["intersect_area_m2"]).sum() / total_area_m2 if total_area_m2 > 0 else np.nan
         result_rows.append(row)
 
@@ -271,12 +271,32 @@ def assign_transit_stops(
     fare_tier, has_affordable, min_dist_to_transit_m.
     """
     transit_df = pd.read_csv(transit_csv_path)
-    # Expected columns: kelurahan_id, n_stops, min_headway_min, mode_diversity,
-    #   fare_tier, has_affordable, nearest_stop_lat, nearest_stop_lon,
-    #   min_dist_to_transit_m, has_feeder_service
+    # Handle both legacy (kelurahan-aggregated) and current (per-stop) CSV schemas.
+    # Current schema has: stop_lat, stop_lon, avg_headway_min, transit_mode_diversity, fare_tier
+    # Normalise column names to what the aggregation below expects.
+    if "nearest_stop_lon" not in transit_df.columns and "stop_lon" in transit_df.columns:
+        transit_df = transit_df.rename(columns={
+            "stop_lon": "nearest_stop_lon",
+            "stop_lat": "nearest_stop_lat",
+            "avg_headway_min": "min_headway_min",
+            "transit_mode_diversity": "mode_diversity",
+        })
+        # has_affordable: fare_tier <= 2
+        if "has_affordable" not in transit_df.columns:
+            transit_df["has_affordable"] = (transit_df["fare_tier"] <= 2).astype(int)
+        # has_feeder_service: proxy — mode is not BRT/rail
+        if "has_feeder_service" not in transit_df.columns:
+            transit_df["has_feeder_service"] = transit_df.get("mode", pd.Series("", index=transit_df.index)).apply(
+                lambda m: int(str(m).lower() not in ("brt", "rail", "mrt", "lrt", "krl"))
+            )
+        # min_dist_to_transit_m: will be computed after spatial join; placeholder
+        if "min_dist_to_transit_m" not in transit_df.columns:
+            transit_df["min_dist_to_transit_m"] = np.nan
+        # n_stops: each row is one stop
+        if "n_stops" not in transit_df.columns:
+            transit_df["n_stops"] = 1
 
-    # We need stop point geometries for true PiP; use nearest_stop_lat/lon
-    # as the representative stop point per kelurahan
+    # Build stop geometries for PiP
     stop_gdf = gpd.GeoDataFrame(
         transit_df,
         geometry=gpd.points_from_xy(
@@ -288,28 +308,40 @@ def assign_transit_stops(
     h3_proj = h3_gdf[["h3_index", "geometry"]].to_crs("EPSG:32748")
     stops_proj = stop_gdf.to_crs("EPSG:32748")
 
-    # Spatial join: which H3 cell contains each stop centroid?
+    # Compute distance from each stop to nearest H3 centroid (for min_dist fallback)
+    h3_centroids_arr = np.array(
+        [(g.centroid.x, g.centroid.y) for g in h3_proj.geometry]
+    )
+
+    # Spatial join: which H3 cell contains each stop?
     joined = gpd.sjoin(stops_proj, h3_proj, how="left", predicate="within")
 
-    # For cells with no matched stop, fall back to nearest
-    unmatched = joined[joined["index_right"].isna()]
-    if not unmatched.empty:
+    # For stops not within any cell, assign to nearest H3 cell
+    unmatched_mask = joined["index_right"].isna()
+    if unmatched_mask.any():
         from scipy.spatial import cKDTree
-        h3_centroids = np.array(
-            [(g.centroid.x, g.centroid.y) for g in h3_proj.geometry]
-        )
         stop_coords = np.array(
-            [(g.x, g.y) for g in stops_proj.loc[unmatched.index, "geometry"]]
+            [(g.x, g.y) for g in stops_proj.loc[joined.index[unmatched_mask], "geometry"]]
         )
-        tree = cKDTree(h3_centroids)
+        tree = cKDTree(h3_centroids_arr)
         _, idx = tree.query(stop_coords)
-        joined.loc[unmatched.index, "index_right"] = idx
+        # Map positional index → h3_index label
+        h3_index_labels = h3_proj["h3_index"].values
+        joined.loc[joined.index[unmatched_mask], "h3_index"] = h3_index_labels[idx]
+
+    # Compute min_dist_to_transit_m: distance from H3 centroid to its nearest stop
+    # Use already-joined data — for each H3 cell, distance to closest stop within
+    # For cells with stops, this is approximately 0; otherwise use cKDTree fallback below.
+    joined["dist_to_stop_m"] = joined.apply(
+        lambda row: (
+            h3_proj.loc[h3_proj["h3_index"] == row.get("h3_index"), "geometry"]
+            .values[0].centroid.distance(row["geometry"])
+            if row.get("h3_index") in h3_proj["h3_index"].values else np.nan
+        ),
+        axis=1,
+    ) if len(joined) < 500 else pd.Series(np.nan, index=joined.index)
 
     # Aggregate per H3 cell
-    TRANSIT_FIELDS = [
-        "n_stops", "min_headway_min", "mode_diversity",
-        "fare_tier", "has_affordable", "min_dist_to_transit_m", "has_feeder_service",
-    ]
     agg = (
         joined.groupby("h3_index")
         .agg(
@@ -318,12 +350,19 @@ def assign_transit_stops(
             mode_diversity=("mode_diversity", "max"),
             fare_tier=("fare_tier", "min"),
             has_affordable=("has_affordable", "max"),
-            min_dist_to_transit_m=("min_dist_to_transit_m", "min"),
             has_feeder_service=("has_feeder_service", "max"),
         )
         .reset_index()
         .set_index("h3_index")
     )
+    # Compute min_dist_to_transit_m for every H3 cell via cKDTree
+    from scipy.spatial import cKDTree as _cKDTree
+    stop_xy = np.array([(g.x, g.y) for g in stops_proj.geometry])
+    h3_centroid_xy = np.array([(g.centroid.x, g.centroid.y) for g in h3_proj.geometry])
+    _tree = _cKDTree(stop_xy)
+    dist_m, _ = _tree.query(h3_centroid_xy, k=1)
+    h3_dist_series = pd.Series(dist_m, index=h3_proj["h3_index"].values, name="min_dist_to_transit_m")
+    agg["min_dist_to_transit_m"] = h3_dist_series.reindex(agg.index)
 
     # Fill H3 cells with no stops
     all_h3 = h3_gdf.set_index("h3_index")
@@ -475,7 +514,7 @@ def compute_tai_h3(df: pd.DataFrame, travel_times: pd.Series) -> pd.DataFrame:
     # L1 first-mile
     l1 = (
         0.35 * _winsorize_minmax(1.0 / df["min_dist_to_transit_m"].replace(0, np.nan).fillna(5000))
-        + 0.25 * _winsorize_minmax(df["pct_footway"].fillna(0))
+        + 0.25 * _winsorize_minmax(df["pct_footway_pedestrian"].fillna(0))
         + 0.20 * _winsorize_minmax(df["network_connectivity"].fillna(0))
         + 0.20 * _winsorize_minmax(df["has_feeder_service"].fillna(0))
     ).clip(0, 1)
@@ -612,7 +651,7 @@ def run(skip_r5py: bool = False) -> gpd.GeoDataFrame:
                         "population", "poverty_rate", "avg_household_expenditure",
                         "zero_vehicle_hh_pct", "dependency_ratio",
                         "road_length_km", "road_density_km_per_km2",
-                        "pct_footway", "network_connectivity",
+                        "pct_footway_pedestrian", "network_connectivity",
                         "n_stops", "min_headway_min", "mode_diversity",
                         "fare_tier", "has_affordable", "min_dist_to_transit_m",
                         "has_feeder_service"]],

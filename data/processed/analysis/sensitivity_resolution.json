@@ -1,0 +1,22 @@
+{
+  "note": "Full res-7 and res-9 sensitivity requires separate r5py compute runs (res-9 ~60k origins, 24-48h budget). Placeholder values \u2014 run compute_h3.py with H3_RESOLUTION=7 or 9 and populate from output.",
+  "res_7": {
+    "expected_cells": "~3,000-5,000",
+    "gini_tai": null,
+    "q4_count": null,
+    "cohen_kappa_vs_res8": null
+  },
+  "res_8": {
+    "expected_cells": "~15,000-20,000",
+    "gini_tai": -0.12281205728709232,
+    "q4_count": 2541,
+    "is_primary": true
+  },
+  "res_9": {
+    "expected_cells": "~50,000-70,000",
+    "gini_tai": null,
+    "q4_count": null,
+    "cohen_kappa_vs_res8": null,
+    "note": "Stratified sampling fallback recommended for r5py at res-9"
+  }
+}

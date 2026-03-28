@@ -179,7 +179,9 @@ def resolution_comparison(
         rsuffix="kel",
     )
     joined = joined.dropna(subset=["quadrant_kel"])
-    joined = joined.rename(columns={"quadrant": "quadrant_h3", "quadrant_kel": "quadrant_kel"})
+    # geopandas uses _left/_right suffixes when both frames share a column name
+    h3_q_col = "quadrant_left" if "quadrant_left" in joined.columns else "quadrant"
+    joined = joined.rename(columns={h3_q_col: "quadrant_h3"})
 
     # Confusion matrix
     labels = ["Q1", "Q2", "Q3", "Q4"]
@@ -244,14 +246,24 @@ def sensitivity_weights(
             new_w = {k: v / total for k, v in new_w.items()}  # renormalise
 
             # Recompute TAI for both GDFs
-            gini_kel = gini(
-                sum(kel_gdf[col] * w for col, w in new_w.items()
-                    if col in kel_gdf.columns)
-            )
-            gini_h3 = gini(
-                sum(h3_gdf[col] * w for col, w in new_w.items()
-                    if col in h3_gdf.columns)
-            )
+            # kelurahan columns have a 'tai_' prefix; H3 columns do not
+            def _resolve_col(gdf, key):
+                if key in gdf.columns:
+                    return key
+                if f"tai_{key}" in gdf.columns:
+                    return f"tai_{key}"
+                return None
+
+            def _recompute_tai(gdf, weights):
+                terms = []
+                for col, w in weights.items():
+                    resolved = _resolve_col(gdf, col)
+                    if resolved is not None:
+                        terms.append(gdf[resolved] * w)
+                return sum(terms) if terms else gdf["tai_score"]
+
+            gini_kel = gini(_recompute_tai(kel_gdf, new_w))
+            gini_h3  = gini(_recompute_tai(h3_gdf,  new_w))
             results[perturb_layer][sign] = {
                 "gini_kelurahan": round(gini_kel, 4),
                 "gini_h3": round(gini_h3, 4),

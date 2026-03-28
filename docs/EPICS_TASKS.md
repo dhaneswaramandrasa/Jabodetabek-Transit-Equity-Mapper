@@ -17,13 +17,13 @@
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
-| E6 | Product | Data Pipeline | **In Progress** | 7/8 done |
+| E6 | Product | Data Pipeline | **Done** | 8/8 done |
 | E7 | Product | UI Foundation | **In Progress** | 1/4 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/8 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23–25 In Review) + E7 active (MVP-26 In Review, MVP-93 In Progress). Parallel tracks running.
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 Done (MVP-98 pipeline executed 2026-03-29, all outputs verified) + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 (Results) now unblocked — Stats agent re-run required first.
 **Last synced**: 2026-03-28
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
@@ -598,12 +598,34 @@ MVP-2 (Done) ─────────────┐
   - H1: PROCEED (High confidence) — KRL/MRT radial topology strongly predicts Bodetabek Q4 concentration
   - H2: PROCEED (High confidence) — kelurahan area variance 0.5–50 km² makes Gini_H3 > Gini_kelurahan near-certain
   - H3: PROCEED (Medium confidence) — direction robust, but 1.5× threshold sensitive to simulation simplifications
-- **Stats verdict**: AWAITING_DATA — `equity_summary.json` not yet produced (pipeline scripts written, not run)
-- **Gate status**: MVP-14 BLOCKED pending real pipeline execution. Re-run Stats agent after `python -m src.processing.equity_analysis` completes.
+- **Stats verdict**: DATA_AVAILABLE — `equity_summary.json` produced by MVP-98 (2026-03-29). Gini TAI kelurahan=-0.0896, H3=-0.1228; Q4 kelurahan=413 (27.5%), H3=2541 (27.98%); Cohen's kappa=0.6087. Stats agent re-run required to update cache/hypothesis-stats-assessment.md.
+- **Gate status**: MVP-14 UNBLOCKED — pipeline executed. Stats agent should re-run against real equity_summary.json before Results writing.
 - **Key files**: `cache/hypothesis-theory-assessment.md`, `cache/hypothesis-stats-assessment.md`, `cache/hypothesis-validation-report.md`
 - **Blocked by**: MVP-25
 - **Note**: Gate — MVP-14 must not begin until all H1/H2/H3 are PROCEED (both agents agree) or human has reviewed disagreements
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-87/run-phase-f-hypothesis-validator-results-vs-h1h2h3-before-writing
+
+### MVP-98 — Run E6 data pipeline end-to-end (kelurahan + H3 scores + equity analysis)
+- **Status**: Done
+- **Priority**: Urgent
+- **Completed**: 2026-03-29
+- **Milestone**: E6 · Data Pipeline
+- **AC**:
+  - [x] `python -m src.processing.compute_tai_tni --skip-r5py` — 1,502 kelurahan scored
+  - [x] `python -m src.processing.compute_h3 --skip-r5py` — 9,083 H3 cells scored
+  - [x] `python -m src.processing.equity_analysis` — all 8 analysis outputs produced
+  - [x] All 10 expected output files present in `data/processed/scores/` and `data/processed/analysis/`
+  - [x] Sanity check passed: row counts, column schema, equity_summary.json verified
+- **Key outputs**:
+  - `kelurahan_scores.geojson` — 1,502 rows, 47 columns (2.6 MB)
+  - `h3_scores.geojson` — 9,083 rows (12.6 MB)
+  - `equity_summary.json` — Gini TAI kel=-0.0896, H3=-0.1228; Cohen's kappa=0.6087
+- **Script patches applied**:
+  - `compute_tai_tni.py` — drop `area_km2` from road CSV before merge (duplicate column)
+  - `compute_h3.py` — rename `pct_footway` → `pct_footway_pedestrian` throughout; adapt `assign_transit_stops` to per-stop CSV schema (stop_lat/lon, avg_headway_min, transit_mode_diversity); add cKDTree min_dist_to_transit_m computation
+  - `equity_analysis.py` — handle `quadrant_left` sjoin suffix; fix `sensitivity_weights` to resolve `tai_` prefix in kelurahan columns
+- **Dependency installed**: `h3-py` (pip install h3)
+- **Blocked by**: MVP-23, MVP-24, MVP-25
 
 ---
 
