@@ -18,7 +18,7 @@
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
 | E6 | Product | Data Pipeline | **In Progress** | 7/8 done |
-| E7 | Product | UI Foundation | Blocked (E6) | 0/4 done |
+| E7 | Product | UI Foundation | **In Progress** | 1/4 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/6 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
@@ -616,15 +616,25 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-90/implement-personagoal-selection-entry-screen
 
 ### MVP-26 — Audit existing prototype against new methodology
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
+- **Completed**: 2026-03-28
 - **AC**:
-  - [ ] Current data model documented
-  - [ ] Gap analysis for new fields
-  - [ ] Component audit
-  - [ ] API route audit
-  - [ ] Zustand store audit
-  - [ ] Migration plan produced
+  - [x] Current data model documented
+  - [x] Gap analysis for new fields
+  - [x] Component audit
+  - [x] API route audit
+  - [x] Zustand store audit
+  - [x] Migration plan produced
+- **Key findings**:
+  - **POI model wrong**: prototype uses count-by-threshold (`hospital_30min`); schema needs travel-time values (`poi_reach_*_min`)
+  - **All L1–L5 TAI inputs absent** from store and components
+  - **Layer 5 GC fields absent**: `gc_transit_idr`, `gc_car_idr`, `gc_motorcycle_idr`, `tcr_*` all missing
+  - **Quadrant enum mismatch**: `"transit-desert"` → `Q4`; touches every component
+  - **Score scale mismatch**: 0–100 vs [0,1]
+  - **Migration effort: Large** — architecture (DeckGL + Zustand + Next.js) is correct; data model touches every component
+  - Critical path: rewrite `lib/store.ts` HexProperties → replace GeoJSON → update all field references
+- **Key files**: `docs/prototype-audit.md`
 - **Blocked by**: MVP-82 (DATA_MODEL.md signed off)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-26/audit-existing-prototype-against-new-methodology
 
