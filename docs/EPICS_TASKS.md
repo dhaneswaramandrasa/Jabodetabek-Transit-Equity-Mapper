@@ -17,13 +17,13 @@
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
-| E6 | Product | Data Pipeline | **In Progress** | 6/8 done |
+| E6 | Product | Data Pipeline | **In Progress** | 7/8 done |
 | E7 | Product | UI Foundation | Blocked (E6) | 0/4 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/6 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23 In Review, MVP-24 In Review, MVP-25 next). Parallel tracks running.
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23–25 In Review, MVP-26 next). Parallel tracks running.
 **Last synced**: 2026-03-28
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
@@ -565,15 +565,19 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-24/generate-h3-grid-derive-all-indicators-via-dual-methods
 
 ### MVP-25 — Compute equity gap, Gini, LISA at both resolutions
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
+- **Completed**: 2026-03-28
 - **AC**:
-  - [ ] Gini coefficients at both resolutions
-  - [ ] Lorenz curve data
-  - [ ] Global + local Moran's I (LISA clusters)
-  - [ ] Resolution comparison: confusion matrix, reclassified areas
-  - [ ] Sensitivity analysis: weights ±20%, H3 res 7 and 9
-  - [ ] Output: `data/processed/analysis/`
+  - [x] Gini coefficients at both resolutions
+  - [x] Lorenz curve data
+  - [x] Global + local Moran's I (LISA clusters)
+  - [x] Resolution comparison: confusion matrix, reclassified areas
+  - [x] Sensitivity analysis: weights ±20%, H3 res 7 and 9
+  - [x] Output: `data/processed/analysis/`
+- **Key files**:
+  - `src/processing/equity_analysis.py` — Gini, Lorenz, global/local Moran's I, Cohen's kappa, weight sensitivity
+- **Outputs**: `equity_summary.json`, `lorenz_kelurahan.csv`, `lorenz_h3.csv`, `lisa_kelurahan.geojson`, `lisa_h3.geojson`, `resolution_comparison.json`, `sensitivity_weights.json`, `sensitivity_resolution.json`
 - **Blocked by**: MVP-23, MVP-24
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
 
