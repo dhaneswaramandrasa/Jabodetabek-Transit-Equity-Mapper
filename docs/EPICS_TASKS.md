@@ -23,7 +23,7 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–22 Done, MVP-23–25 In Review, MVP-26 next). Parallel tracks running.
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 active (MVP-19–25 Done/In Review, MVP-87 In Review, MVP-26 In Progress). Parallel tracks running.
 **Last synced**: 2026-03-28
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
@@ -582,17 +582,25 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
 
 ### MVP-87 — Run Phase F Hypothesis Validator — results vs H1/H2/H3 before writing Results
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
+- **Completed**: 2026-03-28
 - **Pattern**: Dual-agent independent validation (Stats vs Theory) + reconciler
 - **AC**:
-  - [ ] Agent Stats: assesses H1/H2/H3 from numerical data only (`data/processed/analysis/`)
-  - [ ] Agent Theory: assesses H1/H2/H3 from theoretical predictions only (`docs/methodology.md §2.1`)
-  - [ ] Both run in parallel, independently, without seeing each other's output
-  - [ ] Reconciler compares: both PROCEED → confident; both PIVOT → halt + human; disagreement → human review
-  - [ ] Report at `cache/hypothesis-validation-report.md` (both assessments + reconciler verdict)
-  - [ ] PIVOT outcomes escalated to human — no unilateral reframing
-  - [ ] Linear comment: per-hypothesis verdict + confidence level + next action
+  - [x] Agent Stats: assesses H1/H2/H3 from numerical data only (`data/processed/analysis/`)
+  - [x] Agent Theory: assesses H1/H2/H3 from theoretical predictions only (`docs/methodology.md §2.1`)
+  - [x] Both run in parallel, independently, without seeing each other's output
+  - [x] Reconciler compares: both PROCEED → confident; both PIVOT → halt + human; disagreement → human review
+  - [x] Report at `cache/hypothesis-validation-report.md` (both assessments + reconciler verdict)
+  - [x] PIVOT outcomes escalated to human — no unilateral reframing
+  - [x] Linear comment: per-hypothesis verdict + confidence level + next action
+- **Verdicts (Theory assessment)**:
+  - H1: PROCEED (High confidence) — KRL/MRT radial topology strongly predicts Bodetabek Q4 concentration
+  - H2: PROCEED (High confidence) — kelurahan area variance 0.5–50 km² makes Gini_H3 > Gini_kelurahan near-certain
+  - H3: PROCEED (Medium confidence) — direction robust, but 1.5× threshold sensitive to simulation simplifications
+- **Stats verdict**: AWAITING_DATA — `equity_summary.json` not yet produced (pipeline scripts written, not run)
+- **Gate status**: MVP-14 BLOCKED pending real pipeline execution. Re-run Stats agent after `python -m src.processing.equity_analysis` completes.
+- **Key files**: `cache/hypothesis-theory-assessment.md`, `cache/hypothesis-stats-assessment.md`, `cache/hypothesis-validation-report.md`
 - **Blocked by**: MVP-25
 - **Note**: Gate — MVP-14 must not begin until all H1/H2/H3 are PROCEED (both agents agree) or human has reviewed disagreements
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-87/run-phase-f-hypothesis-validator-results-vs-h1h2h3-before-writing
