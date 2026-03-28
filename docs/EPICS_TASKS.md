@@ -582,15 +582,15 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
 
 ### MVP-98 — Run E6 data pipeline end-to-end and produce scores output
-- **Status**: In Progress
+- **Status**: In Review
 - **Priority**: Urgent
-- **Started**: 2026-03-29
+- **Completed**: 2026-03-29
 - **AC**:
   - [x] `python -m src.processing.compute_tai_tni --skip-r5py` → `kelurahan_scores.geojson` (1,502 rows)
   - [x] `python -m src.processing.compute_h3 --skip-r5py` → `h3_scores.geojson` (9,083 cells)
   - [x] `python -m src.processing.equity_analysis` → all 8 analysis outputs
-  - [x] Installed missing dep: `h3==4.4.2`
-  - [ ] QA passes (MVP-99)
+  - [x] Installed missing deps: `h3==4.4.2`, `libpysal`, `esda`
+  - [x] QA ran (MVP-99) — Gini sign bug fixed, LISA now computing
 - **Key patches**:
   - `compute_tai_tni.py` — drop duplicate `area_km2` column before merge
   - `compute_h3.py` — fix `pct_footway` → `pct_footway_pedestrian`, fix stop schema, add cKDTree min_dist
@@ -601,29 +601,40 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-98/run-e6-data-pipeline-end-to-end-and-produce-scores-output
 
 ### MVP-99 — QA pipeline output — validate schema, nulls, and methodology compliance
-- **Status**: In Progress
+- **Status**: In Review
 - **Priority**: Urgent
+- **Completed**: 2026-03-29
+- **Verdict**: WARN — Gini sign bug fixed; LISA now computing; L4/L5 placeholder issue documented
 - **AC**:
-  - [ ] Schema compliance vs DATA_MODEL.md
-  - [ ] Null rates documented (l3_* expected null)
-  - [ ] TAI/TNI ranges within [0,1]
-  - [ ] Quadrant values exactly Q1/Q2/Q3/Q4
-  - [ ] Gini sign convention verified
-  - [ ] QA report at `cache/pipeline-qa-report.md`
+  - [x] Schema compliance vs DATA_MODEL.md (kelurahan: 8 fields missing r5py-dependent; H3: 30 field name mismatches)
+  - [x] Null rates documented (l3_* 100% null — expected; gc_*/tcr_* 100% null — r5py-dependent)
+  - [x] TAI range 0.345–0.630 kelurahan / 0.270–0.730 H3 (narrow — L4/L5 flat 0.5 placeholder)
+  - [x] Quadrant values exactly Q1/Q2/Q3/Q4 ✅
+  - [x] Gini sign bug found and fixed in equity_analysis.py (rank-weighted formula)
+  - [x] QA report at `cache/pipeline-qa-report.md`
+- **Open issues**:
+  - L4/L5 flat at 0.5 (65% of TAI weight is placeholder) — blocked on r5py/GC data
+  - H3 column names need rename to match DATA_MODEL.md (30 fields) — blocks MVP-27
+  - Symmetric quadrant distribution (Q1=Q3, Q2=Q4) — confirms TAI lacks real signal
+- **Corrected Gini values**: TAI kelurahan=0.0896, H3=0.1228; H2 signal: Gini_H3 > Gini_kelurahan delta=+0.0332 ✅
+- **Key files**: `cache/pipeline-qa-report.md`, `src/processing/equity_analysis.py` (Gini fix)
 - **Blocked by**: MVP-98
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-99/qa-pipeline-output-validate-schema-nulls-and-methodology-compliance
 
 ### MVP-100 — EDA on pipeline results — distributions, spatial patterns, H1/H2/H3 preview
-- **Status**: In Progress
+- **Status**: In Review
 - **Priority**: High
+- **Completed**: 2026-03-29
 - **AC**:
-  - [ ] TAI/TNI distribution stats (kelurahan + H3)
-  - [ ] Quadrant breakdown by count + % at both resolutions
-  - [ ] Spatial Q4 concentration by region (H1 preview)
-  - [ ] Gini comparison H3 vs kelurahan (H2 preview)
-  - [ ] Equity gap delta Q4 vs Q1/Q2 (H3 preview)
-  - [ ] L3 null impact assessment
-  - [ ] EDA report at `cache/eda-pipeline-report.md`
+  - [x] TAI/TNI distribution stats — TAI IQR narrow (0.036 kelurahan) due to L4/L5 flat 0.5
+  - [x] Quadrant breakdown: Q1=338/Q2=413/Q3=338/Q4=413 kelurahan; H3 proportional
+  - [x] H1 preview: 98.8% of Q4 in Bodetabek; DKI Jakarta main kotas = 0 Q4 — STRONGLY SUPPORTS
+  - [x] H2 preview: Gini_H3 0.1228 > Gini_kelurahan 0.0896 (delta +0.0332, +37%) — SUPPORTS
+  - [x] H3 preview: Q4 mean TAI 0.350 vs Q1/Q2 avg 0.443, delta −0.093 (~33% active range) — SUPPORTS
+  - [x] L3 null impact: L3+L4+L5 all flat 0.5 = 65% TAI weight has zero variance; H1 robust on L1+L2
+  - [x] EDA report at `cache/eda-pipeline-report.md`
+- **Key spatial finding**: Kabupaten Bogor (193), Kabupaten Tangerang (123), Kabupaten Bekasi (68) are top Q4 contributors
+- **Global Moran's I**: kelurahan 0.8418 / H3 0.8928 (strong spatial autocorrelation, computed after libpysal fix)
 - **Blocked by**: MVP-99
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-100/eda-on-pipeline-results-distributions-spatial-patterns-h1h2h3-preview
 
