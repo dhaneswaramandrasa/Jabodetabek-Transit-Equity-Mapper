@@ -60,8 +60,8 @@ def gini(series: pd.Series) -> float:
     n = len(s)
     if n == 0 or s.sum() == 0:
         return float("nan")
-    cumsum = np.cumsum(s)
-    return float((2 * np.sum(cumsum) / cumsum[-1] / n) - (n + 1) / n)
+    # Rank-weighted formula: G = (2 * sum(i * x_i)) / (n * sum(x_i)) - (n+1)/n
+    return float((2 * np.sum(np.arange(1, n + 1) * s) / (n * s.sum())) - (n + 1) / n)
 
 
 def lorenz_curve(series: pd.Series) -> pd.DataFrame:

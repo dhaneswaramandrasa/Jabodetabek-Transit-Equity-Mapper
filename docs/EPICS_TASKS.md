@@ -581,6 +581,52 @@ MVP-2 (Done) ─────────────┐
 - **Blocked by**: MVP-23, MVP-24
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
 
+### MVP-98 — Run E6 data pipeline end-to-end and produce scores output
+- **Status**: In Progress
+- **Priority**: Urgent
+- **Started**: 2026-03-29
+- **AC**:
+  - [x] `python -m src.processing.compute_tai_tni --skip-r5py` → `kelurahan_scores.geojson` (1,502 rows)
+  - [x] `python -m src.processing.compute_h3 --skip-r5py` → `h3_scores.geojson` (9,083 cells)
+  - [x] `python -m src.processing.equity_analysis` → all 8 analysis outputs
+  - [x] Installed missing dep: `h3==4.4.2`
+  - [ ] QA passes (MVP-99)
+- **Key patches**:
+  - `compute_tai_tni.py` — drop duplicate `area_km2` column before merge
+  - `compute_h3.py` — fix `pct_footway` → `pct_footway_pedestrian`, fix stop schema, add cKDTree min_dist
+  - `equity_analysis.py` — fix sjoin suffix, fix tai_ column prefix in sensitivity
+- **Key numbers**: Q4 = 413 kelurahan (27.5%) / 2,541 H3 (27.98%); Gini TAI kelurahan=-0.0896 H3=-0.1228 (sign check needed); Cohen's kappa=0.6087
+- **Note**: L3 null for all rows (--skip-r5py); r5py requires Java + R5 JAR not available in env
+- **Blocked by**: MVP-25
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-98/run-e6-data-pipeline-end-to-end-and-produce-scores-output
+
+### MVP-99 — QA pipeline output — validate schema, nulls, and methodology compliance
+- **Status**: In Progress
+- **Priority**: Urgent
+- **AC**:
+  - [ ] Schema compliance vs DATA_MODEL.md
+  - [ ] Null rates documented (l3_* expected null)
+  - [ ] TAI/TNI ranges within [0,1]
+  - [ ] Quadrant values exactly Q1/Q2/Q3/Q4
+  - [ ] Gini sign convention verified
+  - [ ] QA report at `cache/pipeline-qa-report.md`
+- **Blocked by**: MVP-98
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-99/qa-pipeline-output-validate-schema-nulls-and-methodology-compliance
+
+### MVP-100 — EDA on pipeline results — distributions, spatial patterns, H1/H2/H3 preview
+- **Status**: In Progress
+- **Priority**: High
+- **AC**:
+  - [ ] TAI/TNI distribution stats (kelurahan + H3)
+  - [ ] Quadrant breakdown by count + % at both resolutions
+  - [ ] Spatial Q4 concentration by region (H1 preview)
+  - [ ] Gini comparison H3 vs kelurahan (H2 preview)
+  - [ ] Equity gap delta Q4 vs Q1/Q2 (H3 preview)
+  - [ ] L3 null impact assessment
+  - [ ] EDA report at `cache/eda-pipeline-report.md`
+- **Blocked by**: MVP-99
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-100/eda-on-pipeline-results-distributions-spatial-patterns-h1h2h3-preview
+
 ### MVP-87 — Run Phase F Hypothesis Validator — results vs H1/H2/H3 before writing Results
 - **Status**: In Review
 - **Priority**: High

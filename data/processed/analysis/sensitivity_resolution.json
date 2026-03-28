@@ -8,7 +8,7 @@
   },
   "res_8": {
     "expected_cells": "~15,000-20,000",
-    "gini_tai": -0.12281205728709232,
+    "gini_tai": 0.12281205728709477,
     "q4_count": 2541,
     "is_primary": true
   },
