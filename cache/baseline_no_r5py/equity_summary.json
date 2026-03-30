@@ -1,0 +1,102 @@
+{
+  "resolution_primary": "H3 res-8",
+  "kelurahan": {
+    "n": 1502,
+    "gini_tai": 0.0896,
+    "gini_tni": 0.1091,
+    "gini_equity_gap": 0.3471,
+    "global_morans_i_tai": {
+      "moran_i": 0.8418,
+      "p_value": 0.001,
+      "z_score": 47.8497
+    },
+    "global_morans_i_equity_gap": {
+      "moran_i": 0.4934,
+      "p_value": 0.001,
+      "z_score": 28.0623
+    },
+    "quadrant_counts": {
+      "Q2": 413,
+      "Q4": 413,
+      "Q1": 338,
+      "Q3": 338
+    },
+    "q4_pct": 27.5,
+    "lisa_cluster_counts": {
+      "NS": 1022,
+      "LL": 242,
+      "HH": 177,
+      "LH": 35,
+      "HL": 26
+    }
+  },
+  "h3": {
+    "n": 9083,
+    "gini_tai": 0.1228,
+    "gini_tni": 0.1106,
+    "gini_equity_gap": 0.3318,
+    "global_morans_i_tai": {
+      "moran_i": 0.8928,
+      "p_value": 0.001,
+      "z_score": 144.4702
+    },
+    "global_morans_i_equity_gap": {
+      "moran_i": 0.8351,
+      "p_value": 0.001,
+      "z_score": 135.1409
+    },
+    "quadrant_counts": {
+      "Q2": 2541,
+      "Q4": 2541,
+      "Q1": 2001,
+      "Q3": 2000
+    },
+    "q4_pct": 27.98,
+    "lisa_cluster_counts": {
+      "NS": 5284,
+      "HH": 2200,
+      "LL": 1565,
+      "HL": 29,
+      "LH": 5
+    }
+  },
+  "resolution_comparison": {
+    "confusion_matrix": {
+      "Q1": {
+        "Q1": 1353,
+        "Q2": 88,
+        "Q3": 50,
+        "Q4": 524
+      },
+      "Q2": {
+        "Q1": 315,
+        "Q2": 1511,
+        "Q3": 641,
+        "Q4": 102
+      },
+      "Q3": {
+        "Q1": 45,
+        "Q2": 167,
+        "Q3": 1500,
+        "Q4": 299
+      },
+      "Q4": {
+        "Q1": 320,
+        "Q2": 16,
+        "Q3": 113,
+        "Q4": 2106
+      }
+    },
+    "cohen_kappa": 0.6087,
+    "pct_reclassified": 29.29,
+    "q4_count_kelurahan": 413,
+    "q4_count_h3": 2541,
+    "total_kelurahan": 1502,
+    "total_h3": 9083
+  },
+  "h2_hypothesis_signal": {
+    "gini_h3_gt_kelurahan": true,
+    "gini_delta": 0.0332,
+    "kappa_interpretation": "strong"
+  }
+}

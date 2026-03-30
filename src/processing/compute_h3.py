@@ -411,12 +411,10 @@ def compute_h3_travel_times(
     origins = origins.rename(columns={"h3_index": "id"})
 
     # Load CBD zones + weights
-    from .r5py_batch import CBD_WEIGHTS, DEPARTURE_DATE, DEPARTURE_WINDOW_MIN
+    from .r5py_batch import DEPARTURE_DATE, DEPARTURE_WINDOW_MIN
     cbd_gdf = gpd.read_file(cbd_zones_path).to_crs("EPSG:4326")
     cbd_gdf["centroid"] = cbd_gdf.geometry.centroid
-    cbd_gdf["weight"] = cbd_gdf["zone_name"].map(CBD_WEIGHTS).fillna(1)
-
-    TOTAL_WEIGHT = sum(CBD_WEIGHTS.values())
+    cbd_gdf["weight"] = cbd_gdf["gravity_weight"].fillna(1)
 
     # Load existing H3 checkpoints
     done_ids: set = set()
@@ -434,7 +432,7 @@ def compute_h3_travel_times(
 
     # Build transport network once
     logger.info("Building r5py transport network for H3 routing...")
-    gtfs_paths = list(GTFS_DIR.glob("*.zip"))
+    gtfs_paths = list(GTFS_DIR.glob("**/*.zip"))
     transport_network = r5py.TransportNetwork(OSM_PBF, gtfs_paths)
 
     batches = [
@@ -443,28 +441,33 @@ def compute_h3_travel_times(
     ]
     for batch_idx, batch in enumerate(batches):
         logger.info(f"H3 batch {batch_idx + 1}/{len(batches)} — {len(batch):,} centroids")
-        ttm = r5py.TravelTimeMatrixComputer(
+        ttm = r5py.TravelTimeMatrix(
             transport_network,
             origins=batch,
-            destinations=cbd_gdf[["zone_name", "centroid"]].rename(
-                columns={"zone_name": "id", "centroid": "geometry"}
+            destinations=gpd.GeoDataFrame(
+                cbd_gdf[["cbd_id", "centroid"]].rename(
+                    columns={"cbd_id": "id", "centroid": "geometry"}
+                ),
+                geometry="geometry", crs="EPSG:4326",
             ),
             departure=DEPARTURE_DATE,
             departure_time_window=timedelta(minutes=DEPARTURE_WINDOW_MIN),
-            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT],
+            access_modes=[r5py.TransportMode.WALK],
+            egress_modes=[r5py.TransportMode.WALK],
             max_time=timedelta(minutes=120),
             percentiles=[50],
-        ).compute_travel_times()
+        )
 
         ttm = ttm.merge(
-            cbd_gdf[["zone_name", "weight"]].rename(columns={"zone_name": "to_id"}),
+            cbd_gdf[["cbd_id", "weight"]].rename(columns={"cbd_id": "to_id"}),
             on="to_id",
             how="left",
         )
         batch_result = (
             ttm.groupby("from_id")
             .apply(
-                lambda g: (g["travel_time_p50"] * g["weight"]).sum() / g["weight"].sum()
+                lambda g: (g["travel_time"].dropna() * g.loc[g["travel_time"].notna(), "weight"]).sum() / g.loc[g["travel_time"].notna(), "weight"].sum() if g["travel_time"].notna().any() else float("nan")
             )
             .reset_index()
             .rename(columns={"from_id": "h3_index", 0: "poi_reach_cbd_weighted"})

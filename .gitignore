@@ -9,9 +9,13 @@ __pycache__/
 # Large data files (download via pipeline scripts)
 data/raw/boundaries/gadm41_IDN_4.json.zip
 data/raw/osm/
+data/raw/networks/
 data/raw/worldpop/
 data/raw/poi/*.json
 data/processed/networks/jabodetabek_roads.geojson
+
+# Large cached intermediates
+cache/baseline_no_r5py/*.geojson
 
 # AutoResearchClaw runtime cache (WebFetch cache — not research outputs)
 cache/*.json

@@ -305,7 +305,7 @@ def run(skip_r5py: bool = False) -> gpd.GeoDataFrame:
         logger.warning("--skip-r5py: L3 set to null (0.5 placeholder). Run without flag for real compute.")
         cbd_times = pd.Series(dtype=float)
     else:
-        gtfs_list = sorted(GTFS_DIR.glob("*.zip"))
+        gtfs_list = sorted(GTFS_DIR.glob("**/*.zip"))
         if not gtfs_list or not OSM_PBF.exists():
             logger.warning(
                 f"GTFS files or OSM PBF missing — skipping r5py.\n"

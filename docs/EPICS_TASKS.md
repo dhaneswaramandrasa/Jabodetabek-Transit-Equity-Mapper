@@ -23,8 +23,8 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 Done (MVP-98 pipeline executed 2026-03-29, all outputs verified) + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 (Results) now unblocked — Stats agent re-run required first.
-**Last synced**: 2026-03-28
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 Done (MVP-98 pipeline executed with r5py 2026-03-30, equity analysis re-run) + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 (Results) now unblocked — Stats agent re-run required first. r5py comparison + EDA Jupyter notebooks created.
+**Last synced**: 2026-03-30
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -584,39 +584,42 @@ MVP-2 (Done) ─────────────┐
 ### MVP-98 — Run E6 data pipeline end-to-end and produce scores output
 - **Status**: In Review
 - **Priority**: Urgent
-- **Completed**: 2026-03-29
+- **Completed**: 2026-03-30 (r5py re-run)
 - **AC**:
-  - [x] `python -m src.processing.compute_tai_tni --skip-r5py` → `kelurahan_scores.geojson` (1,502 rows)
-  - [x] `python -m src.processing.compute_h3 --skip-r5py` → `h3_scores.geojson` (9,083 cells)
-  - [x] `python -m src.processing.equity_analysis` → all 8 analysis outputs
+  - [x] `python -m src.processing.compute_tai_tni` → `kelurahan_scores.geojson` (1,502 rows) — with r5py L3
+  - [x] `python -m src.processing.compute_h3 --skip-r5py` → `h3_scores.geojson` (9,083 cells) — H3 still no r5py
+  - [x] `python -m src.processing.equity_analysis` → all 8 analysis outputs — re-run with r5py data
   - [x] Installed missing deps: `h3==4.4.2`, `libpysal`, `esda`
   - [x] QA ran (MVP-99) — Gini sign bug fixed, LISA now computing
+  - [x] r5py pipeline: 31 batches processed, L3 CBD journey now uses real routing
+  - [x] Baseline cached in `cache/baseline_no_r5py/` for comparison
 - **Key patches**:
   - `compute_tai_tni.py` — drop duplicate `area_km2` column before merge
   - `compute_h3.py` — fix `pct_footway` → `pct_footway_pedestrian`, fix stop schema, add cKDTree min_dist
   - `equity_analysis.py` — fix sjoin suffix, fix tai_ column prefix in sensitivity
-- **Key numbers**: Q4 = 413 kelurahan (27.5%) / 2,541 H3 (27.98%); Gini TAI kelurahan=-0.0896 H3=-0.1228 (sign check needed); Cohen's kappa=0.6087
-- **Note**: L3 null for all rows (--skip-r5py); r5py requires Java + R5 JAR not available in env
+- **Key numbers (r5py)**: Q4 = 415 kelurahan (27.6%) / 2,541 H3 (27.98%); Gini TAI kelurahan=0.2441 H3=0.1228; Cohen's kappa=0.6094
+- **r5py impact**: TAI mean 0.397→0.256 (-35%), Gini 0.0896→0.2441 (+172%), Moran's I 0.8418→0.8876
+- **Note**: L4/L5 still placeholder 0.5; H3 not yet re-run with r5py
 - **Blocked by**: MVP-25
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-98/run-e6-data-pipeline-end-to-end-and-produce-scores-output
 
 ### MVP-99 — QA pipeline output — validate schema, nulls, and methodology compliance
 - **Status**: In Review
 - **Priority**: Urgent
-- **Completed**: 2026-03-29
-- **Verdict**: WARN — Gini sign bug fixed; LISA now computing; L4/L5 placeholder issue documented
+- **Completed**: 2026-03-29 (initial), updated 2026-03-30 (r5py re-run)
+- **Verdict**: WARN → IMPROVED — r5py L3 now active; Gini sign bug fixed; L4/L5 still placeholder
 - **AC**:
   - [x] Schema compliance vs DATA_MODEL.md (kelurahan: 8 fields missing r5py-dependent; H3: 30 field name mismatches)
-  - [x] Null rates documented (l3_* 100% null — expected; gc_*/tcr_* 100% null — r5py-dependent)
-  - [x] TAI range 0.345–0.630 kelurahan / 0.270–0.730 H3 (narrow — L4/L5 flat 0.5 placeholder)
+  - [x] Null rates documented (l3_* now populated via r5py; gc_*/tcr_* still null)
+  - [x] TAI range 0.170–0.796 kelurahan (wider with r5py) / 0.270–0.730 H3
   - [x] Quadrant values exactly Q1/Q2/Q3/Q4 ✅
   - [x] Gini sign bug found and fixed in equity_analysis.py (rank-weighted formula)
   - [x] QA report at `cache/pipeline-qa-report.md`
 - **Open issues**:
-  - L4/L5 flat at 0.5 (65% of TAI weight is placeholder) — blocked on r5py/GC data
+  - L4/L5 flat at 0.5 (30% of TAI weight is placeholder) — L3 now resolved via r5py
   - H3 column names need rename to match DATA_MODEL.md (30 fields) — blocks MVP-27
-  - Symmetric quadrant distribution (Q1=Q3, Q2=Q4) — confirms TAI lacks real signal
-- **Corrected Gini values**: TAI kelurahan=0.0896, H3=0.1228; H2 signal: Gini_H3 > Gini_kelurahan delta=+0.0332 ✅
+  - H3 not yet re-run with r5py — H2 comparison invalid until done
+- **Corrected Gini values (r5py)**: TAI kelurahan=0.2441, H3=0.1228; H2 signal reversed at kelurahan level
 - **Key files**: `cache/pipeline-qa-report.md`, `src/processing/equity_analysis.py` (Gini fix)
 - **Blocked by**: MVP-98
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-99/qa-pipeline-output-validate-schema-nulls-and-methodology-compliance
@@ -624,17 +627,17 @@ MVP-2 (Done) ─────────────┐
 ### MVP-100 — EDA on pipeline results — distributions, spatial patterns, H1/H2/H3 preview
 - **Status**: In Review
 - **Priority**: High
-- **Completed**: 2026-03-29
+- **Completed**: 2026-03-30 (redone as Jupyter notebooks with visualizations)
 - **AC**:
-  - [x] TAI/TNI distribution stats — TAI IQR narrow (0.036 kelurahan) due to L4/L5 flat 0.5
-  - [x] Quadrant breakdown: Q1=338/Q2=413/Q3=338/Q4=413 kelurahan; H3 proportional
-  - [x] H1 preview: 98.8% of Q4 in Bodetabek; DKI Jakarta main kotas = 0 Q4 — STRONGLY SUPPORTS
-  - [x] H2 preview: Gini_H3 0.1228 > Gini_kelurahan 0.0896 (delta +0.0332, +37%) — SUPPORTS
-  - [x] H3 preview: Q4 mean TAI 0.350 vs Q1/Q2 avg 0.443, delta −0.093 (~33% active range) — SUPPORTS
-  - [x] L3 null impact: L3+L4+L5 all flat 0.5 = 65% TAI weight has zero variance; H1 robust on L1+L2
-  - [x] EDA report at `cache/eda-pipeline-report.md`
-- **Key spatial finding**: Kabupaten Bogor (193), Kabupaten Tangerang (123), Kabupaten Bekasi (68) are top Q4 contributors
-- **Global Moran's I**: kelurahan 0.8418 / H3 0.8928 (strong spatial autocorrelation, computed after libpysal fix)
+  - [x] TAI/TNI distribution stats — TAI range now 0.170–0.796 with r5py (was 0.345–0.630)
+  - [x] Quadrant breakdown: Q1=336/Q2=417/Q3=334/Q4=415 kelurahan (r5py)
+  - [x] H1 preview: Bodetabek Q4 >> DKI Jakarta Q4 — STRONGLY SUPPORTS
+  - [x] H2 preview: Gini_kelurahan (0.2441) > Gini_H3 (0.1228) — REVERSED (H3 needs r5py re-run)
+  - [x] H3 preview: Q4 equity gap > Q1/Q2 — SUPPORTS
+  - [x] EDA Jupyter notebook: `notebooks/eda_pipeline_output.ipynb` with full visualizations
+  - [x] Comparison notebook: `notebooks/comparison_r5py_vs_baseline.ipynb` — r5py vs no-r5py
+- **Key r5py impact**: Gini TAI kelurahan 0.0896→0.2441 (+172%), TAI mean 0.397→0.256, Moran's I 0.8418→0.8876
+- **Global Moran's I**: kelurahan 0.8876 / H3 0.8928 (strong spatial autocorrelation)
 - **Blocked by**: MVP-99
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-100/eda-on-pipeline-results-distributions-spatial-patterns-h1h2h3-preview
 
@@ -655,7 +658,7 @@ MVP-2 (Done) ─────────────┐
   - H1: PROCEED (High confidence) — KRL/MRT radial topology strongly predicts Bodetabek Q4 concentration
   - H2: PROCEED (High confidence) — kelurahan area variance 0.5–50 km² makes Gini_H3 > Gini_kelurahan near-certain
   - H3: PROCEED (Medium confidence) — direction robust, but 1.5× threshold sensitive to simulation simplifications
-- **Stats verdict**: DATA_AVAILABLE — `equity_summary.json` produced by MVP-98 (2026-03-29). Gini TAI kelurahan=-0.0896, H3=-0.1228; Q4 kelurahan=413 (27.5%), H3=2541 (27.98%); Cohen's kappa=0.6087. Stats agent re-run required to update cache/hypothesis-stats-assessment.md.
+- **Stats verdict**: DATA_AVAILABLE — `equity_summary.json` re-run with r5py (2026-03-30). Gini TAI kelurahan=0.2441, H3=0.1228; Q4 kelurahan=415 (27.6%), H3=2541 (27.98%); Cohen's kappa=0.6094. Stats agent re-run required to update cache/hypothesis-stats-assessment.md.
 - **Gate status**: MVP-14 UNBLOCKED — pipeline executed. Stats agent should re-run against real equity_summary.json before Results writing.
 - **Key files**: `cache/hypothesis-theory-assessment.md`, `cache/hypothesis-stats-assessment.md`, `cache/hypothesis-validation-report.md`
 - **Blocked by**: MVP-25
