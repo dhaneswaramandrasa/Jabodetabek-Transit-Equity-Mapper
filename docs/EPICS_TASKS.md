@@ -23,8 +23,8 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 Done (MVP-98 pipeline executed with r5py 2026-03-30, equity analysis re-run) + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 (Results) now unblocked — Stats agent re-run required first. r5py comparison + EDA Jupyter notebooks created.
-**Last synced**: 2026-03-30
+**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 Done (MVP-98 pipeline fully executed with r5py at BOTH resolutions 2026-04-01 — H2 CONFIRMED) + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 (Results) now unblocked — Stats agent re-run required with updated equity_summary.json (Gini_H3=0.6128).
+**Last synced**: 2026-04-01
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -587,19 +587,23 @@ MVP-2 (Done) ─────────────┐
 - **Completed**: 2026-03-30 (r5py re-run)
 - **AC**:
   - [x] `python -m src.processing.compute_tai_tni` → `kelurahan_scores.geojson` (1,502 rows) — with r5py L3
-  - [x] `python -m src.processing.compute_h3 --skip-r5py` → `h3_scores.geojson` (9,083 cells) — H3 still no r5py
+  - [x] `python -m src.processing.compute_tai_tni` → `kelurahan_scores.geojson` (1,502 rows) — with r5py L3
+  - [x] `python -m src.processing.compute_h3` → `h3_scores.geojson` (9,083 cells) — H3 with r5py (2026-04-01)
   - [x] `python -m src.processing.equity_analysis` → all 8 analysis outputs — re-run with r5py data
   - [x] Installed missing deps: `h3==4.4.2`, `libpysal`, `esda`
   - [x] QA ran (MVP-99) — Gini sign bug fixed, LISA now computing
-  - [x] r5py pipeline: 31 batches processed, L3 CBD journey now uses real routing
+  - [x] Kelurahan r5py: 31 batches processed (2026-03-30)
+  - [x] H3 r5py: 10 batches (1,000 cells each) processed (2026-04-01) — fix: JDK 21 arm64 required
   - [x] Baseline cached in `cache/baseline_no_r5py/` for comparison
 - **Key patches**:
   - `compute_tai_tni.py` — drop duplicate `area_km2` column before merge
   - `compute_h3.py` — fix `pct_footway` → `pct_footway_pedestrian`, fix stop schema, add cKDTree min_dist
   - `equity_analysis.py` — fix sjoin suffix, fix tai_ column prefix in sensitivity
-- **Key numbers (r5py)**: Q4 = 415 kelurahan (27.6%) / 2,541 H3 (27.98%); Gini TAI kelurahan=0.2441 H3=0.1228; Cohen's kappa=0.6094
-- **r5py impact**: TAI mean 0.397→0.256 (-35%), Gini 0.0896→0.2441 (+172%), Moran's I 0.8418→0.8876
-- **Note**: L4/L5 still placeholder 0.5; H3 not yet re-run with r5py
+  - JVM fix: use `JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home` (JDK 1.8 is x86_64, incompatible with arm64 Python)
+- **Key numbers (r5py both)**: Q4 = 415 kelurahan (27.6%) / 2,545 H3 (28.0%); Gini TAI kelurahan=0.2441 **H3=0.6128**; Cohen's kappa=0.6124
+- **r5py kelurahan impact**: TAI mean 0.397→0.256, Gini 0.0896→0.2441, Moran's I 0.8418→0.8876
+- **r5py H3 impact**: Gini H3 0.1228→0.6128; Moran's I H3 0.9447; H2 signal: **Gini_H3 > Gini_kelurahan (delta=+0.3687)**
+- **H3 routing coverage**: 1,021/9,083 cells (11.2%) — remainder are genuinely transit-unserved (correct 180-min fallback)
 - **Blocked by**: MVP-25
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-98/run-e6-data-pipeline-end-to-end-and-produce-scores-output
 
@@ -632,12 +636,13 @@ MVP-2 (Done) ─────────────┐
   - [x] TAI/TNI distribution stats — TAI range now 0.170–0.796 with r5py (was 0.345–0.630)
   - [x] Quadrant breakdown: Q1=336/Q2=417/Q3=334/Q4=415 kelurahan (r5py)
   - [x] H1 preview: Bodetabek Q4 >> DKI Jakarta Q4 — STRONGLY SUPPORTS
-  - [x] H2 preview: Gini_kelurahan (0.2441) > Gini_H3 (0.1228) — REVERSED (H3 needs r5py re-run)
+  - [x] H2 preview: Gini_H3 (0.6128) > Gini_kelurahan (0.2441) — **H2 CONFIRMED** (re-run 2026-04-01 with H3 r5py)
   - [x] H3 preview: Q4 equity gap > Q1/Q2 — SUPPORTS
-  - [x] EDA Jupyter notebook: `notebooks/eda_pipeline_output.ipynb` with full visualizations
+  - [x] EDA Jupyter notebook: `notebooks/eda_pipeline_output.ipynb` with full visualizations (re-executed 2026-04-01)
   - [x] Comparison notebook: `notebooks/comparison_r5py_vs_baseline.ipynb` — r5py vs no-r5py
-- **Key r5py impact**: Gini TAI kelurahan 0.0896→0.2441 (+172%), TAI mean 0.397→0.256, Moran's I 0.8418→0.8876
-- **Global Moran's I**: kelurahan 0.8876 / H3 0.8928 (strong spatial autocorrelation)
+- **Key r5py kelurahan impact**: Gini TAI kelurahan 0.0896→0.2441 (+172%), TAI mean 0.397→0.256, Moran's I 0.8418→0.8876
+- **Key r5py H3 impact**: Gini TAI H3 0.1228→0.6128 (+399%), H2 CONFIRMED (H3>kelurahan, delta=+0.3687)
+- **Global Moran's I**: kelurahan 0.8876 / H3 0.9447 (very strong spatial autocorrelation)
 - **Blocked by**: MVP-99
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-100/eda-on-pipeline-results-distributions-spatial-patterns-h1h2h3-preview
 
