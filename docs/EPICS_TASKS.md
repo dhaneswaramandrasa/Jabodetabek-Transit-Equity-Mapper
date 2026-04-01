@@ -638,7 +638,7 @@ MVP-2 (Done) ─────────────┐
   - [x] H1 preview: Bodetabek Q4 >> DKI Jakarta Q4 — STRONGLY SUPPORTS
   - [x] H2 preview: Gini_H3 (0.6128) > Gini_kelurahan (0.2441) — **H2 CONFIRMED** (re-run 2026-04-01 with H3 r5py)
   - [x] H3 preview: Q4 equity gap > Q1/Q2 — SUPPORTS
-  - [x] EDA Jupyter notebook: `notebooks/eda_pipeline_output.ipynb` with full visualizations (re-executed 2026-04-01)
+  - [x] EDA Jupyter notebook: `notebooks/eda_pipeline_output.ipynb` with full visualizations (re-executed 2026-04-02: added H3 routing coverage section 5d, fixed H2 stale note, updated Key Findings)
   - [x] Comparison notebook: `notebooks/comparison_r5py_vs_baseline.ipynb` — r5py vs no-r5py
 - **Key r5py kelurahan impact**: Gini TAI kelurahan 0.0896→0.2441 (+172%), TAI mean 0.397→0.256, Moran's I 0.8418→0.8876
 - **Key r5py H3 impact**: Gini TAI H3 0.1228→0.6128 (+399%), H2 CONFIRMED (H3>kelurahan, delta=+0.3687)
