@@ -240,6 +240,8 @@ def run(skip_r5py: bool = False) -> gpd.GeoDataFrame:
     # 2. Road metrics
     logger.info("Joining road metrics...")
     road = pd.read_csv(ROAD_CSV)
+    # Drop area_km2 from road CSV — already present in gdf from demographics join
+    road = road.drop(columns=[c for c in ["area_km2"] if c in road.columns])
     gdf = gdf.merge(road, on="kelurahan_id", how="left")
 
     # 3. Transit stops summary
@@ -303,7 +305,7 @@ def run(skip_r5py: bool = False) -> gpd.GeoDataFrame:
         logger.warning("--skip-r5py: L3 set to null (0.5 placeholder). Run without flag for real compute.")
         cbd_times = pd.Series(dtype=float)
     else:
-        gtfs_list = sorted(GTFS_DIR.glob("*.zip"))
+        gtfs_list = sorted(GTFS_DIR.glob("**/*.zip"))
         if not gtfs_list or not OSM_PBF.exists():
             logger.warning(
                 f"GTFS files or OSM PBF missing — skipping r5py.\n"
