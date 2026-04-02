@@ -647,7 +647,7 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-100/eda-on-pipeline-results-distributions-spatial-patterns-h1h2h3-preview
 
 ### MVP-87 — Run Phase F Hypothesis Validator — results vs H1/H2/H3 before writing Results
-- **Status**: In Review
+- **Status**: Done
 - **Priority**: High
 - **Completed**: 2026-03-28
 - **Pattern**: Dual-agent independent validation (Stats vs Theory) + reconciler
@@ -663,8 +663,8 @@ MVP-2 (Done) ─────────────┐
   - H1: PROCEED (High confidence) — KRL/MRT radial topology strongly predicts Bodetabek Q4 concentration
   - H2: PROCEED (High confidence) — kelurahan area variance 0.5–50 km² makes Gini_H3 > Gini_kelurahan near-certain
   - H3: PROCEED (Medium confidence) — direction robust, but 1.5× threshold sensitive to simulation simplifications
-- **Stats verdict**: DATA_AVAILABLE — `equity_summary.json` re-run with r5py (2026-03-30). Gini TAI kelurahan=0.2441, H3=0.1228; Q4 kelurahan=415 (27.6%), H3=2541 (27.98%); Cohen's kappa=0.6094. Stats agent re-run required to update cache/hypothesis-stats-assessment.md.
-- **Gate status**: MVP-14 UNBLOCKED — pipeline executed. Stats agent should re-run against real equity_summary.json before Results writing.
+- **Stats verdict (re-run 2026-04-02)**: H1 PROCEED (98.8% Q4 in Bodetabek) | H2 PROCEED (Gini_H3=0.6128 > Gini_kel=0.2441, delta=+0.3687) | H3 PROCEED (Q4/Q1 equity gap = 1.65×)
+- **Gate status**: MVP-14 **UNBLOCKED** — all three hypotheses PROCEED. No PIVOT, no human escalation required.
 - **Key files**: `cache/hypothesis-theory-assessment.md`, `cache/hypothesis-stats-assessment.md`, `cache/hypothesis-validation-report.md`
 - **Blocked by**: MVP-25
 - **Note**: Gate — MVP-14 must not begin until all H1/H2/H3 are PROCEED (both agents agree) or human has reviewed disagreements
