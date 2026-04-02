@@ -17,7 +17,7 @@
 | E3 | Paper | Literature Review | **Done** | 3/3 done |
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
-| E6 | Product | Data Pipeline | **Done** | 8/8 done |
+| E6 | Product | Data Pipeline | **Done** | 11/11 done |
 | E7 | Product | UI Foundation | **In Progress** | 1/4 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/8 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
@@ -582,7 +582,7 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-25/compute-equity-gap-gini-lisa-at-both-resolutions
 
 ### MVP-98 — Run E6 data pipeline end-to-end and produce scores output
-- **Status**: In Review
+- **Status**: Done
 - **Priority**: Urgent
 - **Completed**: 2026-03-30 (r5py re-run)
 - **AC**:
@@ -608,7 +608,7 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-98/run-e6-data-pipeline-end-to-end-and-produce-scores-output
 
 ### MVP-99 — QA pipeline output — validate schema, nulls, and methodology compliance
-- **Status**: In Review
+- **Status**: Done
 - **Priority**: Urgent
 - **Completed**: 2026-03-29 (initial), updated 2026-03-30 (r5py re-run)
 - **Verdict**: WARN → IMPROVED — r5py L3 now active; Gini sign bug fixed; L4/L5 still placeholder
@@ -619,17 +619,17 @@ MVP-2 (Done) ─────────────┐
   - [x] Quadrant values exactly Q1/Q2/Q3/Q4 ✅
   - [x] Gini sign bug found and fixed in equity_analysis.py (rank-weighted formula)
   - [x] QA report at `cache/pipeline-qa-report.md`
-- **Open issues**:
-  - L4/L5 flat at 0.5 (30% of TAI weight is placeholder) — L3 now resolved via r5py
-  - H3 column names need rename to match DATA_MODEL.md (30 fields) — blocks MVP-27
-  - H3 not yet re-run with r5py — H2 comparison invalid until done
-- **Corrected Gini values (r5py)**: TAI kelurahan=0.2441, H3=0.1228; H2 signal reversed at kelurahan level
+- **Residual known issues** (not blocking — logged for paper limitations):
+  - L4/L5 use proxy scores (road connectivity / TCR proxy) — not r5py routed. Acceptable for current analysis.
+  - H3 column names: 30 field name mismatches vs DATA_MODEL.md — tracked in MVP-27
+  - H3 routing coverage: 11.2% routed (88.8% correct fallback) — note in Results limitations
+- **Final Gini values (both r5py)**: TAI kelurahan=0.2441, H3=0.6128; H2 CONFIRMED (delta=+0.3687)
 - **Key files**: `cache/pipeline-qa-report.md`, `src/processing/equity_analysis.py` (Gini fix)
 - **Blocked by**: MVP-98
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-99/qa-pipeline-output-validate-schema-nulls-and-methodology-compliance
 
 ### MVP-100 — EDA on pipeline results — distributions, spatial patterns, H1/H2/H3 preview
-- **Status**: In Review
+- **Status**: Done
 - **Priority**: High
 - **Completed**: 2026-03-30 (redone as Jupyter notebooks with visualizations)
 - **AC**:
