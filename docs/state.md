@@ -1,8 +1,8 @@
 # Project State
 
-**Last updated**: 2026-04-01
-**Active ticket**: MVP-100 (EDA) — In Review
-**Branch**: e6/mvp-98-run-pipeline
+**Last updated**: 2026-04-03
+**Active ticket**: MVP-14 (Results section) — In Review
+**Branch**: e4/mvp-14-results-section
 
 ---
 
@@ -11,22 +11,16 @@
 **Phase**: E4 (paper drafting) + E6 (data pipeline) both active.
 This is a **portfolio / independent research project** — no academic gating.
 
-## Last Session Summary (2026-04-01)
+## Last Session Summary (2026-04-03)
 
-- **H3 r5py pipeline completed**: 10 batches (1,000 cells each), ~4 min total
-  - Fixed JVM issue: JDK 1.8.0_261 was x86_64; switched to Homebrew OpenJDK 21 (arm64)
-  - `JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home`
-  - 1,021/9,083 cells routed (11.2%) — remainder are genuinely transit-unserved (L3 fallback 180 min → L3=0)
-- **Equity analysis re-run** with H3 r5py data — H2 hypothesis now VALID:
-  - Gini TAI H3: 0.1228 → **0.6128** (+399% — r5py reveals massive spatial inequality at H3 level)
-  - Gini TAI kelurahan: 0.2441 (unchanged — kelurahan already had r5py)
-  - **H2 CONFIRMED**: Gini_H3 (0.6128) > Gini_kelurahan (0.2441), delta=+0.3687
-  - Moran's I H3 TAI: 0.9447 (very strong spatial clustering)
-  - Cohen's kappa: 0.6124 (strong agreement kelurahan↔H3 quadrant classification)
-  - Q4 H3: 2,545 (28.0%)
-- **EDA notebook re-executed**: `notebooks/eda_pipeline_output.ipynb` — updated with new H3 values
-- **Previously completed** (prior sessions): E0 (9/9), E1 (3/3), E2 (3/3), E3 (3/3), MVP-84, MVP-13, MVP-85, MVP-86, MVP-87 (theory), MVP-89
-- **Prior session (2026-03-30)**: r5py kelurahan pipeline, Gini_kel 0.0896→0.2441, EDA notebook, comparison notebook
+- **MVP-14 DONE**: Results section written — `paper/sections/04-results.md`, 2,543 words
+  - Covers: TAI/TNI distributions, quadrant classification (Table 1), H1 spatial mismatch (Table 2), H2 resolution effect, H3 equity gap scenario, hypothesis outcome summary (Table 4)
+  - All three hypotheses confirmed: H1 (98.8% Q4 in Bodetabek), H2 (Gini delta=+0.3687), H3 (Q4/Q1 ratio=1.65×)
+- **MVP-98/99/100 DONE** (prior session): H3 r5py pipeline, equity analysis re-run, EDA notebook
+  - H3 r5py: 1,021/9,083 cells routed (11.2%), Gini H3=0.6128
+  - Moran's I H3 TAI: 0.9447; Cohen's kappa: 0.6124; 29.0% reclassified
+- **MVP-87 Stats re-run DONE** (prior session): All three hypotheses PROCEED; hypothesis-stats-assessment.md + hypothesis-validation-report.md updated
+- **Previously completed**: E0 (9/9), E1 (3/3), E2 (3/3), E3 (3/3), MVP-84, MVP-13, MVP-85, MVP-86, MVP-87, MVP-89, MVP-98/99/100
 
 ## Blockers
 
@@ -36,11 +30,11 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **PR review**: Merge `e6/mvp-98-run-pipeline` → main
-2. **MVP-27**: Migrate web app to real pipeline output — blocked on H3 field rename fix
-3. **MVP-87 (Stats re-run)**: Re-run stats assessment with new equity_summary.json (Gini_H3=0.6128)
-4. **MVP-12**: Write final Introduction section
-5. **E5 gate**: MVP-88 (consistency check) before MVP-17 (self-review)
+1. **PR #26 review**: Merge `e6/mvp-98-run-pipeline` → main (all pipeline work done)
+2. **MVP-14 Linear**: Post completion comment on ticket, set to In Review, push branch, open PR
+3. **MVP-15 (Discussion)**: v0.1 exists at `paper/sections/05-discussion.md` — fill placeholders with real metric values now that Results are written
+4. **MVP-27**: Migrate web app to real pipeline output — blocked on H3 field rename fix (30 fields)
+5. **MVP-88**: Section consistency check + quality gate (gate before MVP-17 self-review)
 
 ## Pipeline Status (as of 2026-03-30)
 
