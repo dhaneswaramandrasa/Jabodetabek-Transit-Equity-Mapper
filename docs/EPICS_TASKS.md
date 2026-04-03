@@ -23,8 +23,8 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89 Done, MVP-12 Done) + E6 Done (MVP-98 pipeline fully executed with r5py at BOTH resolutions 2026-04-01 — H2 CONFIRMED) + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 (Results) now unblocked — Stats agent re-run required with updated equity_summary.json (Gini_H3=0.6128).
-**Last synced**: 2026-04-01
+**Current phase**: E4 active (MVP-85/86/89/98/99/100/87/14 Done, MVP-12 Done) + E6 Done + E7 active (MVP-26 In Review, MVP-93 In Progress). MVP-14 Results section DONE (2,543w). MVP-15 Discussion needs placeholder fill. MVP-88 consistency check is next gate.
+**Last synced**: 2026-04-03
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -397,15 +397,16 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-13/write-methods-section
 
 ### MVP-14 — Write results section
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
 - **AC**:
-  - [ ] Quadrant distribution, spatial patterns
-  - [ ] Gini comparison, LISA clusters
-  - [ ] Resolution comparison
-  - [ ] Cost competitiveness map
-  - [ ] What-if scenarios
-  - [ ] ~2000–3000 words
+  - [x] Quadrant distribution, spatial patterns (Table 1 + Table 2)
+  - [x] Gini comparison, LISA clusters (H2 section)
+  - [x] Resolution comparison (Cohen's kappa, 29% reclassified)
+  - [x] Equity gap by quadrant (Table 3)
+  - [x] Hypothesis outcome summary (Table 4)
+  - [x] ~2000–3000 words (2,543 words)
+- **Note**: `paper/sections/04-results.md` written 2026-04-03. All three hypotheses reported confirmed.
 - **Blocked by**: MVP-25 (E6 data pipeline complete), **MVP-87** (hypothesis validator — gate before Results)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-14/write-results-section
 
