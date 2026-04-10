@@ -1,26 +1,27 @@
 # Project State
 
-**Last updated**: 2026-04-03
-**Active ticket**: MVP-14 (Results section) — In Review
-**Branch**: e4/mvp-14-results-section
+**Last updated**: 2026-04-11
+**Active ticket**: MVP-27 — In Review (PR #28 open)
+**Branch**: e7/mvp-27-migrate-real-data
 
 ---
 
 ## Current Focus
 
-**Phase**: E4 (paper drafting) + E6 (data pipeline) both active.
+**Phase**: E7 (UI Foundation) — MVP-27 data migration done, PR #28 open.
 This is a **portfolio / independent research project** — no academic gating.
 
-## Last Session Summary (2026-04-03)
+## Last Session Summary (2026-04-11)
 
-- **MVP-14 DONE**: Results section written — `paper/sections/04-results.md`, 2,543 words
-  - Covers: TAI/TNI distributions, quadrant classification (Table 1), H1 spatial mismatch (Table 2), H2 resolution effect, H3 equity gap scenario, hypothesis outcome summary (Table 4)
-  - All three hypotheses confirmed: H1 (98.8% Q4 in Bodetabek), H2 (Gini delta=+0.3687), H3 (Q4/Q1 ratio=1.65×)
-- **MVP-98/99/100 DONE** (prior session): H3 r5py pipeline, equity analysis re-run, EDA notebook
-  - H3 r5py: 1,021/9,083 cells routed (11.2%), Gini H3=0.6128
-  - Moran's I H3 TAI: 0.9447; Cohen's kappa: 0.6124; 29.0% reclassified
-- **MVP-87 Stats re-run DONE** (prior session): All three hypotheses PROCEED; hypothesis-stats-assessment.md + hypothesis-validation-report.md updated
-- **Previously completed**: E0 (9/9), E1 (3/3), E2 (3/3), E3 (3/3), MVP-84, MVP-13, MVP-85, MVP-86, MVP-87, MVP-89, MVP-98/99/100
+- **MVP-27 DONE** (this session): Real pipeline data migrated to transit-access web app
+  - Created `scripts/export_to_web.py` — renames H3 fields to DATA_MODEL.md, exports both GeoJSONs
+  - Full rewrite of `store.ts` HexProperties/Demographics/MapStats; EquityQuadrant → Q1/Q2/Q3/Q4
+  - Updated colorScale.ts (domain 0–1), AccessibilityMap.tsx (file paths + field refs), TransitScoreCard.tsx (5-layer breakdown), DemographicsCard.tsx, MapLegend.tsx, useDemographics.ts, useAISummary.ts, useReachablePOIs.ts, useTransitStops.ts
+  - Build passes ✅; PR #28 open
+  - `h3_scores.geojson` = 9,083 features (17.9MB — note for MVP-37 size opt)
+  - `kelurahan_scores.geojson` = 1,502 features (2.8MB)
+- **MVP-14 DONE** (prior session): Results section, 2,543 words
+- **Previously completed**: E0–E3, MVP-84/13/85/86/87/89/98/99/100
 
 ## Blockers
 
@@ -30,11 +31,11 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **PR #26 review**: Merge `e6/mvp-98-run-pipeline` → main (all pipeline work done)
-2. **MVP-14 Linear**: Post completion comment on ticket, set to In Review, push branch, open PR
-3. **MVP-15 (Discussion)**: v0.1 exists at `paper/sections/05-discussion.md` — fill placeholders with real metric values now that Results are written
-4. **MVP-27**: Migrate web app to real pipeline output — blocked on H3 field rename fix (30 fields)
-5. **MVP-88**: Section consistency check + quality gate (gate before MVP-17 self-review)
+1. **Merge PR #28** (MVP-27) — smoke test in dev: load map, click kelurahan zone, verify TAI/TNI [0,1] values and Q1–Q4 quadrant display
+2. **MVP-90** — Persona/goal selection entry screen (unblocked by MVP-27)
+3. **MVP-29** — Quadrant choropleth map with dual-resolution toggle (unblocked by MVP-27)
+4. **MVP-15 (Discussion)** — fill placeholders with real metric values (paper track)
+5. **MVP-88** — Section consistency check gate (paper track)
 
 ## Pipeline Status (as of 2026-03-30)
 
