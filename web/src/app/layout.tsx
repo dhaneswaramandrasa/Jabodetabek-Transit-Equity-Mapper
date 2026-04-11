@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "500", "600"],
+});
 
 export const metadata: Metadata = {
-  title: "Transit Accessibility Index — Jakarta",
+  title: "Transit Accessibility Index — Jabodetabek",
   description:
-    "Interactive map scoring every H3 hexagon in Jakarta on transit accessibility to essential services. Click anywhere for AI-generated analysis.",
+    "Interactive map scoring every kelurahan and H3 hexagon in Jabodetabek on transit accessibility. Explore equity gaps, Gini coefficients, and LISA clusters.",
 };
 
 export default function RootLayout({
@@ -18,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-slate-50 text-slate-800 antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-slate-50 dark:bg-dark-base text-slate-800 dark:text-[#e2e0fc] antialiased`}
       >
         {children}
       </body>

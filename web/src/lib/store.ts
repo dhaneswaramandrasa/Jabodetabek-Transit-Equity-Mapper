@@ -244,6 +244,9 @@ export interface Demographics {
 // ===== State Interface =====
 
 interface AccessibilityState {
+  theme: "light" | "dark";
+  toggleTheme: () => void;
+
   appPhase: AppPhase;
   loadingStage: LoadingStage | null;
   searchQuery: string;
@@ -318,6 +321,19 @@ interface AccessibilityState {
 }
 
 export const useAccessibilityStore = create<AccessibilityState>((set) => ({
+  theme: "light",
+  toggleTheme: () =>
+    set((s) => {
+      const next = s.theme === "light" ? "dark" : "light";
+      if (typeof document !== "undefined") {
+        document.documentElement.classList.toggle("dark", next === "dark");
+      }
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("jtm_theme", next);
+      }
+      return { theme: next };
+    }),
+
   appPhase: "landing",
   loadingStage: null,
   searchQuery: "",

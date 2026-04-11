@@ -34,7 +34,7 @@ export default function LandingOverlay() {
           className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none"
         >
           {/* Gradient overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/30 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/30 to-transparent dark:from-dark-base/85 dark:via-dark-base/50 dark:to-transparent pointer-events-none" />
 
           <div className="relative z-10 flex flex-col items-center gap-6 pointer-events-auto px-4">
             {/* Title */}
@@ -44,16 +44,16 @@ export default function LandingOverlay() {
               transition={{ delay: 0.2, duration: 0.6 }}
               className="text-center"
             >
-              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-[#e2e0fc] tracking-tight">
                 Transit Equity
               </h1>
-              <h2 className="text-4xl md:text-5xl font-bold text-blue-600 tracking-tight mt-1">
+              <h2 className="text-4xl md:text-5xl font-bold text-blue-600 dark:text-teal tracking-tight mt-1">
                 in Jabodetabek
               </h2>
-              <p className="text-sm text-slate-500 mt-3 leading-relaxed max-w-xs">
+              <p className="text-sm text-slate-500 dark:text-[#c8c5cd] mt-3 leading-relaxed max-w-xs">
                 Explore transit accessibility and equity gaps across Jakarta, Bogor, Depok, Tangerang &amp; Bekasi
               </p>
-              <p className="text-xs text-slate-400 mt-2 tracking-wide uppercase">
+              <p className="text-xs text-slate-400 dark:text-[#c8c5cd] mt-2 tracking-wide uppercase">
                 Jabodetabek, Indonesia
               </p>
             </motion.div>
@@ -65,7 +65,7 @@ export default function LandingOverlay() {
               transition={{ delay: 0.35, duration: 0.5 }}
               className="w-full max-w-md"
             >
-              <p className="text-xs text-slate-400 text-center mb-2 uppercase tracking-wider font-medium">
+              <p className="text-xs text-slate-400 dark:text-[#c8c5cd] text-center mb-2 uppercase tracking-wider font-medium">
                 Choose Boundary Type
               </p>
 
@@ -75,8 +75,8 @@ export default function LandingOverlay() {
                   onClick={() => setCategory(category === "administrative" ? null : "administrative")}
                   className={`flex-1 rounded-xl p-3 border-2 transition-all text-left ${
                     category === "administrative"
-                      ? "border-blue-500 bg-blue-50/80 shadow-md"
-                      : "border-slate-200 bg-white/70 hover:border-blue-300 hover:bg-white/90"
+                      ? "border-blue-500 bg-blue-50/80 dark:bg-teal/10 dark:border-teal shadow-md"
+                      : "border-slate-200 dark:border-white/10 bg-white/70 dark:bg-dark-container/70 hover:border-blue-300 dark:hover:border-teal/50 hover:bg-white/90"
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -93,8 +93,8 @@ export default function LandingOverlay() {
                   onClick={() => setCategory(category === "hex" ? null : "hex")}
                   className={`flex-1 rounded-xl p-3 border-2 transition-all text-left ${
                     category === "hex"
-                      ? "border-blue-500 bg-blue-50/80 shadow-md"
-                      : "border-slate-200 bg-white/70 hover:border-blue-300 hover:bg-white/90"
+                      ? "border-blue-500 bg-blue-50/80 dark:bg-teal/10 dark:border-teal shadow-md"
+                      : "border-slate-200 dark:border-white/10 bg-white/70 dark:bg-dark-container/70 hover:border-blue-300 dark:hover:border-teal/50 hover:bg-white/90"
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">

@@ -8,8 +8,9 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.2s, color 0.2s;
 }
 
 /* ===== Glassmorphism Utility ===== */
@@ -42,6 +43,15 @@ body,
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     color: #f8fafc;
   }
+
+  /* Theme-aware glass — adapts to light/dark */
+  .glass-adaptive {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
 }
 
 /* ===== Scrollbar — light theme ===== */
@@ -57,6 +67,12 @@ body,
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* ===== Animation Delays ===== */
@@ -79,11 +95,38 @@ body,
   animation-delay: 600ms;
 }
 
-/* ===== Score Colors ===== */
+/* ===== Design Tokens ===== */
 :root {
+  /* Score colors */
   --score-low: #ef4444;
   --score-mid: #eab308;
   --score-high: #22c55e;
+
+  /* Light theme surfaces */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-raised: #f8fafc;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: rgba(0,0,0,0.08);
+  --glass-bg: rgba(255,255,255,0.85);
+  --glass-border: rgba(255,255,255,0.3);
+  --primary: #0ea5e9;
+  --primary-text: #ffffff;
+}
+
+.dark {
+  /* Dark theme — Stitch "Tactical Equity & Urban Intelligence" */
+  --bg: #111125;
+  --surface: #1e1e32;
+  --surface-raised: #28283d;
+  --text: #e2e0fc;
+  --text-muted: #c8c5cd;
+  --border: rgba(71,70,76,0.15);
+  --glass-bg: rgba(15,15,26,0.85);
+  --glass-border: rgba(255,255,255,0.06);
+  --primary: #6fd8c8;
+  --primary-text: #003731;
 }
 
 /* ===== Map container ===== */

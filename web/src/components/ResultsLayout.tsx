@@ -26,12 +26,12 @@ export default function ResultsLayout() {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.35 }}
-      className="absolute top-0 right-0 z-10 h-full w-full md:w-[520px] lg:w-[560px] flex flex-col bg-slate-50/90 backdrop-blur-md border-l border-slate-200/50"
+      className="absolute top-0 right-0 z-10 h-full w-full md:w-[520px] lg:w-[560px] flex flex-col bg-slate-50/90 dark:bg-dark-low/95 backdrop-blur-md border-l border-slate-200/50 dark:border-white/10"
     >
       {/* Top bar */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200/50 bg-white/70 backdrop-blur-md">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200/50 dark:border-white/10 bg-white/70 dark:bg-dark-container/80 backdrop-blur-md">
         <div className="min-w-0 mr-3">
-          <h2 className="text-sm font-semibold text-slate-800 truncate">
+          <h2 className="text-sm font-semibold text-slate-800 dark:text-[#e2e0fc] truncate">
             {locationName || coordText || "Selected Location"}
           </h2>
           {quadrantLabel && quadrantColor && (
@@ -48,7 +48,7 @@ export default function ResultsLayout() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {/* Compact resolution toggle */}
-          <div className="flex rounded-lg overflow-hidden border border-slate-200 text-[10px] font-medium">
+          <div className="flex rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 text-[10px] font-medium">
             {(["kelurahan", "hex"] as const).map((mode) => (
               <button
                 key={mode}
@@ -58,8 +58,8 @@ export default function ResultsLayout() {
                 }}
                 className={`px-2 py-1 transition-colors ${
                   boundaryMode === mode
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-slate-500 hover:bg-slate-50"
+                    ? "bg-blue-500 dark:bg-teal dark:text-dark-base text-white"
+                    : "bg-white dark:bg-dark-high text-slate-500 dark:text-[#c8c5cd] hover:bg-slate-50 dark:hover:bg-dark-highest"
                 }`}
               >
                 {mode === "kelurahan" ? "Admin" : "H3"}
@@ -70,15 +70,15 @@ export default function ResultsLayout() {
             onClick={toggleHexLayer}
             className={`px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors ${
               hexLayerVisible
-                ? "bg-blue-100 text-blue-700"
-                : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                ? "bg-blue-100 dark:bg-teal/20 text-blue-700 dark:text-teal"
+                : "bg-slate-100 dark:bg-dark-high text-slate-500 dark:text-[#c8c5cd] hover:bg-slate-200 dark:hover:bg-dark-highest"
             }`}
           >
             {hexLayerVisible ? "Hide" : "Show"} Map
           </button>
           <button
             onClick={resetForNewAnalysis}
-            className="px-2.5 py-1.5 text-xs bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-lg font-medium transition-colors"
+            className="px-2.5 py-1.5 text-xs bg-slate-100 dark:bg-dark-high text-slate-500 dark:text-[#c8c5cd] hover:bg-slate-200 dark:hover:bg-dark-highest rounded-lg font-medium transition-colors"
           >
             ✕
           </button>

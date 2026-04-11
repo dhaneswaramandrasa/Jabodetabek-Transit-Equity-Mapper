@@ -1,14 +1,35 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
+        // Light theme surfaces
         surface: {
           DEFAULT: "#ffffff",
           raised: "#f8fafc",
           overlay: "#f1f5f9",
         },
+        // Dark theme surfaces (Stitch design system)
+        dark: {
+          base:       "#111125",
+          low:        "#1a1a2e",
+          container:  "#1e1e32",
+          high:       "#28283d",
+          highest:    "#333348",
+          bright:     "#37374d",
+        },
+        // Stitch primary
+        teal: {
+          DEFAULT: "#6fd8c8",
+          dim:     "#6fd8c8",
+          fixed:   "#8cf5e4",
+          on:      "#003731",
+        },
+      },
+      fontFamily: {
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       keyframes: {
         fadeInUp: {

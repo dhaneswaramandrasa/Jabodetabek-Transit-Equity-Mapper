@@ -6,6 +6,8 @@ import LandingOverlay from "@/components/landing/LandingOverlay";
 import LoadingSequence from "@/components/loading/LoadingSequence";
 import ResultsLayout from "@/components/ResultsLayout";
 import EntryScreen from "@/components/EntryScreen";
+import ThemeProvider from "@/components/ThemeProvider";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAISummary } from "@/hooks/useAISummary";
 import { useAccessibilityStore } from "@/lib/store";
 
@@ -51,11 +53,17 @@ export default function Home() {
   if (showEntry === null) return null;
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden">
+    <div className="h-screen w-screen relative overflow-hidden bg-slate-50 dark:bg-dark-base">
+      {/* Theme initialiser — reads localStorage, no render output */}
+      <ThemeProvider />
+
       {/* Map always renders underneath */}
       <div className="absolute inset-0">
         <AccessibilityMap />
       </div>
+
+      {/* Theme toggle — always visible */}
+      <ThemeToggle />
 
       {/* Entry persona screen (first visit only) */}
       {showEntry && (
