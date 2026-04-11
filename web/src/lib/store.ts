@@ -246,6 +246,8 @@ export interface Demographics {
 interface AccessibilityState {
   theme: "light" | "dark";
   toggleTheme: () => void;
+  layerMode: "tai" | "road";
+  setLayerMode: (mode: "tai" | "road") => void;
 
   appPhase: AppPhase;
   loadingStage: LoadingStage | null;
@@ -333,6 +335,9 @@ export const useAccessibilityStore = create<AccessibilityState>((set) => ({
       }
       return { theme: next };
     }),
+
+  layerMode: "tai",
+  setLayerMode: (mode) => set({ layerMode: mode }),
 
   appPhase: "landing",
   loadingStage: null,

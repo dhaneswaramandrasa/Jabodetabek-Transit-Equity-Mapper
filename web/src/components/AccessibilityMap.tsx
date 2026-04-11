@@ -99,6 +99,8 @@ export default function AccessibilityMap() {
     setLocationName,
     h3Resolution,
     boundaryMode,
+    layerMode,
+    setLayerMode,
   } = useAccessibilityStore();
 
   const [data, setData] = useState<GeoJSONData | null>(null);
@@ -411,16 +413,29 @@ export default function AccessibilityMap() {
   // Kelurahan fill color — quadrant-based
   const getKelurahanColor = useCallback(
     (feature: { properties: Record<string, unknown> }) => {
-      const quadrant = feature.properties.quadrant as EquityQuadrant | undefined;
       const kelKey = `${feature.properties.kelurahan_name}__${feature.properties.kecamatan_name}__${feature.properties.kota_kab_name}`;
       const isSelected = selectedKelurahan === kelKey;
+      const alpha = isSelected ? 255 : 160;
 
+      // Road access mode — color by road_adjusted_access (green→red gradient)
+      if (layerMode === "road") {
+        const roadScore = feature.properties.road_adjusted_access as number | null;
+        if (roadScore != null) {
+          // green (high road access) → red (low road access)
+          const r = Math.round(255 * (1 - roadScore));
+          const g = Math.round(200 * roadScore);
+          return [r, g, 60, alpha] as [number, number, number, number];
+        }
+        return [180, 180, 180, alpha] as [number, number, number, number];
+      }
+
+      const quadrant = feature.properties.quadrant as EquityQuadrant | undefined;
       if (quadrant) {
-        return quadrantToColor(quadrant, isSelected ? 255 : 160);
+        return quadrantToColor(quadrant, alpha);
       }
       return [128, 128, 128, isSelected ? 255 : 100] as [number, number, number, number];
     },
-    [selectedKelurahan]
+    [selectedKelurahan, layerMode]
   );
 
   // Kecamatan fill color — quadrant-based (only called for features with hex_count > 0)
@@ -834,17 +849,37 @@ export default function AccessibilityMap() {
 
       <MapLegend />
 
-      {/* Equity Summary floating button */}
-      <button
-        onClick={() => setShowEquityDashboard((v) => !v)}
-        className={`absolute bottom-4 left-4 z-20 px-3 py-2 text-xs font-semibold rounded-xl shadow-md border transition-colors ${
-          showEquityDashboard
-            ? "bg-violet-600 text-white border-violet-700"
-            : "bg-white/90 backdrop-blur-sm text-slate-700 border-slate-200 hover:bg-violet-50 hover:text-violet-700"
-        }`}
-      >
-        {showEquityDashboard ? "✕ Equity" : "📊 Equity Summary"}
-      </button>
+      {/* Layer mode toggle + Equity Summary — bottom-left stack */}
+      <div className="absolute bottom-4 left-4 z-20 flex flex-col gap-2 items-start">
+        {/* Layer toggle */}
+        <div className="flex rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 text-[11px] font-semibold shadow-md">
+          {(["tai", "road"] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setLayerMode(mode)}
+              className={`px-3 py-1.5 transition-colors ${
+                layerMode === mode
+                  ? "bg-blue-500 dark:bg-teal dark:text-dark-base text-white"
+                  : "bg-white/90 dark:bg-dark-container/90 backdrop-blur-sm text-slate-600 dark:text-[#c8c5cd] hover:bg-slate-50 dark:hover:bg-dark-high"
+              }`}
+            >
+              {mode === "tai" ? "🗺 Equity" : "🛣 Road Access"}
+            </button>
+          ))}
+        </div>
+
+        {/* Equity Summary button */}
+        <button
+          onClick={() => setShowEquityDashboard((v) => !v)}
+          className={`px-3 py-2 text-xs font-semibold rounded-xl shadow-md border transition-colors ${
+            showEquityDashboard
+              ? "bg-violet-600 text-white border-violet-700"
+              : "bg-white/90 dark:bg-dark-container/90 backdrop-blur-sm text-slate-700 dark:text-[#e2e0fc] border-slate-200 dark:border-white/10 hover:bg-violet-50 hover:text-violet-700"
+          }`}
+        >
+          {showEquityDashboard ? "✕ Equity" : "📊 Equity Summary"}
+        </button>
+      </div>
 
       {/* Equity Summary Dashboard */}
       <AnimatePresence>

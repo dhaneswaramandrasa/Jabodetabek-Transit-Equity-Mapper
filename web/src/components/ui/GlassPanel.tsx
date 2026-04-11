@@ -17,7 +17,7 @@ export default function GlassPanel({
 }: GlassPanelProps) {
   if (!animate) {
     return (
-      <div className={`glass rounded-2xl p-5 ${className}`}>{children}</div>
+      <div className={`glass dark:glass-adaptive rounded-2xl p-5 ${className}`}>{children}</div>
     );
   }
 
@@ -26,7 +26,7 @@ export default function GlassPanel({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: "easeOut" }}
-      className={`glass rounded-2xl p-5 ${className}`}
+      className={`glass dark:glass-adaptive rounded-2xl p-5 ${className}`}
     >
       {children}
     </motion.div>
