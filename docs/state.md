@@ -1,26 +1,37 @@
 # Project State
 
-**Last updated**: 2026-04-03
-**Active ticket**: MVP-14 (Results section) — In Review
-**Branch**: e4/mvp-14-results-section
+**Last updated**: 2026-04-11
+**Active ticket**: MVP-109 — In Review (PR #29 open on this repo)
+**Branch**: mvp-109/consolidate-web-monorepo
 
 ---
 
 ## Current Focus
 
-**Phase**: E4 (paper drafting) + E6 (data pipeline) both active.
+**Phase**: E8/E9 — MVP-109 monorepo consolidation done, PR #29 open.
 This is a **portfolio / independent research project** — no academic gating.
 
-## Last Session Summary (2026-04-03)
+## Last Session Summary (2026-04-11)
 
-- **MVP-14 DONE**: Results section written — `paper/sections/04-results.md`, 2,543 words
-  - Covers: TAI/TNI distributions, quadrant classification (Table 1), H1 spatial mismatch (Table 2), H2 resolution effect, H3 equity gap scenario, hypothesis outcome summary (Table 4)
-  - All three hypotheses confirmed: H1 (98.8% Q4 in Bodetabek), H2 (Gini delta=+0.3687), H3 (Q4/Q1 ratio=1.65×)
-- **MVP-98/99/100 DONE** (prior session): H3 r5py pipeline, equity analysis re-run, EDA notebook
-  - H3 r5py: 1,021/9,083 cells routed (11.2%), Gini H3=0.6128
-  - Moran's I H3 TAI: 0.9447; Cohen's kappa: 0.6124; 29.0% reclassified
-- **MVP-87 Stats re-run DONE** (prior session): All three hypotheses PROCEED; hypothesis-stats-assessment.md + hypothesis-validation-report.md updated
-- **Previously completed**: E0 (9/9), E1 (3/3), E2 (3/3), E3 (3/3), MVP-84, MVP-13, MVP-85, MVP-86, MVP-87, MVP-89, MVP-98/99/100
+- **MVP-109 DONE** (this session): Consolidated web app into monorepo — PR #29
+  - `web/` added at repo root (copied from transit-access/web/)
+  - `scripts/export_to_web.py` path updated → `web/public/data/`
+  - `.gitignore` updated; `docs/ARCHITECTURE.md` updated
+  - transit-access PR #5 closed with redirect note
+  - `npm run build` passes ✅
+- **MVP-94 DONE** (this session): Equity Summary Dashboard — now in `web/src/components/EquityDashboard.tsx`
+  - `EquityDashboard.tsx`: floating 360px panel, 4 tabs (Overview, Lorenz, LISA, Resolution)
+  - Overview: Gini TAI side-by-side (kelurahan=0.2441, H3=0.6128), Moran's I, quadrant bar chart
+  - Lorenz: SVG curve with kelurahan/H3 toggle; fills 5 analysis files to public/data/
+  - LISA: HH/HL/LH/LL/NS counts for both resolutions
+  - Resolution: κ=0.6124, 29% reclassified, H2 confirmed badge
+  - `scripts/export_to_web.py` updated — now also copies equity_summary.json, lorenz_*.csv, lisa_*.geojson
+- **MVP-29 DONE** (prev session): Quadrant choropleth + resolution toggle — PR #4 on transit-access
+  - ResultsLayout: compact Admin/H3 toggle + inline Q1–Q4 quadrant badge
+- **MVP-90 DONE** (prev session): Persona entry screen — PR #3 on transit-access
+- **MVP-27 DONE** (prev session): Real pipeline data migrated — PR #28 on transit-access (research repo)
+- **MVP-14 DONE** (prior session): Results section, 2,543 words
+- **Previously completed**: E0–E3, MVP-84/13/85/86/87/89/98/99/100
 
 ## Blockers
 
@@ -30,11 +41,12 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **PR #26 review**: Merge `e6/mvp-98-run-pipeline` → main (all pipeline work done)
-2. **MVP-14 Linear**: Post completion comment on ticket, set to In Review, push branch, open PR
-3. **MVP-15 (Discussion)**: v0.1 exists at `paper/sections/05-discussion.md` — fill placeholders with real metric values now that Results are written
-4. **MVP-27**: Migrate web app to real pipeline output — blocked on H3 field rename fix (30 fields)
-5. **MVP-88**: Section consistency check + quality gate (gate before MVP-17 self-review)
+1. **Merge PRs**: #29 (MVP-109 monorepo, includes MVP-94) — smoke test: `cd web && npm run dev`
+2. **MVP-28** — Road network layer + cost comparison card (`web/src/components/`)
+3. **MVP-15 (Discussion)** — fill placeholders with real metric values (paper track)
+4. **MVP-88** — Section consistency check gate (paper track)
+
+> Note: All future web app work happens in `web/` inside this repo. transit-access repo is now archived/deprecated.
 
 ## Pipeline Status (as of 2026-03-30)
 

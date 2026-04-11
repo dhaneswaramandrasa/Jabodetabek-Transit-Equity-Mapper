@@ -10,15 +10,24 @@ Usage:
 
 import json
 import os
+import shutil
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PIPELINE_DIR = os.path.join(ROOT, "data", "processed", "scores")
-WEB_DIR = os.path.join(
-    os.path.dirname(ROOT), "transit-access", "web", "public", "data"
-)
+ANALYSIS_DIR = os.path.join(ROOT, "data", "processed", "analysis")
+WEB_DIR = os.path.join(ROOT, "web", "public", "data")
 
 H3_INPUT = os.path.join(PIPELINE_DIR, "h3_scores.geojson")
 KEL_INPUT = os.path.join(PIPELINE_DIR, "kelurahan_scores.geojson")
+
+# Analysis files to copy as-is (no migration needed)
+ANALYSIS_FILES = [
+    "equity_summary.json",
+    "lorenz_kelurahan.csv",
+    "lorenz_h3.csv",
+    "lisa_kelurahan.geojson",
+    "lisa_h3.geojson",
+]
 
 H3_OUTPUT = os.path.join(WEB_DIR, "h3_scores.geojson")
 KEL_OUTPUT = os.path.join(WEB_DIR, "kelurahan_scores.geojson")
@@ -132,6 +141,16 @@ def main():
     print(f"Writing {KEL_OUTPUT} ({len(kel_features)} features)...")
     with open(KEL_OUTPUT, "w") as f:
         json.dump(kel_out, f, separators=(",", ":"))
+
+    # --- Analysis files ---
+    for fname in ANALYSIS_FILES:
+        src = os.path.join(ANALYSIS_DIR, fname)
+        dst = os.path.join(WEB_DIR, fname)
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+            print(f"Copied {fname}")
+        else:
+            print(f"WARN: {src} not found — skipping")
 
     print("Done.")
     print(f"H3 sample fields: {list(h3_features[0]['properties'].keys())[:15]}")

@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ===== Glassmorphism Utility ===== */
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    color: #f8fafc;
+  }
+
+  /* Theme-aware glass — adapts to light/dark */
+  .glass-adaptive {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+}
+
+/* ===== Scrollbar — light theme ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Animation Delays ===== */
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-400 {
+  animation-delay: 400ms;
+}
+.delay-500 {
+  animation-delay: 500ms;
+}
+.delay-600 {
+  animation-delay: 600ms;
+}
+
+/* ===== Design Tokens ===== */
+:root {
+  /* Score colors */
+  --score-low: #ef4444;
+  --score-mid: #eab308;
+  --score-high: #22c55e;
+
+  /* Light theme surfaces */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-raised: #f8fafc;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: rgba(0,0,0,0.08);
+  --glass-bg: rgba(255,255,255,0.85);
+  --glass-border: rgba(255,255,255,0.3);
+  --primary: #0ea5e9;
+  --primary-text: #ffffff;
+}
+
+.dark {
+  /* Dark theme — Stitch "Tactical Equity & Urban Intelligence" */
+  --bg: #111125;
+  --surface: #1e1e32;
+  --surface-raised: #28283d;
+  --text: #e2e0fc;
+  --text-muted: #c8c5cd;
+  --border: rgba(71,70,76,0.15);
+  --glass-bg: rgba(15,15,26,0.85);
+  --glass-border: rgba(255,255,255,0.06);
+  --primary: #6fd8c8;
+  --primary-text: #003731;
+}
+
+/* ===== Map container ===== */
+.maplibregl-map {
+  font-family: inherit;
+}

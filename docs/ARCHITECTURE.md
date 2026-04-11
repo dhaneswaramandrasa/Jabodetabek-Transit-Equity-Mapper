@@ -1,7 +1,7 @@
 # Architecture
 
-**Last updated**: 2026-03-21
-**Status**: **Signed off** — 2026-03-21 (MVP-83). Skeleton complete; will be updated as E6–E9 are implemented.
+**Last updated**: 2026-04-11
+**Status**: Updated — MVP-109 monorepo consolidation. Web app moved from `transit-access` repo into `web/` here.
 
 ---
 
@@ -9,7 +9,7 @@
 
 | Layer | Technology | Notes |
 |-------|-----------|-------|
-| Framework | Next.js 14 (App Router) | Existing prototype at github.com/dhaneswaramandrasa/transit-access |
+| Framework | Next.js 14 (App Router) | Lives at `web/` in this repo (consolidated from transit-access repo via MVP-109) |
 | Styling | Tailwind CSS | Utility-first; dark mode support for map UI |
 | Map | deck.gl + MapLibre GL JS | GeoJSON layers, choropleth, hexagon rendering; MapLibre preferred over Mapbox for open-source |
 | State | Zustand | Client-side state for map interactions, filters, selections |
@@ -21,43 +21,34 @@
 ## Directory Structure
 
 ```
-jabodetabek-transity-equity-mapper/
-├── app/                        — Next.js App Router pages
-│   ├── page.tsx                — Main map view
-│   └── layout.tsx              — Root layout + metadata
-├── components/                 — UI components (< 150 lines each)
-│   ├── MapView.tsx             — Main deck.gl map container
-│   ├── DetailPanel.tsx         — Click-to-explore side panel
-│   ├── QuadrantLegend.tsx      — Quadrant color legend (Q1–Q4)
-│   ├── CostComparisonCard.tsx  — Three-way GC breakdown (transit/car/motorcycle)
-│   ├── TAIBreakdownCard.tsx    — 5-layer TAI score visualization
-│   ├── ResolutionToggle.tsx    — Kelurahan ↔ H3 switch
-│   ├── WhatIfSimulator.tsx     — Hypothetical station placement tool
-│   ├── JourneyChainViz.tsx     — CBD journey chain display
-│   ├── EquityDashboard.tsx     — Gini, Lorenz, quadrant distribution summary
-│   └── TransitCompetitiveMap.tsx — TCR choropleth (green/amber/red)
-├── lib/
-│   ├── types.ts                — TypeScript interfaces = DATA_MODEL.md schema
-│   ├── mock-data.ts            — Must match DATA_MODEL.md exactly
-│   ├── data-utils.ts           — Wrangling helpers (filter, aggregate, normalize)
-│   └── constants.ts            — CBD zones, quadrant thresholds, color scales
-├── public/
-│   ├── data/                   — GeoJSON files consumed by map (< 15 MB total)
-│   │   ├── kelurahan_scores.geojson
-│   │   ├── h3_scores.geojson
-│   │   ├── cbd_zones.geojson
-│   │   ├── road_network.geojson
-│   │   └── transit_stops.geojson
-│   └── dataset/                — Cleaned data for public download (CC BY 4.0)
-│       ├── kelurahan_scores.geojson
-│       ├── h3_scores.geojson
-│       ├── equity_metrics.json
-│       └── README.md
+jabodetabek-transity-equity-mapper/        ← single monorepo (MVP-109)
+├── web/                        — Next.js 14 web app (run: cd web && npm run dev)
+│   ├── src/
+│   │   ├── app/                — App Router pages (page.tsx, layout.tsx, api/)
+│   │   ├── components/         — UI components (< 150 lines each)
+│   │   │   ├── AccessibilityMap.tsx    — Main deck.gl map container
+│   │   │   ├── ResultsLayout.tsx       — Click-to-explore side panel
+│   │   │   ├── EntryScreen.tsx         — Persona selection entry screen
+│   │   │   ├── EquityDashboard.tsx     — Gini, Lorenz, LISA, resolution stats
+│   │   │   ├── MapLegend.tsx           — Quadrant color legend (Q1–Q4)
+│   │   │   └── results/                — Card components (TransitScoreCard, DemographicsCard…)
+│   │   ├── hooks/              — useAISummary, useDemographics, useReachablePOIs, useTransitStops
+│   │   └── lib/
+│   │       ├── store.ts        — Zustand store (HexProperties, MapStats, Persona…)
+│   │       └── colorScale.ts   — TAI → color mapping (domain 0–1)
+│   └── public/
+│       └── data/               — Static GeoJSON + CSV served to browser
+│           ├── kelurahan_scores.geojson  (2.8 MB)
+│           ├── h3_scores.geojson         (17.9 MB — optimize in MVP-37)
+│           ├── equity_summary.json
+│           ├── lorenz_kelurahan.csv / lorenz_h3.csv
+│           └── lisa_kelurahan.geojson / lisa_h3.geojson
 ├── src/                        — Python data pipeline (offline)
-│   ├── ingestion/              — Data acquisition scripts (MVP-6 verified)
+│   ├── ingestion/              — Data acquisition scripts
 │   ├── processing/             — Wrangling, scoring, H3 derivation
-│   ├── analysis/               — Gini, LISA, sensitivity
-│   └── export/                 — Export to web-ready GeoJSON
+│   └── analysis/               — Gini, LISA, sensitivity
+├── scripts/
+│   └── export_to_web.py        — Migrates pipeline output → web/public/data/
 ├── data/                       — Raw + processed data (gitignored)
 │   ├── raw/
 │   │   ├── gtfs/               — GTFS feeds (TransJakarta, KRL, MRT, LRT)
@@ -66,17 +57,13 @@ jabodetabek-transity-equity-mapper/
 │   │   ├── demographics/       — BPS CSV/tables
 │   │   └── worldpop/           — Population raster GeoTIFF
 │   └── processed/
-│       ├── transit/            — Unified stops, headways
-│       ├── networks/           — Clipped road network, metrics
-│       ├── poi/                — Filtered POIs by category
-│       ├── demographics/       — Kelurahan-level demographics
 │       ├── scores/             — TAI, TNI, quadrant at both resolutions
 │       └── analysis/           — Gini, LISA, sensitivity outputs
 ├── paper/                      — Research paper sections
 │   └── sections/
 ├── docs/                       — Living documentation
+├── notebooks/                  — EDA Jupyter notebooks
 ├── CLAUDE.md                   — Agent instructions
-├── package.json
 └── README.md
 ```
 
@@ -105,10 +92,9 @@ Phase 3: Analysis (src/analysis/)
 ─────────────────────────────────
 data/processed/scores/ ──▶ Steps 23–25 (Gini, LISA, What-if) ──▶ data/processed/analysis/
 
-Phase 4: Export (src/export/)
-─────────────────────────────
-data/processed/ ──▶ export_to_web.py ──▶ public/data/*.geojson (< 15 MB total)
-                                    ──▶ public/dataset/*       (CC BY 4.0 download)
+Phase 4: Export (scripts/export_to_web.py)
+──────────────────────────────────────────
+data/processed/ ──▶ export_to_web.py ──▶ web/public/data/*.geojson + analysis files
 
 Phase 5: Serve (Next.js + Vercel)
 ─────────────────────────────────
@@ -195,7 +181,7 @@ layout.tsx
 | Static GeoJSON, no server API | All data pre-computed offline; no API keys client-side; simplest deployment |
 | deck.gl for map rendering | Handles large GeoJSON (15k+ hexagons) with GPU acceleration; built-in H3 layer |
 | MapLibre over Mapbox | Open-source; free tile hosting options; compatible with deck.gl |
-| Python pipeline separate from web app | Heavy geospatial compute (r5py, pysal) not suitable for browser; clean separation of concerns |
+| Monorepo (pipeline + web app) | Single source of truth; `scripts/export_to_web.py` bridges `data/processed/` → `web/public/data/`; heavy compute still offline in `src/` |
 | Zustand over Redux | Simpler for map state (selected unit, active layer, resolution toggle); less boilerplate |
 | Dual-resolution as two GeoJSON files | Simpler than on-the-fly aggregation; consistent with pre-computed scores; lazy-load H3 |
 | What-if computed client-side | Simplified buffer model (no r5py needed); instant feedback; labeled as indicative |

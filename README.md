@@ -38,10 +38,10 @@ Units are classified into four quadrants:
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js (App Router) |
-| Map | deck.gl + Mapbox GL |
+| Framework | Next.js 14 (App Router) — lives in `web/` |
+| Map | deck.gl + MapLibre GL |
 | State | Zustand |
-| Data pipeline | Python (geopandas, r5py, h3-py, pysal) |
+| Data pipeline | Python (geopandas, r5py, h3-py, pysal) — lives in `src/` |
 | Hosting | Vercel |
 
 ## Data Sources
@@ -59,33 +59,60 @@ All open data:
 ## Project Structure
 
 ```
-├── app/                    — Next.js pages
-├── components/             — UI components
-├── lib/                    — Types, data utilities, constants
-├── public/
-│   ├── data/               — GeoJSON for map rendering
-│   └── dataset/            — Cleaned data for download (CC BY 4.0)
-├── src/                    — Python data pipeline (offline)
-│   ├── ingestion/          — Data acquisition
-│   ├── processing/         — Wrangling, scoring, H3 derivation
-│   ├── analysis/           — Gini, LISA, sensitivity
-│   └── export/             — Export to web-ready GeoJSON
-├── docs/                   — Living project documentation
-└── CLAUDE.md               — Agent instructions
+├── web/                        — Next.js 14 web app (monorepo — see below)
+│   ├── src/
+│   │   ├── app/                — App Router pages + API routes
+│   │   ├── components/         — UI components
+│   │   ├── hooks/              — Data hooks (AI summary, demographics, POIs)
+│   │   └── lib/                — Store, color scale, types
+│   └── public/data/            — GeoJSON + analysis files served to browser
+├── src/                        — Python data pipeline (offline)
+│   ├── ingestion/              — Data acquisition
+│   ├── processing/             — Wrangling, scoring, H3 derivation
+│   └── analysis/               — Gini, LISA, sensitivity
+├── scripts/
+│   └── export_to_web.py        — Exports pipeline output → web/public/data/
+├── data/                       — Raw + processed data (gitignored)
+├── paper/                      — Research paper sections
+├── docs/                       — Living project documentation
+└── CLAUDE.md                   — Agent instructions
 ```
 
-## Getting Started
+## Running the Web App
+
+The web prototype lives in `web/`. From the repo root:
 
 ```bash
+cd web
+
 # Install dependencies
 npm install
 
-# Set environment variable
+# Copy environment variables
 cp .env.example .env.local
-# Add your NEXT_PUBLIC_MAPBOX_TOKEN
+# Edit .env.local — add your API keys:
+#   ANTHROPIC_API_KEY=...        (AI analysis card)
+#   NEXT_PUBLIC_MAPTILER_KEY=... (basemap tiles, optional)
 
 # Run dev server
 npm run dev
+# → http://localhost:3000
+```
+
+**After running the data pipeline**, export fresh data to the web app:
+
+```bash
+# From repo root
+python scripts/export_to_web.py
+# Writes kelurahan_scores.geojson, h3_scores.geojson,
+# equity_summary.json, lorenz_*.csv, lisa_*.geojson
+# into web/public/data/
+```
+
+**Production build:**
+
+```bash
+cd web && npm run build
 ```
 
 ## Documentation
