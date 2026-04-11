@@ -1,8 +1,8 @@
 # Project State
 
 **Last updated**: 2026-04-11
-**Active ticket**: MVP-27 — In Review (PR #28 open)
-**Branch**: e7/mvp-27-migrate-real-data
+**Active ticket**: MVP-29 — In Review (PR #4 open on transit-access)
+**Branch**: e8/mvp-29-quadrant-map (transit-access repo)
 
 ---
 
@@ -13,6 +13,12 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary (2026-04-11)
 
+- **MVP-29 DONE** (this session): Quadrant choropleth + resolution toggle — PR #4 on transit-access
+  - Fix kecamatan click handler field names; fix filter to hex_count > 0
+  - ResultsLayout: compact Admin/H3 toggle + inline Q1–Q4 quadrant badge
+- **MVP-90 DONE** (this session): Persona entry screen — PR #3 on transit-access
+  - EntryScreen.tsx: 4 persona cards (Commuter/Explorer/Researcher/Planner)
+  - localStorage persistence; each persona sets initial boundary mode
 - **MVP-27 DONE** (this session): Real pipeline data migrated to transit-access web app
   - Created `scripts/export_to_web.py` — renames H3 fields to DATA_MODEL.md, exports both GeoJSONs
   - Full rewrite of `store.ts` HexProperties/Demographics/MapStats; EquityQuadrant → Q1/Q2/Q3/Q4
@@ -31,9 +37,9 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **Merge PR #28** (MVP-27) — smoke test in dev: load map, click kelurahan zone, verify TAI/TNI [0,1] values and Q1–Q4 quadrant display
-2. **MVP-90** — Persona/goal selection entry screen (unblocked by MVP-27)
-3. **MVP-29** — Quadrant choropleth map with dual-resolution toggle (unblocked by MVP-27)
+1. **Merge PRs**: #28 (MVP-27), #3 (MVP-90), #4 (MVP-29) after smoke test
+2. **MVP-94** — Equity Summary Dashboard (Gini, Lorenz, LISA clusters) — unblocked by MVP-27
+3. **MVP-28** — Road network layer + cost comparison card — unblocked by MVP-27
 4. **MVP-15 (Discussion)** — fill placeholders with real metric values (paper track)
 5. **MVP-88** — Section consistency check gate (paper track)
 
