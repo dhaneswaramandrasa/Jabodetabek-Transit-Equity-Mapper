@@ -1,31 +1,35 @@
 # Project State
 
 **Last updated**: 2026-04-11
-**Active ticket**: MVP-29 — In Review (PR #4 open on transit-access)
-**Branch**: e8/mvp-29-quadrant-map (transit-access repo)
+**Active ticket**: MVP-109 — In Review (PR #29 open on this repo)
+**Branch**: mvp-109/consolidate-web-monorepo
 
 ---
 
 ## Current Focus
 
-**Phase**: E7 (UI Foundation) — MVP-27 data migration done, PR #28 open.
+**Phase**: E8/E9 — MVP-109 monorepo consolidation done, PR #29 open.
 This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary (2026-04-11)
 
-- **MVP-29 DONE** (this session): Quadrant choropleth + resolution toggle — PR #4 on transit-access
-  - Fix kecamatan click handler field names; fix filter to hex_count > 0
+- **MVP-109 DONE** (this session): Consolidated web app into monorepo — PR #29
+  - `web/` added at repo root (copied from transit-access/web/)
+  - `scripts/export_to_web.py` path updated → `web/public/data/`
+  - `.gitignore` updated; `docs/ARCHITECTURE.md` updated
+  - transit-access PR #5 closed with redirect note
+  - `npm run build` passes ✅
+- **MVP-94 DONE** (this session): Equity Summary Dashboard — now in `web/src/components/EquityDashboard.tsx`
+  - `EquityDashboard.tsx`: floating 360px panel, 4 tabs (Overview, Lorenz, LISA, Resolution)
+  - Overview: Gini TAI side-by-side (kelurahan=0.2441, H3=0.6128), Moran's I, quadrant bar chart
+  - Lorenz: SVG curve with kelurahan/H3 toggle; fills 5 analysis files to public/data/
+  - LISA: HH/HL/LH/LL/NS counts for both resolutions
+  - Resolution: κ=0.6124, 29% reclassified, H2 confirmed badge
+  - `scripts/export_to_web.py` updated — now also copies equity_summary.json, lorenz_*.csv, lisa_*.geojson
+- **MVP-29 DONE** (prev session): Quadrant choropleth + resolution toggle — PR #4 on transit-access
   - ResultsLayout: compact Admin/H3 toggle + inline Q1–Q4 quadrant badge
-- **MVP-90 DONE** (this session): Persona entry screen — PR #3 on transit-access
-  - EntryScreen.tsx: 4 persona cards (Commuter/Explorer/Researcher/Planner)
-  - localStorage persistence; each persona sets initial boundary mode
-- **MVP-27 DONE** (this session): Real pipeline data migrated to transit-access web app
-  - Created `scripts/export_to_web.py` — renames H3 fields to DATA_MODEL.md, exports both GeoJSONs
-  - Full rewrite of `store.ts` HexProperties/Demographics/MapStats; EquityQuadrant → Q1/Q2/Q3/Q4
-  - Updated colorScale.ts (domain 0–1), AccessibilityMap.tsx (file paths + field refs), TransitScoreCard.tsx (5-layer breakdown), DemographicsCard.tsx, MapLegend.tsx, useDemographics.ts, useAISummary.ts, useReachablePOIs.ts, useTransitStops.ts
-  - Build passes ✅; PR #28 open
-  - `h3_scores.geojson` = 9,083 features (17.9MB — note for MVP-37 size opt)
-  - `kelurahan_scores.geojson` = 1,502 features (2.8MB)
+- **MVP-90 DONE** (prev session): Persona entry screen — PR #3 on transit-access
+- **MVP-27 DONE** (prev session): Real pipeline data migrated — PR #28 on transit-access (research repo)
 - **MVP-14 DONE** (prior session): Results section, 2,543 words
 - **Previously completed**: E0–E3, MVP-84/13/85/86/87/89/98/99/100
 
@@ -37,11 +41,12 @@ This is a **portfolio / independent research project** — no academic gating.
 
 ## Next Action
 
-1. **Merge PRs**: #28 (MVP-27), #3 (MVP-90), #4 (MVP-29) after smoke test
-2. **MVP-94** — Equity Summary Dashboard (Gini, Lorenz, LISA clusters) — unblocked by MVP-27
-3. **MVP-28** — Road network layer + cost comparison card — unblocked by MVP-27
-4. **MVP-15 (Discussion)** — fill placeholders with real metric values (paper track)
-5. **MVP-88** — Section consistency check gate (paper track)
+1. **Merge PRs**: #29 (MVP-109 monorepo, includes MVP-94) — smoke test: `cd web && npm run dev`
+2. **MVP-28** — Road network layer + cost comparison card (`web/src/components/`)
+3. **MVP-15 (Discussion)** — fill placeholders with real metric values (paper track)
+4. **MVP-88** — Section consistency check gate (paper track)
+
+> Note: All future web app work happens in `web/` inside this repo. transit-access repo is now archived/deprecated.
 
 ## Pipeline Status (as of 2026-03-30)
 
