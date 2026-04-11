@@ -15,9 +15,7 @@ import shutil
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PIPELINE_DIR = os.path.join(ROOT, "data", "processed", "scores")
 ANALYSIS_DIR = os.path.join(ROOT, "data", "processed", "analysis")
-WEB_DIR = os.path.join(
-    os.path.dirname(ROOT), "transit-access", "web", "public", "data"
-)
+WEB_DIR = os.path.join(ROOT, "web", "public", "data")
 
 H3_INPUT = os.path.join(PIPELINE_DIR, "h3_scores.geojson")
 KEL_INPUT = os.path.join(PIPELINE_DIR, "kelurahan_scores.geojson")

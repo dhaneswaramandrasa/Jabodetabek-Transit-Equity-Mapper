@@ -31,3 +31,8 @@ cache/*.json
 # Environment
 .env
 *.env.local
+
+# Web app build artifacts
+web/node_modules/
+web/.next/
+web/tsconfig.tsbuildinfo
