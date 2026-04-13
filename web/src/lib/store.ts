@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { WhatIfParams, WhatIfScenario, WhatIfResult } from "./what-if";
 
 // ===== Boundary Mode =====
 export type BoundaryMode = "kelurahan" | "kecamatan" | "hex";
@@ -322,6 +323,29 @@ interface AccessibilityState {
   resetAI: () => void;
 
   resetForNewAnalysis: () => void;
+
+  // ===== What-If Simulator =====
+  whatIfOpen: boolean;
+  whatIfSimMode: "route" | "station";
+  whatIfIsPlacing: boolean;
+  whatIfWaypoints: [number, number][];
+  whatIfStationPoint: [number, number] | null;
+  whatIfParams: WhatIfParams;
+  whatIfScenarios: WhatIfScenario[];
+  whatIfCurrentResult: WhatIfResult | null;
+  whatIfHighlightedZones: Set<string>;
+
+  setWhatIfOpen: (v: boolean) => void;
+  setWhatIfSimMode: (m: "route" | "station") => void;
+  setWhatIfIsPlacing: (v: boolean) => void;
+  addWhatIfWaypoint: (coord: [number, number]) => void;
+  clearWhatIfWaypoints: () => void;
+  setWhatIfStationPoint: (coord: [number, number] | null) => void;
+  setWhatIfParams: (p: Partial<WhatIfParams>) => void;
+  addWhatIfScenario: (s: WhatIfScenario) => void;
+  removeWhatIfScenario: (id: string) => void;
+  setWhatIfCurrentResult: (r: WhatIfResult | null) => void;
+  setWhatIfHighlightedZones: (ids: Set<string>) => void;
 }
 
 export const useAccessibilityStore = create<AccessibilityState>((set) => ({
@@ -439,4 +463,43 @@ export const useAccessibilityStore = create<AccessibilityState>((set) => ({
       aiError: null,
       locationName: "",
     }),
+
+  // ===== What-If Simulator =====
+  whatIfOpen: false,
+  whatIfSimMode: "route",
+  whatIfIsPlacing: false,
+  whatIfWaypoints: [],
+  whatIfStationPoint: null,
+  whatIfParams: {
+    mode: "transjakarta",
+    fareIdr: 3500,
+    headwayMin: 10,
+    coverageRadiusKm: 0.5,
+  },
+  whatIfScenarios: [],
+  whatIfCurrentResult: null,
+  whatIfHighlightedZones: new Set<string>(),
+
+  setWhatIfOpen: (v) => set({ whatIfOpen: v }),
+  setWhatIfSimMode: (m) => set({ whatIfSimMode: m }),
+  setWhatIfIsPlacing: (v) => set({ whatIfIsPlacing: v }),
+  addWhatIfWaypoint: (coord) =>
+    set((state) => ({ whatIfWaypoints: [...state.whatIfWaypoints, coord] })),
+  clearWhatIfWaypoints: () => set({ whatIfWaypoints: [] }),
+  setWhatIfStationPoint: (coord) => set({ whatIfStationPoint: coord }),
+  setWhatIfParams: (p) =>
+    set((state) => ({ whatIfParams: { ...state.whatIfParams, ...p } })),
+  addWhatIfScenario: (s) =>
+    set((state) => ({
+      whatIfScenarios:
+        state.whatIfScenarios.length >= 3
+          ? state.whatIfScenarios
+          : [...state.whatIfScenarios, s],
+    })),
+  removeWhatIfScenario: (id) =>
+    set((state) => ({
+      whatIfScenarios: state.whatIfScenarios.filter((s) => s.id !== id),
+    })),
+  setWhatIfCurrentResult: (r) => set({ whatIfCurrentResult: r }),
+  setWhatIfHighlightedZones: (ids) => set({ whatIfHighlightedZones: ids }),
 }));
