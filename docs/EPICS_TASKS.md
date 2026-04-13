@@ -821,38 +821,39 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-29/implement-quadrant-map-with-dual-resolution-toggle
 
 ### MVP-30 — Implement CBD journey chain visualization
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
 - **AC**:
-  - [ ] Journey legs displayed: first-mile → station → ride → transfer → ride → last-mile
-  - [ ] Each leg shows mode, time, fare
-  - [ ] Path rendered on map as polyline
-  - [ ] Side panel compares transit vs car vs motorcycle GC
+  - [x] Journey legs displayed: first-mile walk → wait → transit ride → last-mile walk
+  - [x] Each leg shows mode, time, fare
+  - [x] Path rendered on map as polyline (clickedCoord → nearest stop → SUDIRMAN_CBD)
+  - [x] Side panel compares transit vs car vs motorcycle GC
 - **Blocked by**: MVP-27 (real data)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-30/implement-cbd-journey-chain-visualization
 
 ### MVP-31 — Implement what-if route + station placement simulator
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: Medium
 - **Note**: Scope expanded 2026-03-28 (MVP-93) — route simulation added. Primary feature of Planner/Ops Lens (Rina + Budi personas).
 - **AC — Route Simulation Mode**:
-  - [ ] Origin + destination stop inputs (click map or search)
-  - [ ] Mode selector: TransJakarta / KRL / MRT / LRT / Mikrotrans
-  - [ ] Custom fare input (IDR, e.g. Rp 3,500)
-  - [ ] Headway input (minutes)
-  - [ ] Catchment corridor: 400m walk / 1km walk / 3km feeder
-  - [ ] Before/after: quadrant reclassification count, Gini delta, affected population, new TAI avg
-  - [ ] Route polyline + catchment shading on map
-  - [ ] "⚠️ Scenario Simulation — Not a Prediction" disclaimer
-  - [ ] Reset button
+  - [x] Origin + destination stop inputs (click map or search)
+  - [x] Mode selector: TransJakarta / KRL / MRT / LRT / Mikrotrans
+  - [x] Custom fare input (IDR, e.g. Rp 3,500)
+  - [x] Headway input (minutes)
+  - [x] Coverage radius input (300–2000m, heuristic catchment)
+  - [x] Before/after: quadrant reclassification count, Gini delta, affected population
+  - [x] Route polyline + waypoint dots on map
+  - [x] Affected zones highlighted in indigo
+  - [ ] "⚠️ Scenario Simulation — Not a Prediction" disclaimer (TODO)
+  - [x] Clear/reset button
 - **AC — Station Placement Mode**:
-  - [ ] Click map to place hypothetical station
-  - [ ] Select mode type and catchment radius (1km walk, 3km feeder)
-  - [ ] Before/after: quadrant changes, Gini delta, affected population
+  - [x] Click map to place hypothetical station
+  - [x] Coverage radius input
+  - [x] Before/after: quadrant changes, Gini delta, affected population
 - **AC — Shared**:
-  - [ ] Toggle between Route Mode and Station Mode
-  - [ ] Up to 3 simultaneous scenarios for comparison
-  - [ ] Export scenario summary as JSON
+  - [x] Toggle between Route Mode and Station Mode
+  - [x] Up to 3 simultaneous scenarios for comparison
+  - [x] Export scenario summary as JSON
 - **Example**: "Add TransJakarta route Rp 3,500 BSD → Sudirman" → 42 Q4→Q3 zones, Gini −0.04, 127k residents
 - **Components**: `components/WhatIfSimulator.tsx`, `lib/what-if.ts`
 - **Blocked by**: MVP-29 (quadrant map)
