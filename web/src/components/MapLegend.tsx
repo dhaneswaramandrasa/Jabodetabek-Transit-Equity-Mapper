@@ -37,6 +37,7 @@ export default function MapLegend() {
   const setH3Resolution = useAccessibilityStore((s) => s.setH3Resolution);
   const boundaryMode = useAccessibilityStore((s) => s.boundaryMode);
   const setBoundaryMode = useAccessibilityStore((s) => s.setBoundaryMode);
+  const layerMode = useAccessibilityStore((s) => s.layerMode);
   const [collapsed, setCollapsed] = useState(false);
 
   if (!hexLayerVisible) return null;
@@ -72,23 +73,47 @@ export default function MapLegend() {
         {/* Legend items */}
         {!collapsed && (
           <div className="px-3 pb-3 space-y-1.5">
-            {QUADRANT_ORDER.map((q) => {
-              const [r, g, b] = QUADRANT_COLORS[q];
-              return (
-                <div key={q} className="flex items-center gap-2.5">
-                  <span
-                    className="w-3 h-3 rounded-sm shrink-0"
-                    style={{ backgroundColor: `rgb(${r},${g},${b})` }}
-                  />
-                  <span className="text-xs text-slate-700">
-                    {QUADRANT_LABELS[q]}{" "}
-                    <span className="text-slate-400">
-                      ({QUADRANT_SHORT[q]})
+            {layerMode === "tcr" ? (
+              <>
+                {([
+                  { label: "Transit wins", color: [22, 163, 74], sub: "TCR < 1.0" },
+                  { label: "Swing zone", color: [245, 158, 11], sub: "TCR 1.0–1.5" },
+                  { label: "Private wins", color: [220, 38, 38], sub: "TCR > 1.5" },
+                  { label: "No data", color: [180, 180, 180], sub: "—" },
+                ] as const).map(({ label, color, sub }) => (
+                  <div key={label} className="flex items-center gap-2.5">
+                    <span
+                      className="w-3 h-3 rounded-sm shrink-0"
+                      style={{ backgroundColor: `rgb(${color[0]},${color[1]},${color[2]})` }}
+                    />
+                    <span className="text-xs text-slate-700">
+                      {label} <span className="text-slate-400">({sub})</span>
                     </span>
-                  </span>
+                  </div>
+                ))}
+                <div className="text-[9px] text-slate-400 pt-1">
+                  Rings = 5, 10, 15, 20, 25 km from CBD
                 </div>
-              );
-            })}
+              </>
+            ) : (
+              QUADRANT_ORDER.map((q) => {
+                const [r, g, b] = QUADRANT_COLORS[q];
+                return (
+                  <div key={q} className="flex items-center gap-2.5">
+                    <span
+                      className="w-3 h-3 rounded-sm shrink-0"
+                      style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+                    />
+                    <span className="text-xs text-slate-700">
+                      {QUADRANT_LABELS[q]}{" "}
+                      <span className="text-slate-400">
+                        ({QUADRANT_SHORT[q]})
+                      </span>
+                    </span>
+                  </div>
+                );
+              })
+            )}
 
             {/* Transit lines legend */}
             <div className="pt-2 mt-2 border-t border-slate-200/50">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { GeoJsonLayer, ScatterplotLayer, PathLayer } from "@deck.gl/layers";
 import MapGL from "react-map-gl/maplibre";
@@ -25,6 +25,28 @@ import MapLegend from "@/components/MapLegend";
 import EquityDashboard from "@/components/EquityDashboard";
 import { AnimatePresence } from "framer-motion";
 import "maplibre-gl/dist/maplibre-gl.css";
+
+// Sudirman-Thamrin CBD centroid
+const SUDIRMAN_CBD: [number, number] = [106.8229, -6.2088];
+
+// Generate a circle as a path for deck.gl PathLayer
+function generateCirclePath(center: [number, number], radiusKm: number, steps = 64): [number, number][] {
+  const [lng, lat] = center;
+  const earthRadius = 6371;
+  const dLat = (radiusKm / earthRadius) * (180 / Math.PI);
+  const dLng = dLat / Math.cos((lat * Math.PI) / 180);
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const angle = (2 * Math.PI * i) / steps;
+    pts.push([lng + dLng * Math.sin(angle), lat + dLat * Math.cos(angle)]);
+  }
+  return pts;
+}
+
+const CBD_RINGS = [5, 10, 15, 20, 25].map((r) => ({
+  path: generateCirclePath(SUDIRMAN_CBD, r),
+  radius: r,
+}));
 
 // Jabodetabek center
 const INITIAL_VIEW = {
@@ -101,6 +123,8 @@ export default function AccessibilityMap() {
     boundaryMode,
     layerMode,
     setLayerMode,
+    tcrMetric,
+    setTcrMetric,
   } = useAccessibilityStore();
 
   const [data, setData] = useState<GeoJSONData | null>(null);
@@ -410,7 +434,7 @@ export default function AccessibilityMap() {
     [selectedHex?.h3_index]
   );
 
-  // Kelurahan fill color — quadrant-based
+  // Kelurahan fill color — quadrant / road / TCR modes
   const getKelurahanColor = useCallback(
     (feature: { properties: Record<string, unknown> }) => {
       const kelKey = `${feature.properties.kelurahan_name}__${feature.properties.kecamatan_name}__${feature.properties.kota_kab_name}`;
@@ -421,12 +445,29 @@ export default function AccessibilityMap() {
       if (layerMode === "road") {
         const roadScore = feature.properties.road_adjusted_access as number | null;
         if (roadScore != null) {
-          // green (high road access) → red (low road access)
           const r = Math.round(255 * (1 - roadScore));
           const g = Math.round(200 * roadScore);
           return [r, g, 60, alpha] as [number, number, number, number];
         }
         return [180, 180, 180, alpha] as [number, number, number, number];
+      }
+
+      // TCR mode — color by transit competitiveness
+      if (layerMode === "tcr") {
+        if (tcrMetric === "combined") {
+          const zone = feature.properties.transit_competitive_zone as string | null;
+          if (zone === "transit_wins") return [22, 163, 74, alpha] as [number, number, number, number];
+          if (zone === "swing") return [245, 158, 11, alpha] as [number, number, number, number];
+          if (zone === "private_wins") return [220, 38, 38, alpha] as [number, number, number, number];
+          return [180, 180, 180, 60] as [number, number, number, number];
+        }
+        const tcr = (tcrMetric === "car"
+          ? feature.properties.tcr_vs_car
+          : feature.properties.tcr_vs_motorcycle) as number | null;
+        if (tcr == null) return [180, 180, 180, 60] as [number, number, number, number];
+        if (tcr < 1) return [22, 163, 74, alpha] as [number, number, number, number];
+        if (tcr < 1.5) return [245, 158, 11, alpha] as [number, number, number, number];
+        return [220, 38, 38, alpha] as [number, number, number, number];
       }
 
       const quadrant = feature.properties.quadrant as EquityQuadrant | undefined;
@@ -435,7 +476,7 @@ export default function AccessibilityMap() {
       }
       return [128, 128, 128, isSelected ? 255 : 100] as [number, number, number, number];
     },
-    [selectedKelurahan, layerMode]
+    [selectedKelurahan, layerMode, tcrMetric]
   );
 
   // Kecamatan fill color — quadrant-based (only called for features with hex_count > 0)
@@ -452,6 +493,28 @@ export default function AccessibilityMap() {
     },
     [selectedKecamatan]
   );
+
+  // TCR population stats — computed from kelurahan data
+  const tcrStats = useMemo(() => {
+    if (!kelurahanData) return null;
+    const pop = { transit_wins: 0, swing: 0, private_wins: 0, no_data: 0 };
+    for (const f of kelurahanData.features) {
+      const zone = f.properties.transit_competitive_zone as string | null;
+      const p = (f.properties.population as number) || 0;
+      if (zone === "transit_wins") pop.transit_wins += p;
+      else if (zone === "swing") pop.swing += p;
+      else if (zone === "private_wins") pop.private_wins += p;
+      else pop.no_data += p;
+    }
+    const total = pop.transit_wins + pop.swing + pop.private_wins + pop.no_data;
+    const pct = (v: number) => (total > 0 ? Math.round((v / total) * 100) : 0);
+    return {
+      transit_wins: pct(pop.transit_wins),
+      swing: pct(pop.swing),
+      private_wins: pct(pop.private_wins),
+      no_data: pct(pop.no_data),
+    };
+  }, [kelurahanData]);
 
   const activeRoute = activeRouteId ? routes.get(activeRouteId) : null;
 
@@ -520,7 +583,7 @@ export default function AccessibilityMap() {
         lineWidthMinPixels: 1,
         // Click handled by DeckGL root onClick — no layer-level onClick to avoid double firing
         updateTriggers: {
-          getFillColor: [selectedKelurahan],
+          getFillColor: [selectedKelurahan, layerMode, tcrMetric],
         },
         transitions: {
           opacity: 500,
@@ -691,6 +754,44 @@ export default function AccessibilityMap() {
     );
   }
 
+  // 5a. CBD distance rings — only in TCR mode
+  if (layerMode === "tcr") {
+    layers.push(
+      new PathLayer({
+        id: "cbd-rings",
+        data: CBD_RINGS,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPath: (d: any) => d.path,
+        getColor: [100, 100, 100, 60],
+        getWidth: 1,
+        widthMinPixels: 1,
+        widthMaxPixels: 2,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+    // CBD centroid dot
+    layers.push(
+      new ScatterplotLayer({
+        id: "cbd-centroid",
+        data: [{ position: SUDIRMAN_CBD }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPosition: (d: any) => d.position,
+        getRadius: 10,
+        radiusMinPixels: 7,
+        radiusMaxPixels: 14,
+        getFillColor: [59, 130, 246, 220],
+        getLineColor: [255, 255, 255, 255],
+        getLineWidth: 2,
+        lineWidthMinPixels: 2,
+        stroked: true,
+        filled: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
   // 5. Click pin marker
   if (clickedCoordinate) {
     layers.push(
@@ -853,7 +954,7 @@ export default function AccessibilityMap() {
       <div className="absolute bottom-4 left-4 z-20 flex flex-col gap-2 items-start">
         {/* Layer toggle */}
         <div className="flex rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 text-[11px] font-semibold shadow-md">
-          {(["tai", "road"] as const).map((mode) => (
+          {(["tai", "road", "tcr"] as const).map((mode) => (
             <button
               key={mode}
               onClick={() => setLayerMode(mode)}
@@ -863,10 +964,57 @@ export default function AccessibilityMap() {
                   : "bg-white/90 dark:bg-dark-container/90 backdrop-blur-sm text-slate-600 dark:text-[#c8c5cd] hover:bg-slate-50 dark:hover:bg-dark-high"
               }`}
             >
-              {mode === "tai" ? "🗺 Equity" : "🛣 Road Access"}
+              {mode === "tai" ? "🗺 Equity" : mode === "road" ? "🛣 Road" : "💸 TCR"}
             </button>
           ))}
         </div>
+
+        {/* TCR sub-toggle — car / moto / combined */}
+        {layerMode === "tcr" && (
+          <div className="flex rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 text-[10px] font-semibold shadow-sm">
+            {(["combined", "car", "moto"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => setTcrMetric(m)}
+                className={`px-2.5 py-1 transition-colors ${
+                  tcrMetric === m
+                    ? "bg-emerald-500 text-white"
+                    : "bg-white/90 dark:bg-dark-container/90 backdrop-blur-sm text-slate-600 dark:text-[#c8c5cd] hover:bg-slate-50 dark:hover:bg-dark-high"
+                }`}
+              >
+                {m === "combined" ? "All" : m === "car" ? "🚗 Car" : "🛵 Moto"}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* TCR summary stats */}
+        {layerMode === "tcr" && tcrStats && (
+          <div className="bg-white/90 dark:bg-dark-container/90 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-xl p-3 text-[10px] shadow-md min-w-[160px]">
+            <p className="font-semibold text-slate-400 dark:text-[#c8c5cd] uppercase tracking-wide mb-2">Population by zone</p>
+            <div className="space-y-1">
+              <div className="flex justify-between items-center">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />Transit wins</span>
+                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">{tcrStats.transit_wins}%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />Swing zone</span>
+                <span className="font-mono font-bold text-amber-600 dark:text-amber-400">{tcrStats.swing}%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" />Private wins</span>
+                <span className="font-mono font-bold text-red-600 dark:text-red-400">{tcrStats.private_wins}%</span>
+              </div>
+              {tcrStats.no_data > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400 inline-block" />No data</span>
+                  <span className="font-mono font-bold text-slate-500">{tcrStats.no_data}%</span>
+                </div>
+              )}
+            </div>
+            <p className="mt-2 text-[9px] text-slate-400 dark:text-[#c8c5cd]">Rings = 5, 10, 15, 20, 25 km from CBD</p>
+          </div>
+        )}
 
         {/* Equity Summary button */}
         <button

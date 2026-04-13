@@ -859,14 +859,14 @@ MVP-2 (Done) ─────────────┐
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-31/implement-what-if-route-station-placement-simulator
 
 ### MVP-32 — Implement transit competitive zone map
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
 - **AC**:
-  - [ ] Three-color choropleth: green (transit wins), amber (swing), red (private wins)
-  - [ ] Toggle TCR_vs_car / TCR_vs_motorcycle / TCR_combined
-  - [ ] Click shows full GC breakdown
-  - [ ] Distance-to-CBD ring overlay
-  - [ ] Summary stats: % population per zone
+  - [x] Three-color choropleth: green (transit wins), amber (swing), red (private wins)
+  - [x] Toggle TCR_vs_car / TCR_vs_motorcycle / TCR_combined
+  - [x] Click shows full GC breakdown (CostComparisonCard handles this)
+  - [x] Distance-to-CBD ring overlay (5, 10, 15, 20, 25 km rings from Sudirman)
+  - [x] Summary stats: % population per zone
 - **Blocked by**: MVP-27 (real data)
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-32/implement-transit-competitive-zone-map
 
