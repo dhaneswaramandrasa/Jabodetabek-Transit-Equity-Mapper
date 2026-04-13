@@ -23,6 +23,7 @@ import { useTransitStops } from "@/hooks/useTransitStops";
 import { useDemographics } from "@/hooks/useDemographics";
 import MapLegend from "@/components/MapLegend";
 import EquityDashboard from "@/components/EquityDashboard";
+import WhatIfSimulator from "@/components/WhatIfSimulator";
 import { AnimatePresence } from "framer-motion";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -125,6 +126,11 @@ export default function AccessibilityMap() {
     setLayerMode,
     tcrMetric,
     setTcrMetric,
+    whatIfOpen, setWhatIfOpen,
+    whatIfIsPlacing, whatIfSimMode,
+    whatIfWaypoints, whatIfStationPoint,
+    whatIfHighlightedZones,
+    addWhatIfWaypoint, setWhatIfStationPoint,
   } = useAccessibilityStore();
 
   const [data, setData] = useState<GeoJSONData | null>(null);
@@ -247,6 +253,16 @@ export default function AccessibilityMap() {
   const handleMapClick = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (info: any) => {
+      // What-if placement intercept — must be first
+      if (whatIfIsPlacing) {
+        if (info.coordinate) {
+          const [lng, lat] = info.coordinate as [number, number];
+          if (whatIfSimMode === "route") addWhatIfWaypoint([lng, lat]);
+          else setWhatIfStationPoint([lng, lat]);
+        }
+        return;
+      }
+
       if (info.layer?.id === "poi-markers") return;
       if (info.layer?.id === "transit-stops") return;
 
@@ -415,6 +431,10 @@ export default function AccessibilityMap() {
       boundaryMode,
       kelurahanData,
       kecamatanData,
+      whatIfIsPlacing,
+      whatIfSimMode,
+      addWhatIfWaypoint,
+      setWhatIfStationPoint,
     ]
   );
 
@@ -754,6 +774,30 @@ export default function AccessibilityMap() {
     );
   }
 
+  // 4c. CBD journey polyline — clicked point → nearest stop (if available) → Sudirman CBD
+  if (appPhase === "results" && clickedCoordinate) {
+    const stopCoord = nearbyTransitStops[0]?.coordinates;
+    const journeyPath: [number, number][] = stopCoord
+      ? [clickedCoordinate, stopCoord, SUDIRMAN_CBD]
+      : [clickedCoordinate, SUDIRMAN_CBD];
+
+    layers.push(
+      new PathLayer({
+        id: "cbd-journey-path",
+        data: [{ path: journeyPath }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPath: (d: any) => d.path,
+        getColor: [99, 102, 241, 180],
+        getWidth: 2,
+        widthMinPixels: 1.5,
+        capRounded: true,
+        jointRounded: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
   // 5a. CBD distance rings — only in TCR mode
   if (layerMode === "tcr") {
     layers.push(
@@ -786,6 +830,90 @@ export default function AccessibilityMap() {
         lineWidthMinPixels: 2,
         stroked: true,
         filled: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
+  // 6. What-if route polyline
+  if (whatIfWaypoints.length >= 2) {
+    layers.push(
+      new PathLayer({
+        id: "whatif-route",
+        data: [{ path: whatIfWaypoints }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPath: (d: any) => d.path,
+        getColor: [99, 102, 241, 200],
+        getWidth: 3,
+        widthMinPixels: 2,
+        capRounded: true,
+        jointRounded: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
+  // 7. What-if waypoint dots
+  if (whatIfWaypoints.length > 0) {
+    layers.push(
+      new ScatterplotLayer({
+        id: "whatif-waypoints",
+        data: whatIfWaypoints.map((w, index) => ({ position: w, index })),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPosition: (d: any) => d.position,
+        getRadius: 8,
+        radiusMinPixels: 6,
+        getFillColor: [99, 102, 241, 220],
+        getLineColor: [255, 255, 255, 255],
+        getLineWidth: 2,
+        lineWidthMinPixels: 1.5,
+        stroked: true,
+        filled: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
+  // 8. What-if station point
+  if (whatIfStationPoint) {
+    layers.push(
+      new ScatterplotLayer({
+        id: "whatif-station",
+        data: [{ position: whatIfStationPoint }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPosition: (d: any) => d.position,
+        getRadius: 14,
+        radiusMinPixels: 10,
+        getFillColor: [16, 185, 129, 220],
+        getLineColor: [255, 255, 255, 255],
+        getLineWidth: 2,
+        lineWidthMinPixels: 2,
+        stroked: true,
+        filled: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
+  // 9. What-if affected zones overlay
+  if (whatIfHighlightedZones.size > 0 && kelurahanData) {
+    const affectedFeatures = kelurahanData.features.filter(
+      (f) => whatIfHighlightedZones.has(f.properties.h3_index as string)
+    );
+    layers.push(
+      new GeoJsonLayer({
+        id: "whatif-affected",
+        data: { type: "FeatureCollection", features: affectedFeatures } as GeoJSONData,
+        filled: true,
+        stroked: true,
+        getFillColor: [99, 102, 241, 100],
+        getLineColor: [99, 102, 241, 200],
+        getLineWidth: 2,
+        lineWidthMinPixels: 1,
         pickable: false,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
@@ -1027,12 +1155,31 @@ export default function AccessibilityMap() {
         >
           {showEquityDashboard ? "✕ Equity" : "📊 Equity Summary"}
         </button>
+
+        {/* What-If Simulator button */}
+        <button
+          onClick={() => setWhatIfOpen(!whatIfOpen)}
+          className={`px-3 py-2 text-xs font-semibold rounded-xl shadow-md border transition-colors ${
+            whatIfOpen
+              ? "bg-indigo-600 text-white border-indigo-700"
+              : "bg-white/90 dark:bg-dark-container/90 backdrop-blur-sm text-slate-700 dark:text-[#e2e0fc] border-slate-200 dark:border-white/10 hover:bg-indigo-50 hover:text-indigo-700"
+          }`}
+        >
+          {whatIfOpen ? "✕ Simulator" : "What-If"}
+        </button>
       </div>
 
       {/* Equity Summary Dashboard */}
       <AnimatePresence>
         {showEquityDashboard && (
           <EquityDashboard onClose={() => setShowEquityDashboard(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* What-If Simulator */}
+      <AnimatePresence>
+        {whatIfOpen && (
+          <WhatIfSimulator onClose={() => setWhatIfOpen(false)} />
         )}
       </AnimatePresence>
 
