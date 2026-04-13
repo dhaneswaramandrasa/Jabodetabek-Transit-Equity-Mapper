@@ -246,8 +246,10 @@ export interface Demographics {
 interface AccessibilityState {
   theme: "light" | "dark";
   toggleTheme: () => void;
-  layerMode: "tai" | "road";
-  setLayerMode: (mode: "tai" | "road") => void;
+  layerMode: "tai" | "road" | "tcr";
+  setLayerMode: (mode: "tai" | "road" | "tcr") => void;
+  tcrMetric: "combined" | "car" | "moto";
+  setTcrMetric: (m: "combined" | "car" | "moto") => void;
 
   appPhase: AppPhase;
   loadingStage: LoadingStage | null;
@@ -338,6 +340,8 @@ export const useAccessibilityStore = create<AccessibilityState>((set) => ({
 
   layerMode: "tai",
   setLayerMode: (mode) => set({ layerMode: mode }),
+  tcrMetric: "combined",
+  setTcrMetric: (m) => set({ tcrMetric: m }),
 
   appPhase: "landing",
   loadingStage: null,
