@@ -5,23 +5,22 @@ import dynamic from "next/dynamic";
 import LandingOverlay from "@/components/landing/LandingOverlay";
 import LoadingSequence from "@/components/loading/LoadingSequence";
 import ResultsLayout from "@/components/ResultsLayout";
+import AppShell from "@/components/AppShell";
 import EntryScreen from "@/components/EntryScreen";
 import ThemeProvider from "@/components/ThemeProvider";
-import ThemeToggle from "@/components/ThemeToggle";
 import { useAISummary } from "@/hooks/useAISummary";
 import { useAccessibilityStore } from "@/lib/store";
 
 const STORAGE_KEY = "jtm_persona";
 
-// deck.gl / luma.gl require WebGL — must skip SSR to avoid
-// "Cannot read properties of undefined (reading 'maxTextureDimension2D')"
+// deck.gl / luma.gl require WebGL — must skip SSR
 const AccessibilityMap = dynamic(
   () => import("@/components/AccessibilityMap"),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full flex items-center justify-center bg-slate-50">
-        <div className="text-slate-400 text-sm animate-pulse">
+      <div className="w-full h-full flex items-center justify-center bg-surface">
+        <div className="text-on-surface/40 text-sm animate-pulse font-label">
           Loading map...
         </div>
       </div>
@@ -32,6 +31,7 @@ const AccessibilityMap = dynamic(
 export default function Home() {
   useAISummary();
 
+  const appPhase = useAccessibilityStore((s) => s.appPhase);
   const setSelectedPersona = useAccessibilityStore((s) => s.setSelectedPersona);
   const [showEntry, setShowEntry] = useState<boolean | null>(null);
 
@@ -39,7 +39,6 @@ export default function Home() {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored && stored !== "") {
-      // Restore stored persona (may be "skipped")
       if (stored !== "skipped") {
         setSelectedPersona(stored as Parameters<typeof setSelectedPersona>[0]);
       }
@@ -49,21 +48,19 @@ export default function Home() {
     }
   }, [setSelectedPersona]);
 
-  // Wait for localStorage check before rendering
   if (showEntry === null) return null;
 
+  const inApp = appPhase === "loading" || appPhase === "results";
+
   return (
-    <div className="h-screen w-screen relative overflow-hidden bg-slate-50 dark:bg-dark-base">
-      {/* Theme initialiser — reads localStorage, no render output */}
+    <div className="h-screen w-screen relative overflow-hidden bg-surface">
+      {/* Theme initialiser */}
       <ThemeProvider />
 
-      {/* Map always renders underneath */}
+      {/* Map always renders underneath, full screen */}
       <div className="absolute inset-0">
         <AccessibilityMap />
       </div>
-
-      {/* Theme toggle — always visible */}
-      <ThemeToggle />
 
       {/* Entry persona screen (first visit only) */}
       {showEntry && (
@@ -73,9 +70,21 @@ export default function Home() {
       {/* Phase overlays */}
       {!showEntry && (
         <>
+          {/* Landing — only when in landing phase */}
           <LandingOverlay />
+
+          {/* Loading sequence */}
           <LoadingSequence />
-          <ResultsLayout />
+
+          {/* App shell — fixed nav + sidebar for in-app phases */}
+          {inApp && <AppShell />}
+
+          {/* Results panels — positioned inside ml-20 pt-14 offset */}
+          {appPhase === "results" && (
+            <div className="absolute inset-0 pt-14 pl-20 pointer-events-none">
+              <ResultsLayout />
+            </div>
+          )}
         </>
       )}
     </div>
