@@ -23,8 +23,8 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active (MVP-85/86/89/98/99/100/87/14 Done, MVP-12 Done) + E6 Done + E7 active (MVP-26 In Review, MVP-93 Done). Stitch dark-theme redesign applied + lens clipping bug fixed (CSS padding/absolute positioning). MVP-14 Results section DONE (2,543w). MVP-15 Discussion needs placeholder fill. MVP-88 consistency check is next gate.
-**Last synced**: 2026-04-03
+**Current phase**: E4 active (MVP-85/86/89/98/99/100/87/14 Done, MVP-12 Done) + E6 Done + E7 active (MVP-26 In Review, MVP-93 Done) + E8 MVP-91 In Review. Stitch dark-theme redesign applied + lens clipping bug fixed (CSS padding/absolute positioning). MVP-14 Results section DONE (2,543w). MVP-15 Discussion needs placeholder fill. MVP-88 consistency check is next gate. Commuter MVP scope locked for first release — dual-pin flow, 5-mode comparison, JourneyPanel.
+**Last synced**: 2026-04-14
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -783,7 +783,7 @@ MVP-2 (Done) ─────────────┐
 ## E8 · Core Features (Product)
 
 ### MVP-91 — Implement Journey Planner — coordinate picker with transit + ride-hailing cost comparison
-- **Status**: Todo
+- **Status**: In Review
 - **Priority**: High
 - **AC**:
   - [ ] Origin pin (click or type) → snapped to nearest H3 centroid

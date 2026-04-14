@@ -346,6 +346,21 @@ interface AccessibilityState {
   removeWhatIfScenario: (id: string) => void;
   setWhatIfCurrentResult: (r: WhatIfResult | null) => void;
   setWhatIfHighlightedZones: (ids: Set<string>) => void;
+
+  // ===== Commuter Journey State =====
+  pinMode: "home" | "office" | null;
+  homeCoord: [number, number] | null;
+  homeZone: HexProperties | null;
+  homeName: string;
+  officeCoord: [number, number] | null;
+  officeName: string;
+  journeyReady: boolean;
+
+  setPinMode: (m: "home" | "office" | null) => void;
+  setHomePin: (coord: [number, number], name?: string) => void;
+  setOfficePin: (coord: [number, number], name?: string) => void;
+  setHomeZone: (zone: HexProperties | null) => void;
+  clearJourney: () => void;
 }
 
 export const useAccessibilityStore = create<AccessibilityState>((set) => ({
@@ -462,6 +477,14 @@ export const useAccessibilityStore = create<AccessibilityState>((set) => ({
       aiLoading: false,
       aiError: null,
       locationName: "",
+      // Journey reset
+      pinMode: null,
+      homeCoord: null,
+      homeZone: null,
+      homeName: "",
+      officeCoord: null,
+      officeName: "",
+      journeyReady: false,
     }),
 
   // ===== What-If Simulator =====
@@ -502,4 +525,39 @@ export const useAccessibilityStore = create<AccessibilityState>((set) => ({
     })),
   setWhatIfCurrentResult: (r) => set({ whatIfCurrentResult: r }),
   setWhatIfHighlightedZones: (ids) => set({ whatIfHighlightedZones: ids }),
+
+  // ===== Commuter Journey =====
+  pinMode: null,
+  homeCoord: null,
+  homeZone: null,
+  homeName: "",
+  officeCoord: null,
+  officeName: "",
+  journeyReady: false,
+
+  setPinMode: (m) => set({ pinMode: m }),
+  setHomePin: (coord, name = "Home") =>
+    set((state) => ({
+      homeCoord: coord,
+      homeName: name,
+      journeyReady: state.officeCoord !== null,
+    })),
+  setOfficePin: (coord, name = "Office") =>
+    set((state) => ({
+      officeCoord: coord,
+      officeName: name,
+      journeyReady: state.homeCoord !== null,
+    })),
+  setHomeZone: (zone) => set({ homeZone: zone }),
+  clearJourney: () =>
+    set({
+      appPhase: "landing",
+      pinMode: null,
+      homeCoord: null,
+      homeZone: null,
+      homeName: "",
+      officeCoord: null,
+      officeName: "",
+      journeyReady: false,
+    }),
 }));

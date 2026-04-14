@@ -131,6 +131,15 @@ export default function AccessibilityMap() {
     whatIfWaypoints, whatIfStationPoint,
     whatIfHighlightedZones,
     addWhatIfWaypoint, setWhatIfStationPoint,
+    // Commuter journey
+    pinMode,
+    homeCoord,
+    homeZone,
+    officeCoord,
+    setPinMode,
+    setHomePin,
+    setOfficePin,
+    setHomeZone,
   } = useAccessibilityStore();
 
   const [data, setData] = useState<GeoJSONData | null>(null);
@@ -260,6 +269,29 @@ export default function AccessibilityMap() {
           if (whatIfSimMode === "route") addWhatIfWaypoint([lng, lat]);
           else setWhatIfStationPoint([lng, lat]);
         }
+        return;
+      }
+
+      // Pin mode intercept — home/office placement
+      if (pinMode !== null && info.coordinate) {
+        const [lng, lat] = info.coordinate as [number, number];
+
+        // Attempt to find zone at click point for homeZone (only for home pin)
+        if (pinMode === "home") {
+          // Try kelurahan first
+          let foundZone: HexProperties | null = null;
+          if (kelurahanData) {
+            // find via h3 lookup since we don't have spatial hit-test here
+            const h3Index = latLngToCell(lat, lng, h3Resolution);
+            const hex = hexLookup.get(h3Index);
+            if (hex) foundZone = hex;
+          }
+          setHomePin([lng, lat]);
+          if (foundZone) setHomeZone(foundZone);
+        } else {
+          setOfficePin([lng, lat]);
+        }
+        setPinMode(null);
         return;
       }
 
@@ -435,6 +467,11 @@ export default function AccessibilityMap() {
       whatIfSimMode,
       addWhatIfWaypoint,
       setWhatIfStationPoint,
+      pinMode,
+      setHomePin,
+      setOfficePin,
+      setHomeZone,
+      setPinMode,
     ]
   );
 
@@ -459,7 +496,11 @@ export default function AccessibilityMap() {
     (feature: { properties: Record<string, unknown> }) => {
       const kelKey = `${feature.properties.kelurahan_name}__${feature.properties.kecamatan_name}__${feature.properties.kota_kab_name}`;
       const isSelected = selectedKelurahan === kelKey;
-      const alpha = isSelected ? 255 : 160;
+      const isHomeZone =
+        homeZone !== null &&
+        (homeZone.h3_index === `kel_${kelKey}` ||
+          homeZone.kelurahan_name === feature.properties.kelurahan_name);
+      const alpha = isSelected || isHomeZone ? 255 : 160;
 
       // Road access mode — color by road_adjusted_access (green→red gradient)
       if (layerMode === "road") {
@@ -496,7 +537,7 @@ export default function AccessibilityMap() {
       }
       return [128, 128, 128, isSelected ? 255 : 100] as [number, number, number, number];
     },
-    [selectedKelurahan, layerMode, tcrMetric]
+    [selectedKelurahan, layerMode, tcrMetric, homeZone]
   );
 
   // Kecamatan fill color — quadrant-based (only called for features with hex_count > 0)
@@ -603,7 +644,7 @@ export default function AccessibilityMap() {
         lineWidthMinPixels: 1,
         // Click handled by DeckGL root onClick — no layer-level onClick to avoid double firing
         updateTriggers: {
-          getFillColor: [selectedKelurahan, layerMode, tcrMetric],
+          getFillColor: [selectedKelurahan, layerMode, tcrMetric, homeZone?.h3_index],
         },
         transitions: {
           opacity: 500,
@@ -798,6 +839,70 @@ export default function AccessibilityMap() {
     );
   }
 
+  // 4d. Journey arc — home to office straight line
+  if (homeCoord && officeCoord) {
+    layers.push(
+      new PathLayer({
+        id: "journey-arc",
+        data: [{ path: [homeCoord, officeCoord] }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPath: (d: any) => d.path,
+        getColor: [111, 216, 200, 100],
+        getWidth: 2,
+        widthMinPixels: 2,
+        capRounded: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
+  // 4e. Home pin marker
+  if (homeCoord) {
+    layers.push(
+      new ScatterplotLayer({
+        id: "home-pin",
+        data: [{ position: homeCoord }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPosition: (d: any) => d.position,
+        getRadius: 12,
+        radiusMinPixels: 10,
+        radiusMaxPixels: 16,
+        getFillColor: [59, 130, 246, 255],
+        getLineColor: [255, 255, 255, 255],
+        getLineWidth: 2,
+        lineWidthMinPixels: 2,
+        stroked: true,
+        filled: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
+  // 4f. Office pin marker
+  if (officeCoord) {
+    layers.push(
+      new ScatterplotLayer({
+        id: "office-pin",
+        data: [{ position: officeCoord }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getPosition: (d: any) => d.position,
+        getRadius: 12,
+        radiusMinPixels: 10,
+        radiusMaxPixels: 16,
+        getFillColor: [249, 115, 22, 255],
+        getLineColor: [255, 255, 255, 255],
+        getLineWidth: 2,
+        lineWidthMinPixels: 2,
+        stroked: true,
+        filled: true,
+        pickable: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+    );
+  }
+
   // 5a. CBD distance rings — only in TCR mode
   if (layerMode === "tcr") {
     layers.push(
@@ -953,7 +1058,7 @@ export default function AccessibilityMap() {
         onClick={handleMapClick as any}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         getCursor={({ isHovering }: any) =>
-          isHovering ? "pointer" : "crosshair"
+          pinMode !== null ? "crosshair" : isHovering ? "pointer" : "crosshair"
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         getTooltip={({ object, layer }: any) => {

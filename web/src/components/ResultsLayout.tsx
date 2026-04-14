@@ -3,61 +3,35 @@
 import { motion } from "framer-motion";
 import { useAccessibilityStore } from "@/lib/store";
 import CardGrid from "./results/CardGrid";
-import CommuterLens from "./results/lenses/CommuterLens";
-import ResearcherLens from "./results/lenses/ResearcherLens";
-import PlannerLens from "./results/lenses/PlannerLens";
+import JourneyPanel from "./commuter/JourneyPanel";
+// Lens components kept available but not rendered in commuter MVP
+// import CommuterLens from "./results/lenses/CommuterLens";
+// import ResearcherLens from "./results/lenses/ResearcherLens";
+// import PlannerLens from "./results/lenses/PlannerLens";
 
 export default function ResultsLayout() {
   const appPhase = useAccessibilityStore((s) => s.appPhase);
-  const selectedPersona = useAccessibilityStore((s) => s.selectedPersona);
+  const journeyReady = useAccessibilityStore((s) => s.journeyReady);
   const resetForNewAnalysis = useAccessibilityStore((s) => s.resetForNewAnalysis);
 
   if (appPhase !== "results") return null;
 
-  // Researcher lens uses fixed sidebars — different layout pattern
-  if (selectedPersona === "researcher") {
+  // Commuter journey flow — dual-pin set
+  if (journeyReady) {
     return (
       <motion.div
-        key="researcher"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="absolute inset-0 z-10 pointer-events-none"
+        key="journey"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.35 }}
+        className="absolute top-0 right-0 z-10 h-full w-full md:w-[420px] flex flex-col"
       >
-        <ResearcherLens />
+        <JourneyPanel />
       </motion.div>
     );
   }
 
-  if (selectedPersona === "commuter") {
-    return (
-      <motion.div
-        key="commuter"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="absolute inset-0 z-10 pointer-events-none"
-      >
-        <CommuterLens />
-      </motion.div>
-    );
-  }
-
-  if (selectedPersona === "planner") {
-    return (
-      <motion.div
-        key="planner"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="absolute inset-0 z-10 pointer-events-none"
-      >
-        <PlannerLens />
-      </motion.div>
-    );
-  }
-
-  // Default / null persona — minimal right panel with CardGrid
+  // Default fallback — map-click analysis flow
   return (
     <motion.div
       key="default"
