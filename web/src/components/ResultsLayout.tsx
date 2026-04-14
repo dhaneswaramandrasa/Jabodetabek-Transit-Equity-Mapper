@@ -1,91 +1,84 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useAccessibilityStore, QUADRANT_LABELS, QUADRANT_COLORS } from "@/lib/store";
+import { useAccessibilityStore } from "@/lib/store";
 import CardGrid from "./results/CardGrid";
+import CommuterLens from "./results/lenses/CommuterLens";
+import ResearcherLens from "./results/lenses/ResearcherLens";
+import PlannerLens from "./results/lenses/PlannerLens";
 
 export default function ResultsLayout() {
-  const {
-    appPhase, locationName, clickedCoordinate, resetForNewAnalysis,
-    hexLayerVisible, toggleHexLayer, boundaryMode, setBoundaryMode,
-    h3Resolution, setH3Resolution, selectedHex,
-  } = useAccessibilityStore();
-
-  const quadrant = selectedHex?.quadrant;
-  const quadrantLabel = quadrant ? QUADRANT_LABELS[quadrant] : null;
-  const quadrantColor = quadrant ? QUADRANT_COLORS[quadrant] : null;
+  const appPhase = useAccessibilityStore((s) => s.appPhase);
+  const selectedPersona = useAccessibilityStore((s) => s.selectedPersona);
+  const resetForNewAnalysis = useAccessibilityStore((s) => s.resetForNewAnalysis);
 
   if (appPhase !== "results") return null;
 
-  const coordText = clickedCoordinate
-    ? `${clickedCoordinate[1].toFixed(4)}, ${clickedCoordinate[0].toFixed(4)}`
-    : "";
+  // Researcher lens uses fixed sidebars — different layout pattern
+  if (selectedPersona === "researcher") {
+    return (
+      <motion.div
+        key="researcher"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0 z-10 pointer-events-none"
+      >
+        <ResearcherLens />
+      </motion.div>
+    );
+  }
 
+  if (selectedPersona === "commuter") {
+    return (
+      <motion.div
+        key="commuter"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0 z-10 pointer-events-none"
+      >
+        <CommuterLens />
+      </motion.div>
+    );
+  }
+
+  if (selectedPersona === "planner") {
+    return (
+      <motion.div
+        key="planner"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0 z-10 pointer-events-none"
+      >
+        <PlannerLens />
+      </motion.div>
+    );
+  }
+
+  // Default / null persona — minimal right panel with CardGrid
   return (
     <motion.div
+      key="default"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.35 }}
-      className="absolute top-0 right-0 z-10 h-full w-full md:w-[520px] lg:w-[560px] flex flex-col bg-slate-50/90 dark:bg-dark-low/95 backdrop-blur-md border-l border-slate-200/50 dark:border-white/10"
+      className="absolute top-0 right-0 z-10 h-full w-full md:w-[520px] lg:w-[560px] flex flex-col bg-surface/90 backdrop-blur-md border-l border-outline-variant/10"
     >
       {/* Top bar */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200/50 dark:border-white/10 bg-white/70 dark:bg-dark-container/80 backdrop-blur-md">
-        <div className="min-w-0 mr-3">
-          <h2 className="text-sm font-semibold text-slate-800 dark:text-[#e2e0fc] truncate">
-            {locationName || coordText || "Selected Location"}
-          </h2>
-          {quadrantLabel && quadrantColor && (
-            <span
-              className="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded mt-0.5"
-              style={{
-                backgroundColor: `rgba(${quadrantColor[0]},${quadrantColor[1]},${quadrantColor[2]},0.12)`,
-                color: `rgb(${quadrantColor[0]},${quadrantColor[1]},${quadrantColor[2]})`,
-              }}
-            >
-              {quadrant} · {quadrantLabel}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {/* Compact resolution toggle */}
-          <div className="flex rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 text-[10px] font-medium">
-            {(["kelurahan", "hex"] as const).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => {
-                  setBoundaryMode(mode);
-                  if (mode === "hex") setH3Resolution(8);
-                }}
-                className={`px-2 py-1 transition-colors ${
-                  boundaryMode === mode
-                    ? "bg-blue-500 dark:bg-teal dark:text-dark-base text-white"
-                    : "bg-white dark:bg-dark-high text-slate-500 dark:text-[#c8c5cd] hover:bg-slate-50 dark:hover:bg-dark-highest"
-                }`}
-              >
-                {mode === "kelurahan" ? "Admin" : "H3"}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={toggleHexLayer}
-            className={`px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors ${
-              hexLayerVisible
-                ? "bg-blue-100 dark:bg-teal/20 text-blue-700 dark:text-teal"
-                : "bg-slate-100 dark:bg-dark-high text-slate-500 dark:text-[#c8c5cd] hover:bg-slate-200 dark:hover:bg-dark-highest"
-            }`}
-          >
-            {hexLayerVisible ? "Hide" : "Show"} Map
-          </button>
-          <button
-            onClick={resetForNewAnalysis}
-            className="px-2.5 py-1.5 text-xs bg-slate-100 dark:bg-dark-high text-slate-500 dark:text-[#c8c5cd] hover:bg-slate-200 dark:hover:bg-dark-highest rounded-lg font-medium transition-colors"
-          >
-            ✕
-          </button>
-        </div>
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-outline-variant/10 bg-surface-container/80 backdrop-blur-md">
+        <span className="text-sm font-semibold text-on-surface">
+          Analysis Results
+        </span>
+        <button
+          onClick={resetForNewAnalysis}
+          className="px-2.5 py-1.5 text-xs bg-surface-container-high text-on-surface-variant hover:bg-surface-bright rounded font-medium transition-colors"
+        >
+          ✕
+        </button>
       </div>
 
-      {/* Scrollable cards */}
       <div className="flex-1 overflow-y-auto p-4">
         <CardGrid />
       </div>
