@@ -79,9 +79,9 @@ export default function Home() {
           {/* App shell — fixed nav + sidebar for in-app phases */}
           {inApp && <AppShell />}
 
-          {/* Results panels — positioned inside ml-20 pt-14 offset */}
+          {/* Results panels — offset below top-nav (h-14) and right of sidebar (w-20) */}
           {appPhase === "results" && (
-            <div className="absolute inset-0 pt-14 pl-20 pointer-events-none">
+            <div className="absolute top-14 left-20 right-0 bottom-0 pointer-events-none">
               <ResultsLayout />
             </div>
           )}
