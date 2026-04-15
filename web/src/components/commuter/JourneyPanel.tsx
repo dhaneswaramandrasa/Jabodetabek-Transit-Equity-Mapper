@@ -131,13 +131,15 @@ export default function JourneyPanel() {
   const officeName = useAccessibilityStore((s) => s.officeName);
   const journeyReady = useAccessibilityStore((s) => s.journeyReady);
   const clearJourney = useAccessibilityStore((s) => s.clearJourney);
+  // Two-zone composite: use destination zone data if user clicked a mapped zone
+  const destZone = useAccessibilityStore((s) => s.selectedHex);
 
   const [expandedMode, setExpandedMode] = useState<string | null>(null);
 
   const options = useMemo<JourneyOption[]>(() => {
     if (!homeZone || !homeCoord || !officeCoord || !journeyReady) return [];
-    return estimateJourney(homeZone, homeCoord, officeCoord);
-  }, [homeZone, homeCoord, officeCoord, journeyReady]);
+    return estimateJourney(homeZone, homeCoord, officeCoord, destZone);
+  }, [homeZone, homeCoord, officeCoord, journeyReady, destZone]);
 
   if (!journeyReady || !homeCoord || !officeCoord) {
     return (
