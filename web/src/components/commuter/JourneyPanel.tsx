@@ -2,11 +2,25 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { useAccessibilityStore, QUADRANT_COLORS, QUADRANT_LABELS } from "@/lib/store";
-import { estimateJourney, type JourneyOption, type JourneyLeg } from "@/lib/journey";
+import {
+  useAccessibilityStore,
+  QUADRANT_COLORS,
+  QUADRANT_LABELS,
+} from "@/lib/store";
+import {
+  estimateJourney,
+  type JourneyOption,
+  type JourneyLeg,
+} from "@/lib/journey";
+
+type SortKey = "probability" | "cost" | "time";
 
 function formatIdr(cost: number): string {
   return new Intl.NumberFormat("id-ID").format(cost);
+}
+
+function formatPct(p: number): string {
+  return `${Math.round(p * 100)}%`;
 }
 
 function LegIcon({ type }: { type: JourneyLeg["type"] }) {
@@ -23,6 +37,23 @@ function LegIcon({ type }: { type: JourneyLeg["type"] }) {
   );
 }
 
+function ProbabilityBar({ probability }: { probability: number }) {
+  const width = Math.max(probability * 100, 3); // min 3% for visibility
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 h-1.5 rounded-full bg-white/8 overflow-hidden">
+        <div
+          className="h-full rounded-full bg-primary/60 transition-all duration-500"
+          style={{ width: `${width}%` }}
+        />
+      </div>
+      <span className="font-mono text-[11px] font-bold text-on-surface/60 tabular-nums w-9 text-right">
+        {formatPct(probability)}
+      </span>
+    </div>
+  );
+}
+
 function ModeCard({
   option,
   expanded,
@@ -35,19 +66,24 @@ function ModeCard({
   const tagColors: Record<string, string> = {
     Cheapest: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
     Fastest: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    "Best Value": "bg-primary/20 text-primary border-primary/30",
   };
+
+  const isHighestProb = option.probability > 0.3;
 
   return (
     <button
       onClick={onToggle}
       disabled={!option.available}
+      role="button"
       className={`w-full text-left rounded-lg border p-4 transition-all ${
-        option.recommended
-          ? "border-primary/40 bg-primary/5"
+        isHighestProb
+          ? "border-primary/30 bg-primary/5"
           : "border-white/8 bg-white/3 hover:bg-white/6"
-      } ${!option.available ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      } ${
+        !option.available ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+      }`}
     >
+      {/* Top row: icon, label, tags, time, cost */}
       <div className="flex items-center gap-3">
         <span className="material-symbols-outlined text-on-surface/60 text-xl">
           {option.icon}
@@ -60,7 +96,7 @@ function ModeCard({
             {option.tag && (
               <span
                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                  tagColors[option.tag] ?? tagColors["Best Value"]
+                  tagColors[option.tag] ?? ""
                 }`}
               >
                 {option.tag}
@@ -72,13 +108,8 @@ function ModeCard({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3 text-xs text-on-surface/50">
-            <span>
-              {option.legs
-                .slice(0, 3)
-                .map((l) => l.type.charAt(0).toUpperCase() + l.type.slice(1))
-                .join(" → ")}
-            </span>
+          <div className="text-[11px] text-on-surface/40 font-label">
+            {option.chainLabel}
           </div>
         </div>
         <div className="text-right shrink-0">
@@ -90,6 +121,20 @@ function ModeCard({
           </div>
         </div>
       </div>
+
+      {/* Probability bar */}
+      {option.available && option.probability > 0 && (
+        <div className="mt-3">
+          <ProbabilityBar probability={option.probability} />
+        </div>
+      )}
+
+      {/* Ride-hailing disclaimer */}
+      {(option.mode === "goride" || option.mode === "gocar") && (
+        <p className="text-[10px] text-on-surface/30 mt-2 leading-relaxed">
+          Estimated fare — actual varies with surge pricing and traffic.
+        </p>
+      )}
 
       {/* Expanded legs breakdown */}
       {expanded && option.available && (
@@ -117,9 +162,70 @@ function ModeCard({
               {option.totalTimeMin} min · Rp {formatIdr(option.totalCostIdr)}
             </span>
           </div>
+          {option.methodNote && (
+            <p className="text-[10px] text-on-surface/30 mt-1 leading-relaxed italic">
+              {option.methodNote}
+            </p>
+          )}
         </div>
       )}
     </button>
+  );
+}
+
+function EquityContextCard({
+  quadrant,
+  quadrantColor,
+  quadrantLabel,
+  taiScore,
+}: {
+  quadrant: string | undefined;
+  quadrantColor: [number, number, number] | null;
+  quadrantLabel: string | null | undefined;
+  taiScore: number | null | undefined;
+}) {
+  if (!quadrant || !quadrantColor) return null;
+
+  return (
+    <div className="rounded-lg border border-white/8 bg-white/3 p-4 space-y-2">
+      <p className="text-xs font-semibold text-on-surface/60 uppercase tracking-widest">
+        Your zone
+      </p>
+      <div className="flex items-center gap-2">
+        <span
+          className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+          style={{
+            backgroundColor: `rgb(${quadrantColor.join(",")})`,
+          }}
+        />
+        <span className="text-sm text-on-surface font-medium">
+          {quadrantLabel}
+        </span>
+      </div>
+      {taiScore != null && (
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-on-surface/50">
+            Transit access score:
+          </span>
+          <span className="text-xs font-mono font-bold text-on-surface">
+            {Math.round(taiScore * 100)}/100
+          </span>
+        </div>
+      )}
+      {quadrant === "Q4" && (
+        <p className="text-xs text-red-400/80 leading-relaxed">
+          Transit Desert — limited frequency and coverage in this zone.
+          Transit may still be your best option, but first/last mile is
+          critical.
+        </p>
+      )}
+      {quadrant === "Q1" && (
+        <p className="text-xs text-emerald-400/80 leading-relaxed">
+          Well-served — transit is competitive here. Your commute has good
+          options.
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -131,15 +237,23 @@ export default function JourneyPanel() {
   const officeName = useAccessibilityStore((s) => s.officeName);
   const journeyReady = useAccessibilityStore((s) => s.journeyReady);
   const clearJourney = useAccessibilityStore((s) => s.clearJourney);
-  // Two-zone composite: use destination zone data if user clicked a mapped zone
   const destZone = useAccessibilityStore((s) => s.selectedHex);
 
   const [expandedMode, setExpandedMode] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>("probability");
 
   const options = useMemo<JourneyOption[]>(() => {
     if (!homeZone || !homeCoord || !officeCoord || !journeyReady) return [];
-    return estimateJourney(homeZone, homeCoord, officeCoord, destZone);
-  }, [homeZone, homeCoord, officeCoord, journeyReady, destZone]);
+    const raw = estimateJourney(homeZone, homeCoord, officeCoord, destZone);
+    // re-sort
+    if (sortKey === "cost") {
+      return [...raw].sort((a, b) => a.totalCostIdr - b.totalCostIdr);
+    }
+    if (sortKey === "time") {
+      return [...raw].sort((a, b) => a.totalTimeMin - b.totalTimeMin);
+    }
+    return raw; // already probability-descending from estimateJourney
+  }, [homeZone, homeCoord, officeCoord, journeyReady, destZone, sortKey]);
 
   if (!journeyReady || !homeCoord || !officeCoord) {
     return (
@@ -173,16 +287,18 @@ export default function JourneyPanel() {
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 text-xs text-on-surface/60 mb-1 flex-wrap">
               <span className="material-symbols-outlined text-sm">home</span>
-              <span className="font-medium text-on-surface truncate max-w-[120px]">
+              <span className="font-medium text-on-surface truncate max-w-[140px]">
                 {homeName}
               </span>
               <span className="text-on-surface/30">→</span>
-              <span className="material-symbols-outlined text-sm">business</span>
-              <span className="font-medium text-on-surface truncate max-w-[120px]">
+              <span className="material-symbols-outlined text-sm">
+                business
+              </span>
+              <span className="font-medium text-on-surface truncate max-w-[140px]">
                 {officeName}
               </span>
             </div>
-            {quadrant && quadrantColor && (
+            {homeZone && quadrant && quadrantColor && (
               <div className="flex items-center gap-2">
                 <span
                   className="inline-block w-2 h-2 rounded-full"
@@ -195,6 +311,11 @@ export default function JourneyPanel() {
                 </span>
               </div>
             )}
+            {!homeZone && (
+              <p className="text-[10px] text-amber-400/70 mt-1">
+                Unknown zone — estimates are approximate.
+              </p>
+            )}
           </div>
           <button
             onClick={clearJourney}
@@ -203,10 +324,42 @@ export default function JourneyPanel() {
             ← Back
           </button>
         </div>
+
+        {/* Sort toggle */}
+        <div className="flex items-center gap-1 mt-3 pt-2 border-t border-white/5">
+          <span className="text-[10px] text-on-surface/40 font-label uppercase tracking-widest mr-2">
+            Sort by
+          </span>
+          {([
+            ["probability", "Best bet"],
+            ["cost", "Cheapest"],
+            ["time", "Fastest"],
+          ] as [SortKey, string][]).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setSortKey(key)}
+              className={`text-[10px] font-semibold px-2 py-1 rounded transition-colors ${
+                sortKey === key
+                  ? "bg-primary/15 text-primary"
+                  : "text-on-surface/40 hover:text-on-surface/70"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Mode cards */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {/* Equity context — above mode cards (the product's differentiator) */}
+        <EquityContextCard
+          quadrant={quadrant}
+          quadrantColor={quadrantColor}
+          quadrantLabel={quadrantLabel}
+          taiScore={taiScore}
+        />
+
         {options.length === 0 ? (
           <p className="text-on-surface/40 text-sm text-center py-8">
             No route data available for this zone.
@@ -222,47 +375,11 @@ export default function JourneyPanel() {
           ))
         )}
 
-        {/* Equity context card */}
-        {homeZone && (
-          <div className="mt-4 rounded-lg border border-white/8 bg-white/3 p-4 space-y-2">
-            <p className="text-xs font-semibold text-on-surface/60 uppercase tracking-widest">
-              Zone equity context
-            </p>
-            {quadrant && quadrantColor && (
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-                  style={{
-                    backgroundColor: `rgb(${quadrantColor.join(",")})`,
-                  }}
-                />
-                <span className="text-sm text-on-surface font-medium">
-                  {quadrantLabel}
-                </span>
-              </div>
-            )}
-            {taiScore != null && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-on-surface/50">
-                  Transit access score:
-                </span>
-                <span className="text-xs font-mono font-bold text-on-surface">
-                  {Math.round(taiScore * 100)}/100
-                </span>
-              </div>
-            )}
-            {quadrant === "Q4" && (
-              <p className="text-xs text-red-400/80 leading-relaxed">
-                Transit Desert — limited frequency and coverage in this zone
-              </p>
-            )}
-            {quadrant === "Q1" && (
-              <p className="text-xs text-emerald-400/80 leading-relaxed">
-                Well-served — transit is competitive here
-              </p>
-            )}
-          </div>
-        )}
+        {/* Bottom note */}
+        <p className="text-[10px] text-on-surface/25 text-center pt-2">
+          Probabilities from nested logit model. Estimates only — not GTFS
+          trip-planning.
+        </p>
       </div>
     </motion.div>
   );

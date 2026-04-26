@@ -18,7 +18,7 @@
 | E4 | Paper | Paper Drafting | **In Progress** | 4/8 done |
 | E5 | Paper | Paper Review & Revision | Blocked (E4) | 0/3 done |
 | E6 | Product | Data Pipeline | **Done** | 11/11 done |
-| E7 | Product | UI Foundation | **In Progress** | 1/4 done |
+| E7 | Product | UI Foundation | **In Progress** | 2/5 done |
 | E8 | Product | Core Features | Blocked (E7) | 0/8 done |
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
@@ -696,6 +696,21 @@ MVP-2 (Done) ─────────────┐
 ---
 
 ## E7 · UI Foundation (Product)
+
+### MVP-111 — Adopt nested logit mode choice with multi-modal transit chains
+- **Status**: Done
+- **Priority**: High
+- **Completed**: 2026-04-26
+- **AC**:
+  - [x] Replace deterministic GC "Recommended" badge with probabilistic nested logit
+  - [x] Nesting structure: Transit Chain (μ=0.50), Two-Wheeler (μ=0.45), Four-Wheeler (μ=0.60)
+  - [x] First/last mile auto-detection: walk ≤500m, GoRide feeder otherwise
+  - [x] 5 multi-modal chain alternatives with choice probabilities
+  - [x] JourneyPanel: probability bars, chain labels, sort toggle, equity card above modes
+  - [x] `docs/methodology.md` §2.7.2a + §2.7.2b documented
+  - [x] `npm run build` passes
+- **Files**: `lib/journey.ts`, `components/commuter/JourneyPanel.tsx`, `docs/methodology.md`
+- **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-111/adopt-nested-logit-mode-choice-with-multi-modal-transit-chains
 
 ### MVP-93 — Design review: cross-check Stitch persona screens against E7/E8 ACs
 - **Status**: Done

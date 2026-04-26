@@ -845,7 +845,94 @@ GC_transit = fare + VOT × (IVT + λ_walk × t_walk + λ_wait × t_wait + t_tran
 | t_wait | Wait time (min) | `avg_headway_min` ÷ 2 (random arrival assumption) |
 | t_transfer | Transfer penalty (min) | See §2.7.4 |
 
-GC determines the **"Recommended"** mode label. Displayed costs are financial costs (fare only) so users can realistically budget.
+GC forms the **systematic utility** (V_i = -GC_i / 1000) input to the nested logit model (§2.7.2a). Displayed costs to the user are financial costs (fare only) so commuters can realistically budget.
+
+### 2.7.2a Nested Logit Mode Choice
+
+Rather than picking a single "best" mode by lowest GC, we model mode choice as a **random utility problem** using nested logit (Ortuzar & Willumsen 2011, Ch.7; Ben-Akiva & Lerman 1985). This captures two realities:
+
+1. **Choice is probabilistic**: commuters do not always pick the theoretically optimal mode — random taste variation, unobserved constraints, and day-to-day circumstances create dispersion.
+2. **Alternatives are correlated**: GoRide and private motorcycle share riding posture, weather exposure, and vehicle type. A multinomial logit would suffer from the IIA (Independence of Irrelevant Alternatives) problem — dropping GoRide from the choice set would spread its probability evenly across all remaining modes rather than disproportionately to the most similar alternative (motorcycle).
+
+#### Nesting Structure
+
+```
+Root
+├── Transit Chain Nest (μ_t = 0.50)
+│   └── [chain auto-detected from first/last mile distances, §2.7.2b]
+├── Two-Wheeler Nest   (μ_w = 0.45)
+│   ├── GoRide door-to-door
+│   └── Motorcycle (private)
+└── Four-Wheeler Nest  (μ_c = 0.60)
+    ├── GoCar door-to-door
+    └── Car (private)
+```
+
+#### Probability Computation
+
+**Step 1 — Systematic utility**: V_i = -GC_i / 1000 (higher utility = lower generalized cost).
+
+**Step 2 — Within-nest conditional probabilities**:
+```
+P(GoRide | two-wheeler) = exp(V_goride / μ_w) / [exp(V_goride / μ_w) + exp(V_moto / μ_w)]
+P(Moto   | two-wheeler) = exp(V_moto / μ_w)   / [exp(V_goride / μ_w) + exp(V_moto / μ_w)]
+P(GoCar  | four-wheeler) = exp(V_gocar / μ_c)  / [exp(V_gocar / μ_c) + exp(V_car / μ_c)]
+P(Car    | four-wheeler) = exp(V_car / μ_c)    / [exp(V_gocar / μ_c) + exp(V_car / μ_c)]
+```
+
+Transit chain occupies a degenerate nest (single alternative within-nest): P(transit | transit_nest) = 1.0.
+
+**Step 3 — Log-sum (inclusive value)**:
+```
+IV_w = ln[exp(V_goride / μ_w) + exp(V_moto / μ_w)]
+IV_c = ln[exp(V_gocar / μ_c) + exp(V_car / μ_c)]
+IV_t = V_transit / μ_t  (degenerate)
+```
+
+**Step 4 — Marginal nest probabilities**:
+```
+P(nest_j) = exp(μ_j × IV_j) / Σ_k exp(μ_k × IV_k)
+```
+
+**Step 5 — Unconditional choice probability**: P(mode_i) = P(mode_i | nest_j) × P(nest_j).
+
+#### Dissimilarity Parameters (μ)
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| μ_t (transit) | 0.50 | Transit chains share schedule reliability, crowding, weather-at-station unobservables |
+| μ_w (two-wheeler) | 0.45 | GoRide + private motorcycle share riding posture, weather exposure — near-substitutes |
+| μ_c (four-wheeler) | 0.60 | GoCar + private car share enclosed comfort but differ on parking cost and ownership commitment |
+
+Constraints: μ ∈ (0, 1]. μ → 0 indicates near-perfect within-nest correlation. μ = 1 collapses to multinomial logit (no within-nest correlation).
+
+#### Display
+
+The UI renders probabilities as percentage bars alongside each mode, sorted by probability descending. No single "Recommended" badge. Users may re-sort by financial cost or time. Cheapest and fastest modes receive supplementary tags.
+
+### 2.7.2b Multi-Modal Transit Chains (First / Last Mile)
+
+Jakarta commutes are rarely single-mode. A realistic journey is:
+
+```
+Home → feeder → station → transit ride → station → feeder → office
+```
+
+The first and last mile mode is automatically determined from zone-level station proximity:
+
+| Condition | Mode | Cost | Parameter |
+|-----------|------|------|-----------|
+| min_dist_to_transit ≤ 500m | Walk | Free | λ_walk = 2.0, speed = 80 m/min |
+| min_dist_to_transit > 500m | GoRide feeder | Rp 2,500/km | λ_wait = 2.5, 3 min dispatch, 30 km/h avg |
+
+Same logic applies at the destination using `destZone.min_dist_to_transit_m`. The result is a **correct chain** for the specific origin-destination pair — no user selection required.
+
+**GC for the transit chain** sums the components:
+```
+GC_chain = GC_first_mile + GC_transit_ride + GC_last_mile + transfer_penalty
+```
+
+Where GC_transit_ride uses the standard formula (§2.7.2) with fare, IVT, walk (0 within-ride), wait, and transfer penalty. This gives a complete, honest cost picture — including the GoRide feeder cost that often determines whether transit is competitive.
 
 ### 2.7.3 BPR Distance-Banded Speeds (Road Modes)
 
