@@ -1,52 +1,42 @@
 # Project State
 
-**Last updated**: 2026-04-11
-**Active ticket**: MVP-109 — In Review (PR #29 open on this repo)
-**Branch**: mvp-109/consolidate-web-monorepo
+**Last updated**: 2026-04-26
+**Active focus**: UX review + Claude Design — commuter journey redesign
+**Branch**: `ui/stitch-redesign`
 
 ---
 
 ## Current Focus
 
-**Phase**: E8/E9 — MVP-109 monorepo consolidation done, PR #29 open.
+**Phase**: E7 (UI Foundation) — UX audit complete, design iteration in progress.
 This is a **portfolio / independent research project** — no academic gating.
 
-## Last Session Summary (2026-04-11)
+## Last Session Summary (2026-04-26)
 
-- **MVP-109 DONE** (this session): Consolidated web app into monorepo — PR #29
-  - `web/` added at repo root (copied from transit-access/web/)
-  - `scripts/export_to_web.py` path updated → `web/public/data/`
-  - `.gitignore` updated; `docs/ARCHITECTURE.md` updated
-  - transit-access PR #5 closed with redirect note
-  - `npm run build` passes ✅
-- **MVP-94 DONE** (this session): Equity Summary Dashboard — now in `web/src/components/EquityDashboard.tsx`
-  - `EquityDashboard.tsx`: floating 360px panel, 4 tabs (Overview, Lorenz, LISA, Resolution)
-  - Overview: Gini TAI side-by-side (kelurahan=0.2441, H3=0.6128), Moran's I, quadrant bar chart
-  - Lorenz: SVG curve with kelurahan/H3 toggle; fills 5 analysis files to public/data/
-  - LISA: HH/HL/LH/LL/NS counts for both resolutions
-  - Resolution: κ=0.6124, 29% reclassified, H2 confirmed badge
-  - `scripts/export_to_web.py` updated — now also copies equity_summary.json, lorenz_*.csv, lisa_*.geojson
-- **MVP-29 DONE** (prev session): Quadrant choropleth + resolution toggle — PR #4 on transit-access
-  - ResultsLayout: compact Admin/H3 toggle + inline Q1–Q4 quadrant badge
-- **MVP-90 DONE** (prev session): Persona entry screen — PR #3 on transit-access
-- **MVP-27 DONE** (prev session): Real pipeline data migrated — PR #28 on transit-access (research repo)
-- **MVP-14 DONE** (prior session): Results section, 2,543 words
-- **Previously completed**: E0–E3, MVP-84/13/85/86/87/89/98/99/100
+- **MVP-111 DONE**: Nested logit mode choice + multi-modal transit chains
+  - Deterministic GC "Recommended" → probabilistic nested logit (Transit Chain μ=0.50, Two-Wheeler μ=0.45, Four-Wheeler μ=0.60)
+  - First/last mile auto-detection: walk ≤500m, GoRide feeder >500m
+  - JourneyPanel: probability bars, chain labels, sort toggle, equity card moved above modes
+  - `docs/methodology.md` §2.7.2a + §2.7.2b added
+  - UX fixes: R8, Q2, Q3, Q5
+- **UX Review DONE**: Full commuter journey audit by UX Researcher agent → `docs/ux-review-commuter.md`
+- **Previous session (2026-04-11)**:
+  - MVP-109 DONE: monorepo consolidation — PR #29
+  - MVP-94 DONE: Equity Summary Dashboard (`EquityDashboard.tsx`)
+  - MVP-29/90/27 DONE (prior sessions)
 
 ## Blockers
 
-- **L4/L5 still flat** — L4 (last-mile) and L5 (cost competitiveness) don't use r5py routing; L4 uses road connectivity proxy, L5 uses TCR proxy from travel time. Acceptable for current analysis.
-- **H3 field name mismatches** (30 fields) — must rename before MVP-27 (migrate to real data).
-- **H3 routing coverage 11.2%** — 88.8% of H3 cells have no transit route (use 180 min fallback). This is the correct real-world picture (most of Jabodetabek is not transit-accessible) but note this in Results section limitations.
+- **UX issues must be resolved before design sign-off** — see `docs/ux-review-commuter.md` for prioritized list
+- **L4/L5 still flat** — acceptable for current analysis
+- **H3 routing coverage 11.2%** — methodologically valid, note in Results limitations
 
 ## Next Action
 
-1. **Merge PRs**: #29 (MVP-109 monorepo, includes MVP-94) — smoke test: `cd web && npm run dev`
-2. **MVP-28** — Road network layer + cost comparison card (`web/src/components/`)
-3. **MVP-15 (Discussion)** — fill placeholders with real metric values (paper track)
-4. **MVP-88** — Section consistency check gate (paper track)
-
-> Note: All future web app work happens in `web/` inside this repo. transit-access repo is now archived/deprecated.
+1. **Address UX P1 issues**: reverse geocoding (R1), sidebar reduction (R2), loading theme fix (R3)
+2. **Run Claude Design** with the drafted prompt to generate refreshed screens
+3. **Cross-check generated screens** against `docs/ux-review-commuter.md` recommendations
+4. **Implement design updates** in `web/src/` once screens are approved
 
 ## Pipeline Status (as of 2026-03-30)
 
