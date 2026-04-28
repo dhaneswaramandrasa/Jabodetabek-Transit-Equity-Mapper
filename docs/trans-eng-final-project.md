@@ -386,25 +386,73 @@ Target: ~3,000–4,000 words + figures. Saved at `notebooks/trans-eng-final/repo
      as future directions
    - Ridehailing disaggregation: 4WRH and 2WRH are aggregated; premium taxis (Bluebird,
      GreenSM) and discount dynamics (Maxim/GrabBike promotions) not modelled
-   - No peak-hour congestion feedback; single trip purpose
+   - No peak-hour congestion feedback in baseline model (Extension D addresses this)
    - LRT scope limited to J2 (Bekasi); MRT scope limited to J5 (South Jakarta)
 
 7. Conclusion (200w)
+   - If Extension D was completed: note the UE→SO framing and how it recontextualises Scenario B
 ```
 
 ---
 
-## 11. Timeline
+## 11. Further Extensions — Network Analysis
 
-| Date | Milestone |
+These extensions are **not required** for the June 3 submission but are natural continuations
+using methods from L08–L10. The core project (notebooks 01–04) is self-contained without them.
+Add only after the core notebooks are stable and only if time permits.
+
+### Extension D — Car User Equilibrium assignment (after L08)
+**Trigger**: after L08 lecture covers Frank-Wolfe UE algorithm.
+**What**: take car demand from `04_policy_simulation.ipynb` → assign to a simplified
+Jabodetabek road network → find User Equilibrium → compare congested times vs free-flow
+times used in mode choice LOS.
+**Network**: ~6–8 key links: Jagorawi (J1a), Tol Bekasi (J2), JORR (J3a/J3b), TB Simatupang
+(J5), inner-ring arterials. BPR: t_a(v) = t_0[1 + 0.15·(v/c)^4] (same formula as V-City).
+**Finding**: UE times are 30–50% higher than free-flow on congested inner links → mode choice
+underestimated car disutility → true transit welfare advantage is larger than §5 results show.
+**Policy connection**: Scenario B (toll increase) reframed as SO-seeking policy — show the
+UE/SO gap (Price of Anarchy) and argue the toll bridges it.
+**Notebook**: `05_car_ue_assignment.ipynb`
+
+### Extension E — PT crowding check (after L09)
+**Trigger**: after L09 lecture covers Davidson delay function for transit.
+**What**: take KRL/MRT/LRT demand from mode choice → assign to transit lines → Davidson
+delay: t(v) = t_0[1 + 0.2·v/(s−v)] → check whether Scenario C (frequency improvement)
+causes overcrowding on high-demand lines.
+**Finding**: capacity sanity check on policy scenarios — "does KRL actually have capacity
+for the modal shift we predict in §5?"
+**Notebook**: add cells to `04_policy_simulation.ipynb` or new `05_pt_crowding.ipynb`
+
+### Extension F — Combined mode choice + assignment feedback (after L10)
+**Trigger**: after L10; only attempt if D and E are stable with >1 week remaining.
+**What**: full four-step feedback loop — iterate (mode choice → assignment → updated LOS →
+mode choice) until convergence. This is the academically complete model.
+**Risk**: convergence logic + debugging. Do not attempt if < 1 week to June 3.
+
+### Data needed for D and E
+
+| Item | Source |
 |---|---|
-| 2026-04-28 | Branch created; project scoped |
-| 2026-05-03 (target) | `01_data_prep.ipynb` + `02_mnl_estimation.ipynb` complete |
-| 2026-05-10 (target) | `03_nl_estimation.ipynb` complete |
-| 2026-05-17 (target) | `04_policy_simulation.ipynb` + figures complete |
-| 2026-05-24 (target) | Draft report complete; Q&A prep begins |
-| 2026-05-31 (target) | Final report submitted; slides ready |
-| **2026-06-03** | **Final Presentation & Q&A (Session L15)** |
+| Link free-flow travel times (6–8 arterials) | Google Maps or Waze historical data; approximate from road class |
+| Link capacities (pcu/hr) | Indonesia MKJI standard values by road class |
+| PT line capacities (pax/hr) | KRL KCI published data; MRT Jakarta published data |
+
+---
+
+## 12. Timeline
+
+| Date | Milestone | Track |
+|---|---|---|
+| 2026-04-28 | Branch created; project scoped | Core |
+| 2026-05-03 (target) | `01_data_prep.ipynb` + `02_mnl_estimation.ipynb` complete | Core |
+| 2026-05-10 (target) | `03_nl_estimation.ipynb` complete | Core |
+| 2026-05-10 (L08 lecture) | Frank-Wolfe UE algorithm covered | Extension D unlocks |
+| 2026-05-17 (target) | `04_policy_simulation.ipynb` + figures complete | Core |
+| 2026-05-17 (L09 lecture) | Davidson PT crowding covered | Extension E unlocks |
+| 2026-05-20 (target, if time) | `05_car_ue_assignment.ipynb` complete | Extension D |
+| 2026-05-24 (target) | Draft report complete; Q&A prep begins | Core |
+| 2026-05-31 (target) | Final report submitted; slides ready | Core |
+| **2026-06-03** | **Final Presentation & Q&A (Session L15)** | |
 
 ---
 
@@ -424,7 +472,9 @@ These are the questions most likely from Prof. Chikaraishi. Each must be answera
 | "Why aggregate GoRide/GrabBike/Maxim into one alternative?" | Discount dynamics (Maxim and GrabBike run heavy promotions with time-varying effective prices) cannot be represented as a fixed cost in the LOS matrix. A single effective average price is used. Within-tier heterogeneity goes in Limitations. Premium 4WRH (Bluebird/GreenSM) is excluded for the same reason — their users are better captured via income-segment β_cost interaction than a separate alternative. |
 | "Why add South Jakarta? It's close to the CBD." | J5 is an origin zone (~10–20 km from SCBD), not the CBD itself. Its analytical value is as an inner-city reference: it has MRT access and shorter OD distances, so absolute ridehailing and car costs are 3–5× lower than outer zones — not because of a different tariff, but because of distance. This upper-bound welfare zone makes the equity contrast with J1b/J3b sharper. |
 | "Why use geographic zones instead of TAI quadrant zones?" | Geographic zones are nameable and defensible — J1b is Parung/Leuwiliyang, Kabupaten Bogor, which any examiner can place on a map. TAI quadrant zones are abstract and require explaining the equity mapper framework first. Instead, zones are *annotated* with TAI proxy (Q2/Q4 etc.) in the Discussion to bridge the two projects without complicating the choice model. |
-| "What are the limitations?" | No RP data; ownership endogenous; surge/discount dynamics not modelled; premium ridehailing excluded; no peak-hour congestion feedback; single trip purpose; LRT limited to J2; MRT limited to J5; first/last mile absorbed not explicit. |
+| "Could you extend this to network analysis?" | Yes — mode choice output is the input OD matrix for assignment. Extension D (car UE assignment via Frank-Wolfe) uses the car demand from §5 as the trip matrix, assigns it to 6–8 key Jabodetabek links with BPR, and computes UE travel times. These are higher than the free-flow times used in mode choice — meaning the current model underestimates car disutility. Scenario B (toll increase) then maps cleanly to a System Optimum policy. Extension E (Davidson PT crowding) checks whether the KRL capacity can absorb the modal shift predicted in §5. |
+| "What's the difference between UE and SO?" | At User Equilibrium (UE), each traveller minimises their own travel time — no traveller can reduce their time by switching routes. At System Optimum (SO), the total system travel time is minimised. SO requires internalising externalities (congestion you impose on others) — a toll equal to the marginal external cost achieves this. The toll in Scenario B is the instrument; UE vs SO is the theoretical justification. |
+| "What are the limitations?" | No RP data; ownership endogenous; surge/discount dynamics not modelled; premium ridehailing excluded; no congestion feedback in baseline (Extension D adds this); single trip purpose; LRT limited to J2; MRT limited to J5; first/last mile absorbed not explicit. |
 
 ---
 
@@ -439,6 +489,7 @@ These are the questions most likely from Prof. Chikaraishi. Each must be answera
 | `02_mnl_estimation.ipynb` | ⬜ Not started | Can reuse logic from `notebooks/logit_eda_mle.ipynb` |
 | `03_nl_estimation.ipynb` | ⬜ Not started | Can reuse NL cells 27-36 from `notebooks/logit_eda_mle.ipynb` |
 | `04_policy_simulation.ipynb` | ⬜ Not started | Can reuse logsum cells 43-54 from `notebooks/logit_eda_mle.ipynb` |
+| `05_car_ue_assignment.ipynb` | ⏸ On hold | Extension D — unlock after L08 lecture; requires core notebooks complete |
 | Report draft | ⬜ Not started | |
 
 ---
