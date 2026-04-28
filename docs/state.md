@@ -1,44 +1,44 @@
 # Project State
 
-**Last updated**: 2026-04-26
-**Active focus**: UX review + Claude Design — commuter journey redesign
+**Last updated**: 2026-04-28
+**Active focus**: L06 notebook extension DONE — Claude Design + remaining UX improvements next
 **Branch**: `ui/stitch-redesign`
 
 ---
 
 ## Current Focus
 
-**Phase**: E7 (UI Foundation) — UX audit complete, design iteration in progress.
+**Phase**: E7 (UI Foundation) — UX P1 issues resolved, L06 discrete choice extensions complete.
 This is a **portfolio / independent research project** — no academic gating.
 
-## Last Session Summary (2026-04-26)
+## Last Session Summary (2026-04-28)
 
-- **MVP-111 DONE**: Nested logit mode choice + multi-modal transit chains
-  - Deterministic GC "Recommended" → probabilistic nested logit (Transit Chain μ=0.50, Two-Wheeler μ=0.45, Four-Wheeler μ=0.60)
-  - First/last mile auto-detection: walk ≤500m, GoRide feeder >500m
-  - JourneyPanel: probability bars, chain labels, sort toggle, equity card moved above modes
-  - `docs/methodology.md` §2.7.2a + §2.7.2b added
-  - UX fixes: R8, Q2, Q3, Q5
-- **UX Review DONE**: Full commuter journey audit by UX Researcher agent → `docs/ux-review-commuter.md`
-- **Previous session (2026-04-11)**:
-  - MVP-109 DONE: monorepo consolidation — PR #29
-  - MVP-94 DONE: Equity Summary Dashboard (`EquityDashboard.tsx`)
-  - MVP-29/90/27 DONE (prior sessions)
+- **L06 notebook extension DONE**: `notebooks/logit_eda_mle.ipynb` — 56 cells (31 code, 25 markdown), all executing cleanly
+  - Sections 13-17 added from L06 Discrete Choice lectures:
+    - Logsum / Inclusive Value — accessibility in currency units (ΔCS = Δlogsum/|β_cost|)
+    - Option Value — value of having each mode available
+    - Consumer Surplus — LRT scenario (30% transit time reduction)
+    - Three SE Estimators — Hessian, BHHH, Robust/Sandwich (divergence = misspecification diagnostic)
+    - NL vs MNL Welfare — different ΔCS from nest correlation dampening
+  - Debugging saga: corrupted cell merge, column names (`time_motorcycle`→`time_moto`), string CHOICE→numeric, `mnl5_result`→`result_mnl5`, missing `.x` on OptimizeResult → all fixed
+  - NaN SEs in misspecification cells expected behavior (near-singular Hessian)
+- **Previous session (2026-04-27)**:
+  - UX P1 fixes DONE (R1–R4 from `docs/ux-review-commuter.md`)
+  - EDA notebook DONE: 43 cells, MNL + Nested Logit MLE from scratch
 
 ## Blockers
 
-- **UX issues must be resolved before design sign-off** — see `docs/ux-review-commuter.md` for prioritized list
 - **L4/L5 still flat** — acceptable for current analysis
 - **H3 routing coverage 11.2%** — methodologically valid, note in Results limitations
 
 ## Next Action
 
-1. **Address UX P1 issues**: reverse geocoding (R1), sidebar reduction (R2), loading theme fix (R3)
-2. **Run Claude Design** with the drafted prompt to generate refreshed screens
-3. **Cross-check generated screens** against `docs/ux-review-commuter.md` recommendations
-4. **Implement design updates** in `web/src/` once screens are approved
+1. **Run Claude Design** with the drafted prompt (`docs/claude-design-prompt.md`) to generate refreshed screens
+2. **Cross-check generated screens** against `docs/ux-review-commuter.md` recommendations
+3. **Implement design updates** in `web/src/` once screens are approved
+4. **Consider remaining UX items**: journey polyline on map (R5), pin bounds validation (R7), "Show other modes" toggle (R11)
 
-## Pipeline Status (as of 2026-03-30)
+## Pipeline Status (as of 2026-04-27)
 
 | File | Status | Notes |
 |---|---|---|
@@ -50,6 +50,7 @@ This is a **portfolio / independent research project** — no academic gating.
 | `data/processed/analysis/resolution_comparison.json` | ✅ | Cohen's kappa=0.6094, 29.2% reclassified |
 | `notebooks/comparison_r5py_vs_baseline.ipynb` | ✅ | r5py vs no-r5py visual comparison |
 | `notebooks/eda_pipeline_output.ipynb` | ✅ | Full EDA with visualizations |
+| `notebooks/logit_eda_mle.ipynb` | ✅ 56 cells | MNL + NL MLE + L06 extensions (logsum, option value, CS, 3 SE estimators, NL vs MNL welfare) |
 
 ## EDA Key Numbers (for Results section — r5py data)
 

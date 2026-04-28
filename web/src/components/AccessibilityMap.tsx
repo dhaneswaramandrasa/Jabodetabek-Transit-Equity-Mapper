@@ -276,20 +276,24 @@ export default function AccessibilityMap() {
       if (pinMode !== null && info.coordinate) {
         const [lng, lat] = info.coordinate as [number, number];
 
-        // Attempt to find zone at click point for homeZone (only for home pin)
+        // Look up H3 zone at click point for reverse geocoding
+        let foundZone: HexProperties | null = null;
+        const h3Index = latLngToCell(lat, lng, h3Resolution);
+        const hex = hexLookup.get(h3Index);
+        if (hex) foundZone = hex;
+
+        // Derive a human-readable name from the zone data
+        const zoneName =
+          foundZone?.kelurahan_name ||
+          foundZone?.kecamatan_name ||
+          foundZone?.kota_kab_name ||
+          null;
+
         if (pinMode === "home") {
-          // Try kelurahan first
-          let foundZone: HexProperties | null = null;
-          if (kelurahanData) {
-            // find via h3 lookup since we don't have spatial hit-test here
-            const h3Index = latLngToCell(lat, lng, h3Resolution);
-            const hex = hexLookup.get(h3Index);
-            if (hex) foundZone = hex;
-          }
-          setHomePin([lng, lat]);
+          setHomePin([lng, lat], zoneName ?? undefined);
           if (foundZone) setHomeZone(foundZone);
         } else {
-          setOfficePin([lng, lat]);
+          setOfficePin([lng, lat], zoneName ?? undefined);
         }
         setPinMode(null);
         return;

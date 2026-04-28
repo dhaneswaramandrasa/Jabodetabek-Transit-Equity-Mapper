@@ -10,9 +10,12 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: "commuter", icon: "directions_transit", label: "Commuter" },
+  { id: "explorer", icon: "travel_explore", label: "Explore" },
+];
+
+const COMING_SOON: NavItem[] = [
   { id: "researcher", icon: "analytics", label: "Researcher" },
   { id: "planner", icon: "map", label: "Planner" },
-  { id: null, icon: "query_stats", label: "Stats" },
 ];
 
 const TOP_TABS = ["Explorer", "Insights", "Archive"] as const;
@@ -107,6 +110,29 @@ export default function AppShell() {
               </button>
             );
           })}
+
+          {/* Divider */}
+          <div className="mx-4 my-2 border-t border-outline-variant/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+
+          {/* Coming soon items */}
+          {COMING_SOON.map((item) => (
+            <button
+              key={item.label}
+              disabled
+              title={`${item.label} — coming soon`}
+              className="w-full flex items-center gap-4 px-5 py-3 transition-colors border-r-4 border-transparent text-on-surface/20 cursor-not-allowed"
+            >
+              <span
+                className="material-symbols-outlined shrink-0"
+                style={{ fontSize: 20 }}
+              >
+                {item.icon}
+              </span>
+              <span className="font-label text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                {item.label}
+              </span>
+            </button>
+          ))}
         </nav>
 
         {/* Bottom actions — visible on hover */}

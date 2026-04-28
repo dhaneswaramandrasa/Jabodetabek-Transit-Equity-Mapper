@@ -23,8 +23,8 @@
 | E9 | Product | Code Review & QA | Blocked (E8) | 0/2 done |
 | E10 | Convergence | Deliverables | Blocked (E5 + E9) | 0/4 done |
 
-**Current phase**: E4 active + E6 Done + E7 active (MVP-93 Done). Commuter journey planner built with scientifically grounded estimation: GC formula (VOT Rp 500/min, λ_walk=2.0, λ_wait=2.5), circuity factor 1.35, BPR distance-banded speeds, transfer penalties, two-zone composite. Methodology §2.7 added. MVP-14 Results DONE (2,543w). MVP-88 consistency check is next gate.
-**Last synced**: 2026-04-15
+**Current phase**: E4 active + E6 Done + E7 active (MVP-111 Done, UX P1 fixes applied). Commuter journey planner built with scientifically grounded estimation: GC formula, nested logit mode choice, 5-mode comparison. L06 discrete choice extensions added to EDA notebook (logsum, option value, CS, 3 SE estimators). MVP-14 Results DONE (2,543w). MVP-88 consistency check is next gate.
+**Last synced**: 2026-04-28
 
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
@@ -709,6 +709,7 @@ MVP-2 (Done) ─────────────┐
   - [x] JourneyPanel: probability bars, chain labels, sort toggle, equity card above modes
   - [x] `docs/methodology.md` §2.7.2a + §2.7.2b documented
   - [x] `npm run build` passes
+- **Notebook**: `notebooks/logit_eda_mle.ipynb` — 56 cells with L06 extensions (logsum, option value, CS, 3 SE estimators, NL vs MNL welfare)
 - **Files**: `lib/journey.ts`, `components/commuter/JourneyPanel.tsx`, `docs/methodology.md`
 - **URL**: https://linear.app/dhaneswaramandrasa/issue/MVP-111/adopt-nested-logit-mode-choice-with-multi-modal-transit-chains
 
