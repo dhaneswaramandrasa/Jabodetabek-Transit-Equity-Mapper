@@ -1,14 +1,14 @@
 # Project State
 
 **Last updated**: 2026-04-28
-**Active focus**: L06 notebook extension DONE — Claude Design + remaining UX improvements next
-**Branch**: `ui/stitch-redesign`
+**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — scoping done
 
 ---
 
-## Current Focus
+## Track 1: Main Research Project
 
 **Phase**: E7 (UI Foundation) — UX P1 issues resolved, L06 discrete choice extensions complete.
+**Branch**: `ui/stitch-redesign`
 This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary (2026-04-28)
@@ -67,3 +67,34 @@ This is a **portfolio / independent research project** — no academic gating.
 - H3 routing coverage 11.2% — methodologically valid (reflects true transit coverage gaps) but should be noted in Results limitations
 - Methods section is ~5,450 words (above target). MVP-88 will flag for human decision.
 - MVP-89 convergence decisions resolved 2026-03-25. Introduction + Discussion v0.1 ready for MVP-12.
+
+---
+
+## Track 2: Trans-Eng Final Project (Hiroshima University AY2026)
+
+**Branch**: `trans-eng/final-project-jabodetabek`
+**Deadline**: June 3, 2026 (Session L15 — Presentation & Q&A)
+**Full spec**: `docs/trans-eng-final-project.md`
+
+### Last Action (2026-04-28)
+- Project scoped and framed
+- `docs/trans-eng-final-project.md` created — J-City zones, modes, DGP parameters, policy scenarios, Q&A prep
+- `CLAUDE.md` updated with Trans-Eng track section
+- Branch `trans-eng/final-project-jabodetabek` created
+
+### Next Action
+1. Create `notebooks/trans-eng-final/` folder structure + `data/` subfolder
+2. Build `01_data_prep.ipynb` — zone table, LOS matrix, synthetic population
+3. Then `02_mnl_estimation.ipynb` (reuse cells 13-23 from `logit_eda_mle.ipynb`, adapt to J-City data)
+
+### Notebook Status
+| Notebook | Status | Notes |
+|---|---|---|
+| `01_data_prep.ipynb` | ⬜ Not started | Zone table + LOS matrix + synthetic persons |
+| `02_mnl_estimation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 13-23 |
+| `03_nl_estimation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 27-36 |
+| `04_policy_simulation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 43-54 |
+| Report draft | ⬜ Not started | After all 4 notebooks done |
+
+### Blockers
+- None yet. LOS values in `docs/trans-eng-final-project.md §6.2` are approximations — refine in `01_data_prep.ipynb` using r5py output.
