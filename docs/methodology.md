@@ -1,8 +1,8 @@
 # Scientific Methodology
 ## Jabodetabek Transit Equity Mapper
 
-**Status**: **Signed off** — 2026-03-21 (MVP-81). All formulas, pipeline steps, and limitations verified.
-**Last updated**: 2026-03-21
+**Status**: **Signed off** — 2026-03-21 (MVP-81). Journey estimation section added 2026-04-15.
+**Last updated**: 2026-04-15
 **Feeds**: Paper Methods section, product data layer, `docs/DATA_MODEL.md`, `docs/ARCHITECTURE.md`
 
 ---
@@ -807,4 +807,201 @@ This means the v1 product can ship without traffic data, and v2 simply adds a pi
 
 ---
 
-*Signed off: 2026-03-21 (MVP-81). All formulas verified, pipeline steps complete and ordered, limitations reviewed. Ready for paper Methods section (E4) and data pipeline implementation (E6).*
+---
+
+## 2.7 Commuter Journey Estimation (Product Layer)
+
+*Added 2026-04-15. Governs `web/src/lib/journey.ts`.*
+
+This section documents the methodology for the commuter journey comparison feature. All estimates are derived from zone-level aggregate data — they are **indicative for comparison purposes**, not precise trip plans (which would require GTFS trip planning, not available in this product).
+
+### 2.7.1 Network Distance (Circuity Factor)
+
+Straight-line (Euclidean/haversine) distance systematically underestimates actual travel distance in urban road networks. A **circuity factor** converts Euclidean to network distance:
+
+```
+d_network = d_euclidean × C
+```
+
+For Jabodetabek, **C = 1.35** — the ratio of network distance to Euclidean distance typical for radial Asian megacity grids. This value is consistent with Boeing (2016) findings for similar urban forms and with OSM-based analysis of Jakarta's street network.
+
+**References**: Barthelemy (2011) *Spatial networks*; Boeing (2016) *OSMnx*; Tsiotas & Polyzos (2015) on circuity in developing-country cities.
+
+### 2.7.2 Generalized Cost Formula (Transit)
+
+Transit comparison uses **Generalized Cost (GC)** rather than financial cost alone. GC captures the full perceived burden of a trip, including time spent walking and waiting which commuters weight more heavily than in-vehicle time:
+
+```
+GC_transit = fare + VOT × (IVT + λ_walk × t_walk + λ_wait × t_wait + t_transfer)
+```
+
+| Parameter | Value | Source |
+|-----------|-------|--------|
+| VOT (Value of Time) | Rp 500/min (Rp 30,000/hr) | BPS 2023 median urban household expenditure ~Rp 4.5M/month ÷ 160 working hours; conservative estimate |
+| λ_walk (walk penalty) | 2.0 | Wardman (1998) meta-analysis; replicated in SE Asia by Sukor & Bhayo (2024) |
+| λ_wait (wait penalty) | 2.5 | Wardman (1998); consistent with TCQSM (2013) recommended values |
+| IVT | In-vehicle time (min) | Derived from `poi_reach_cbd_min` scaled by distance ratio |
+| t_walk | Walk time (min) | First mile: `min_dist_to_transit_m` ÷ 80 m/min; Last mile: 5 min flat |
+| t_wait | Wait time (min) | `avg_headway_min` ÷ 2 (random arrival assumption) |
+| t_transfer | Transfer penalty (min) | See §2.7.4 |
+
+GC forms the **systematic utility** (V_i = -GC_i / 1000) input to the nested logit model (§2.7.2a). Displayed costs to the user are financial costs (fare only) so commuters can realistically budget.
+
+### 2.7.2a Nested Logit Mode Choice
+
+Rather than picking a single "best" mode by lowest GC, we model mode choice as a **random utility problem** using nested logit (Ortuzar & Willumsen 2011, Ch.7; Ben-Akiva & Lerman 1985). This captures two realities:
+
+1. **Choice is probabilistic**: commuters do not always pick the theoretically optimal mode — random taste variation, unobserved constraints, and day-to-day circumstances create dispersion.
+2. **Alternatives are correlated**: GoRide and private motorcycle share riding posture, weather exposure, and vehicle type. A multinomial logit would suffer from the IIA (Independence of Irrelevant Alternatives) problem — dropping GoRide from the choice set would spread its probability evenly across all remaining modes rather than disproportionately to the most similar alternative (motorcycle).
+
+#### Nesting Structure
+
+```
+Root
+├── Transit Chain Nest (μ_t = 0.50)
+│   └── [chain auto-detected from first/last mile distances, §2.7.2b]
+├── Two-Wheeler Nest   (μ_w = 0.45)
+│   ├── GoRide door-to-door
+│   └── Motorcycle (private)
+└── Four-Wheeler Nest  (μ_c = 0.60)
+    ├── GoCar door-to-door
+    └── Car (private)
+```
+
+#### Probability Computation
+
+**Step 1 — Systematic utility**: V_i = -GC_i / 1000 (higher utility = lower generalized cost).
+
+**Step 2 — Within-nest conditional probabilities**:
+```
+P(GoRide | two-wheeler) = exp(V_goride / μ_w) / [exp(V_goride / μ_w) + exp(V_moto / μ_w)]
+P(Moto   | two-wheeler) = exp(V_moto / μ_w)   / [exp(V_goride / μ_w) + exp(V_moto / μ_w)]
+P(GoCar  | four-wheeler) = exp(V_gocar / μ_c)  / [exp(V_gocar / μ_c) + exp(V_car / μ_c)]
+P(Car    | four-wheeler) = exp(V_car / μ_c)    / [exp(V_gocar / μ_c) + exp(V_car / μ_c)]
+```
+
+Transit chain occupies a degenerate nest (single alternative within-nest): P(transit | transit_nest) = 1.0.
+
+**Step 3 — Log-sum (inclusive value)**:
+```
+IV_w = ln[exp(V_goride / μ_w) + exp(V_moto / μ_w)]
+IV_c = ln[exp(V_gocar / μ_c) + exp(V_car / μ_c)]
+IV_t = V_transit / μ_t  (degenerate)
+```
+
+**Step 4 — Marginal nest probabilities**:
+```
+P(nest_j) = exp(μ_j × IV_j) / Σ_k exp(μ_k × IV_k)
+```
+
+**Step 5 — Unconditional choice probability**: P(mode_i) = P(mode_i | nest_j) × P(nest_j).
+
+#### Dissimilarity Parameters (μ)
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| μ_t (transit) | 0.50 | Transit chains share schedule reliability, crowding, weather-at-station unobservables |
+| μ_w (two-wheeler) | 0.45 | GoRide + private motorcycle share riding posture, weather exposure — near-substitutes |
+| μ_c (four-wheeler) | 0.60 | GoCar + private car share enclosed comfort but differ on parking cost and ownership commitment |
+
+Constraints: μ ∈ (0, 1]. μ → 0 indicates near-perfect within-nest correlation. μ = 1 collapses to multinomial logit (no within-nest correlation).
+
+#### Display
+
+The UI renders probabilities as percentage bars alongside each mode, sorted by probability descending. No single "Recommended" badge. Users may re-sort by financial cost or time. Cheapest and fastest modes receive supplementary tags.
+
+### 2.7.2b Multi-Modal Transit Chains (First / Last Mile)
+
+Jakarta commutes are rarely single-mode. A realistic journey is:
+
+```
+Home → feeder → station → transit ride → station → feeder → office
+```
+
+The first and last mile mode is automatically determined from zone-level station proximity:
+
+| Condition | Mode | Cost | Parameter |
+|-----------|------|------|-----------|
+| min_dist_to_transit ≤ 500m | Walk | Free | λ_walk = 2.0, speed = 80 m/min |
+| min_dist_to_transit > 500m | GoRide feeder | Rp 2,500/km | λ_wait = 2.5, 3 min dispatch, 30 km/h avg |
+
+Same logic applies at the destination using `destZone.min_dist_to_transit_m`. The result is a **correct chain** for the specific origin-destination pair — no user selection required.
+
+**GC for the transit chain** sums the components:
+```
+GC_chain = GC_first_mile + GC_transit_ride + GC_last_mile + transfer_penalty
+```
+
+Where GC_transit_ride uses the standard formula (§2.7.2) with fare, IVT, walk (0 within-ride), wait, and transfer penalty. This gives a complete, honest cost picture — including the GoRide feeder cost that often determines whether transit is competitive.
+
+### 2.7.3 BPR Distance-Banded Speeds (Road Modes)
+
+Fixed average speeds overestimate short-trip times in dense inner-city areas and underestimate long-trip times in outer Bodetabek. Speeds are banded by network distance, calibrated to BPTJ (2022) Jakarta peak-hour speed survey:
+
+| Network distance | Motorcycle | Car |
+|-----------------|------------|-----|
+| < 5 km (inner city) | 22 km/h | 18 km/h |
+| 5–15 km (middle ring) | 30 km/h | 25 km/h |
+| > 15 km (outer Bodetabek) | 38 km/h | 32 km/h |
+
+**References**: Bureau of Public Roads (1964) volume-delay function; Akçelik (1991) speed-flow relationships; BPTJ (2022) *Jakarta Metropolitan Transportation Survey*.
+
+### 2.7.4 Transfer Penalty
+
+Each transit transfer imposes a perceived time penalty beyond actual wait time (boarding friction, uncertainty). Transfer count is estimated from network distance bands, which proxy corridor crossing likelihood in Jabodetabek's radial transit network:
+
+| Network distance | Expected transfers | Time equivalent |
+|-----------------|-------------------|----------------|
+| < 5 km | 0 | +0 min |
+| 5–15 km | 1 | +10 min |
+| > 15 km | 2 | +20 min |
+
+**References**: Wardman et al. (2016) transfer penalty meta-analysis; TCQSM (2013) §4.2.
+
+### 2.7.5 Two-Zone Composite (Destination Zone)
+
+When the user-selected destination falls within a mapped zone, **both origin and destination zone data** are used to improve headway estimation. The corridor headway is the bottleneck (maximum) of home and destination zone headways:
+
+```
+headway_effective = max(headway_home, headway_dest)
+```
+
+This reflects the real-world constraint: a commuter travelling from a high-frequency home corridor to a low-frequency destination corridor is limited by the weaker link. When destination zone data is unavailable (user pins a point outside mapped zones), the home zone headway is used.
+
+**References**: Páez et al. (2012) two-point accessibility; Boisjoly & El-Geneidy (2016) O-D accessibility measurement.
+
+### 2.7.6 IVT Scaling for Non-CBD Destinations
+
+Pipeline data provides transit metrics calibrated to **Sudirman–Thamrin CBD** as destination. For arbitrary office locations, in-vehicle time is scaled proportionally:
+
+```
+IVT_scaled = IVT_cbd × (d_network(home→office) / d_network(home→CBD))
+```
+
+Walk time and wait time are not scaled — they are properties of the home zone and do not change with destination. Fare is scaled by the same ratio as IVT, consistent with distance-based fare structures on KRL and MRT.
+
+**Limitation**: This scaling assumes comparable transit corridor density along the home→office path as the home→CBD path. It may overestimate transit access for trips that do not follow major transit corridors.
+
+### 2.7.7 Ride-Hailing Tariffs
+
+GoRide and GoCar tariffs are estimated from 2024 market rates:
+
+| Mode | Rate | Minimum | Wait time |
+|------|------|---------|-----------|
+| GoRide | Rp 2,500/km | Rp 10,000 | 3 min |
+| GoCar | Rp 4,000/km | Rp 20,000 | 5 min |
+
+Surge pricing is not modelled. Actual fares vary by time of day, demand, and promotional pricing.
+
+### 2.7.8 Fuel Costs (Private Modes)
+
+| Mode | Rate | Basis |
+|------|------|-------|
+| Motorcycle | Rp 1,200/km | Pertalite Rp 10,000/L at ~8 km/L |
+| Car | Rp 2,000/km | Pertamax Rp 14,000/L at ~7 km/L |
+
+Parking costs added for longer trips: Rp 5,000 motorcycle (>5 km), Rp 15,000 car (>3 km).
+
+---
+
+*Signed off: 2026-03-21 (MVP-81). All formulas verified, pipeline steps complete and ordered, limitations reviewed. Journey estimation §2.7 added 2026-04-15. Ready for paper Methods section (E4) and data pipeline implementation (E6).*
