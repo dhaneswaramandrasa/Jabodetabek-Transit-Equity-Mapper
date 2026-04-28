@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAccessibilityStore } from "@/lib/store";
 
 const STAGES = [
-  { key: "resolving", label: "Resolving location..." },
-  { key: "fetching-pois", label: "Finding reachable places..." },
-  { key: "fetching-transit", label: "Checking transit access..." },
-  { key: "analyzing", label: "Computing equity profile..." },
+  { key: "resolving", label: "Locating your zone..." },
+  { key: "fetching-pois", label: "Finding transit stops..." },
+  { key: "fetching-transit", label: "Computing route options..." },
+  { key: "analyzing", label: "Estimating mode probabilities..." },
 ] as const;
 
 function CheckIcon() {
@@ -16,7 +16,7 @@ function CheckIcon() {
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="w-5 h-5 text-emerald-500"
+      className="w-5 h-5 text-emerald-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -33,12 +33,12 @@ function CheckIcon() {
 
 function Spinner() {
   return (
-    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+    <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
   );
 }
 
 function PendingDot() {
-  return <div className="w-5 h-5 rounded-full border-2 border-slate-200" />;
+  return <div className="w-5 h-5 rounded-full border-2 border-outline-variant/30" />;
 }
 
 export default function LoadingSequence() {
@@ -58,7 +58,7 @@ export default function LoadingSequence() {
         transition={{ duration: 0.3 }}
         className="absolute inset-0 z-20 flex items-center justify-center"
       >
-        <div className="absolute inset-0 bg-white/40 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-surface/60 backdrop-blur-sm" />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -66,8 +66,8 @@ export default function LoadingSequence() {
           transition={{ delay: 0.1, duration: 0.4 }}
           className="relative glass-strong rounded-2xl p-8 max-w-sm w-full mx-4 shadow-xl"
         >
-          <h3 className="text-lg font-semibold text-slate-800 mb-6">
-            Analyzing Equity
+          <h3 className="text-lg font-semibold text-on-surface mb-6">
+            Computing journey options...
           </h3>
 
           <div className="space-y-4">
@@ -92,10 +92,10 @@ export default function LoadingSequence() {
                   <span
                     className={`text-sm ${
                       isComplete
-                        ? "text-emerald-600 font-medium"
+                        ? "text-emerald-400 font-medium"
                         : isCurrent
-                        ? "text-blue-600 font-medium"
-                        : "text-slate-400"
+                        ? "text-primary font-medium"
+                        : "text-on-surface/30"
                     }`}
                   >
                     {stage.label}
@@ -106,9 +106,9 @@ export default function LoadingSequence() {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-6 h-1 bg-slate-100 rounded-full overflow-hidden">
+          <div className="mt-6 h-1 bg-white/8 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-blue-500 rounded-full"
+              className="h-full bg-primary rounded-full"
               initial={{ width: "0%" }}
               animate={{
                 width:

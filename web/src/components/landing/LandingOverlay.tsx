@@ -256,7 +256,7 @@ export default function LandingOverlay() {
               </button>
 
               <p className="text-on-surface/30 text-xs mt-4 text-center">
-                Or click the map directly
+                Explore transit equity across Jabodetabek
               </p>
 
               {/* Bottom stat badges */}
