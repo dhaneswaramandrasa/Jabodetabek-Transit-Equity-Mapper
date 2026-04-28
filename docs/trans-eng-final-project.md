@@ -92,9 +92,9 @@ This is in Rupiah per trip. Aggregated by zone and income segment = equity-compa
 
 ## 4. Study Area — J-City
 
-Six origin zones to Jakarta CBD (Sudirman/Thamrin). Zones were split where a single
-administrative area contains meaningfully different transit access sub-populations.
-This creates natural within-region comparisons (J1a vs J1b, J3a vs J3b).
+Seven origin zones + one destination (JCBD). Zones were split where a single administrative
+area contains meaningfully different transit access sub-populations. This creates natural
+within-region comparisons (J1a vs J1b, J3a vs J3b) and an inner-city reference zone (J5).
 
 | Zone ID | Area | Character | TAI proxy* |
 |---|---|---|---|
@@ -104,15 +104,18 @@ This creates natural within-region comparisons (J1a vs J1b, J3a vs J3b).
 | J3a | BSD Serpong (near KRL corridor) | KRL-served (Serpong line via Tanah Abang); newer mixed-use | Q2 |
 | J3b | Gading Serpong / Karawaci | Far from KRL; car-dominant; some TransJakarta/Busway reach | Q3–Q4 |
 | J4 | Depok | KRL (Depok line via Manggarai); partial TJ access; university corridor | Q2 |
-| J5 | Jakarta CBD (Sudirman/Thamrin) | Destination only | — |
+| J5 | South Jakarta (Kebayoran Baru / Cilandak / Lebak Bulus) | Inner city; MRT Phase 1 corridor; shorter distances → lower absolute costs for all modes | Q1–Q2 |
+| JCBD | Jakarta CBD (SCBD / Sudirman / Thamrin) | Destination only | — |
 
 *TAI proxy references the equity mapper's four-quadrant classification (Q1=low need/high access,
 Q4=high need/low access — "transit desert"). This annotation connects J-City to the main
 research project without changing the model. See Discussion §6.
 
-**Analytical value of zone splits:**
-- J1a vs J1b: same region, KRL-served vs transit desert → starkest welfare gap expected
+**Analytical value of zone design:**
+- J1a vs J1b: same region, KRL-served vs transit desert → starkest welfare gap
 - J3a vs J3b: same sub-district cluster, KRL proximity determines choice set width
+- J5 South Jakarta: inner-city "best case" — MRT access + short OD distances → lower absolute
+  costs for all modes; serves as upper-bound welfare reference vs outer transit-desert zones
 
 ### Zone attributes
 
@@ -124,6 +127,7 @@ research project without changing the model. See Discussion §6.
 | J3a BSD Serpong | 250,000 | 9,000 | 65% | 50% |
 | J3b Gading Serpong/Karawaci | 400,000 | 7,500 | 55% | 58% |
 | J4 Depok | 1,100,000 | 3,800 | 28% | 68% |
+| J5 South Jakarta | 700,000 | 8,000 | 55% | 52% |
 
 ### Mode availability by zone
 
@@ -131,14 +135,18 @@ Not all modes are available in all zones. Availability is a first-order finding:
 have no rail, so their choice set is Own Vehicle + Ridehailing only — the logsum for these
 zones is structurally lower before any policy change.
 
-| Zone | Car | Moto | GoCar | GoRide | KRL | TJ/Busway | LRT |
-|---|---|---|---|---|---|---|---|
-| J1a Kota Bogor | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| J1b Kab. Bogor | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| J2 Bekasi | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| J3a BSD Serpong | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| J3b Gading Serpong | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ partial | ❌ |
-| J4 Depok | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ partial | ❌ |
+| Zone | Car | Moto | 4WRH | 2WRH | KRL | TJ/Busway | LRT | MRT |
+|---|---|---|---|---|---|---|---|---|
+| J1a Kota Bogor | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| J1b Kab. Bogor | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| J2 Bekasi | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| J3a BSD Serpong | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| J3b Gading Serpong | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ partial | ❌ | ❌ |
+| J4 Depok | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ partial | ❌ | ❌ |
+| J5 South Jakarta | ✅ | ✅ | ✅ | ✅ | ✅ partial | ✅ | ❌ | ✅ |
+
+4WRH = GoCar/GrabCar (economy 4-wheel ridehailing aggregate).
+2WRH = GoRide/GrabBike/Maxim (2-wheel ridehailing aggregate).
 
 ### Population segments
 
@@ -152,39 +160,61 @@ zones is structurally lower before any policy change.
 
 ## 5. Modes
 
-7 modes in 3 nests:
+8 modes in 3 nests:
 
-| Mode | Nest | Availability | Cost per trip (Rp) | Notes |
-|---|---|---|---|---|
-| **Car** | Own Vehicle | Car owners only | Fuel + toll ≈ 50,000–150,000 | Varies by distance + toll road |
-| **Motorcycle** | Own Vehicle | Moto owners | Fuel ≈ 10,000–25,000 | Dominant mode nationally |
-| **GoCar / GrabCar** | Ridehailing | Everyone | ~Rp 3,500/km + Rp 1,500 booking | No ownership barrier; 5–10 min wait |
-| **GoRide / GrabBike** | Ridehailing | Everyone | ~Rp 2,000/km + Rp 1,000 booking | Fastest door-to-door in congestion |
-| **KRL** | Transit | Zone-specific (see §4) | Flat 3,000–8,000 | From GTFS routing (r5py output) |
-| **TransJakarta / Busway** | Transit | Zone-specific (see §4) | Flat 3,500 | From GTFS; partial reach in J3b, J4 |
-| **LRT Jabodebek** | Transit | J2 Bekasi only (current scope) | Flat 5,000 | Opened 2023; Bekasi Timur/Jatimulya–Dukuh Atas |
+| Mode | Label | Nest | Availability | Approx. cost basis | Notes |
+|---|---|---|---|---|---|
+| Car | Car | Own Vehicle | Car owners only | Fuel + toll; varies by distance | Higher cost from outer zones due to toll + distance |
+| Motorcycle | Moto | Own Vehicle | Moto owners | Fuel only; no toll | Dominant nationally; shorter inner-city trips cheaper |
+| 4-wheel ridehailing | 4WRH | Ridehailing | Everyone | Rp 3,500–4,500/km + Rp 1,500 booking | Aggregate: GoCar/GrabCar economy class; 5–10 min wait |
+| 2-wheel ridehailing | 2WRH | Ridehailing | Everyone | Rp 2,000–2,500/km + Rp 1,000 booking | Aggregate: GoRide/GrabBike/Maxim; 3–7 min wait |
+| KRL | KRL | Transit | Zone-specific (see §4) | Flat 3,000–8,000 | From GTFS routing (r5py output) |
+| TransJakarta / Busway | TJ | Transit | Zone-specific (see §4) | Flat 3,500 | Partial reach in J3b, J4, J5 |
+| LRT Jabodebek | LRT | Transit | J2 Bekasi only | Flat 5,000 | Opened 2023; Bekasi Timur–Dukuh Atas |
+| MRT Jakarta | MRT | Transit | J5 South Jakarta | Distance-based 3,000–14,000 | Phase 1 open; Lebak Bulus–Bundaran HI |
 
 **Bike is excluded** (distances 30–60 km — infeasible unlike V-City's ≤5 km constraint).
 
-**LRT Jabodebek scope note**: The Harjamukti branch (Cibubur direction) is not modelled in
-this analysis as it does not serve any of the six origin zones directly. If a J1b zone
-extension is added in future work, it becomes relevant.
+### Ridehailing aggregation rationale
+
+4WRH and 2WRH are each modelled as a single aggregate alternative:
+- **4WRH** covers GoCar, GrabCar economy. Premium taxis (Bluebird, GreenSM) and premium
+  ride tiers are excluded — their users are a small, price-insensitive high-income segment
+  better captured by income-segment interaction on β_cost than by a separate alternative.
+- **2WRH** covers GoRide, GrabBike, Maxim. Discount dynamics (Maxim and GrabBike run
+  heavy promotions with time-varying effective prices) are not modellable as a fixed cost
+  in the LOS matrix. A single "effective average price" per km is used; discount variability
+  goes in the Limitations section.
+
+**Further study**: Disaggregate 4WRH into economy vs. premium tiers (separate ASC for
+Bluebird/GreenSM) once income-stratified RP data is available.
+
+### LRT / MRT scope notes
+
+- **LRT Jabodebek**: Harjamukti branch (Cibubur direction) not modelled — does not serve
+  any origin zone directly in this study. Relevant if future scope includes Cibubur corridor.
+- **MRT Jakarta**: Phase 1 only (Lebak Bulus–Bundaran HI). Phase 2 north extension
+  (Bundaran HI–Kota/Ancol) not included as it does not affect origin zone access.
 
 ### Nest structure rationale
 
 ```
-           Mode Choice
-      /         |           \
-Own Vehicle  Ridehailing   Transit
-(Car, Moto)  (GoCar,GoRide) (KRL, TJ)
+              Mode Choice
+       /           |            \
+Own Vehicle    Ridehailing      Transit
+(Car, Moto)   (4WRH, 2WRH)  (KRL, TJ, LRT, MRT)
 ```
 
 Each nest shares a distinct unobserved utility component:
-- **Own Vehicle**: sunk ownership cost + full door-to-door flexibility
-- **Ridehailing**: app convenience + no ownership required, but waiting time uncertainty
-- **Transit**: schedule-bound + shared infrastructure; lowest cost per km
+- **Own Vehicle**: sunk ownership cost + full door-to-door flexibility; no schedule dependency
+- **Ridehailing**: app-platform convenience; no ownership barrier; waiting time uncertainty
+- **Transit**: schedule-bound; shared infrastructure; lowest cost per km over long distances
 
-The IIA violation between Car and Motorcycle (strong within-nest substitution) and between KRL and TJ (shared "transit rider" identity) motivates the 3-nest structure over plain MNL.
+The IIA violation is strongest within Own Vehicle (car/moto are highly substitutable in
+Jakarta), moderate within Ridehailing (4WRH and 2WRH share app-platform preference but
+differ significantly in comfort), and weakest within Transit (KRL/TJ/LRT/MRT share a
+"public transit commuter" identity but serve different corridors). ρ values reflect this
+ordering: ρ_OwnVehicle < ρ_Ridehailing < ρ_Transit.
 
 ### First-mile / Last-mile (access/egress)
 
@@ -205,28 +235,34 @@ The IIA violation between Car and Motorcycle (strong within-nest substitution) a
 | KRL | r5py GTFS routing output (already computed) | GTFS fare |
 | TransJakarta / Busway | r5py GTFS routing output | GTFS fare (flat Rp 3,500) |
 | LRT Jabodebek | r5py GTFS routing output if present, else published timetable | Flat Rp 5,000 |
+| MRT Jakarta | r5py GTFS routing output | Distance-based Rp 3,000–14,000 |
 | Car | BPR function on approximate road distance; tolled segments from real toll tariff table | Fuel (Rp 2,350/km × consumption) + toll |
 | Motorcycle | 1.1× car free-flow time (slightly slower in congestion); no toll | Fuel only (better consumption) |
-| GoCar | Car time + 7 min wait (peak average) | Rp 3,500/km + Rp 1,500 booking fee |
-| GoRide | Motorcycle time + 5 min wait (peak average) | Rp 2,000/km + Rp 1,000 booking fee |
+| 4WRH | Car time + 7 min wait (peak average) | Rp 3,500/km + Rp 1,500 booking fee (effective average, no discount) |
+| 2WRH | Motorcycle time + 5 min wait (peak average) | Rp 2,000/km + Rp 1,000 booking fee (effective average, no discount) |
 
 ### 6.2 Approximate LOS values (to be refined in 01_data_prep.ipynb)
 
-`—` = mode not available from this zone. All times are peak-hour estimates.
+`—` = mode not available. All times peak-hour estimates. Costs in Rp (k = thousands).
 
-| OD pair | Car | Moto | GoCar | GoRide | KRL | TJ/Busway | LRT |
-|---|---|---|---|---|---|---|---|
-| J1a→J5 (Kota Bogor) | 110 min / 120k | 100 min / 20k | 117 min / 175k | 105 min / 72k | 75 min / 8k | — | — |
-| J1b→J5 (Kab. Bogor outer) | 130 min / 90k | 120 min / 22k | 137 min / 130k | 125 min / 80k | — | — | — |
-| J2→J5 (Bekasi) | 75 min / 80k | 70 min / 15k | 82 min / 112k | 75 min / 49k | 55 min / 6k | 70 min / 3.5k | 65 min / 5k |
-| J3a→J5 (BSD Serpong) | 90 min / 100k | 80 min / 18k | 97 min / 143k | 85 min / 56k | 85 min / 7k | — | — |
-| J3b→J5 (Gading Serpong) | 95 min / 105k | 85 min / 20k | 102 min / 150k | 90 min / 60k | — | 90 min / 3.5k | — |
-| J4→J5 (Depok) | 70 min / 70k | 65 min / 13k | 77 min / 98k | 70 min / 43k | 50 min / 5k | 65 min / 3.5k | — |
+| OD pair | Car | Moto | 4WRH | 2WRH | KRL | TJ | LRT | MRT |
+|---|---|---|---|---|---|---|---|---|
+| J1a→JCBD (Kota Bogor) | 110 min / 120k | 100 min / 20k | 117 min / 175k | 105 min / 72k | 75 min / 8k | — | — | — |
+| J1b→JCBD (Kab. Bogor outer) | 130 min / 90k | 120 min / 22k | 137 min / 130k | 125 min / 80k | — | — | — | — |
+| J2→JCBD (Bekasi) | 75 min / 80k | 70 min / 15k | 82 min / 112k | 75 min / 49k | 55 min / 6k | 70 min / 3.5k | 65 min / 5k | — |
+| J3a→JCBD (BSD Serpong) | 90 min / 100k | 80 min / 18k | 97 min / 143k | 85 min / 56k | 85 min / 7k | — | — | — |
+| J3b→JCBD (Gading Serpong) | 95 min / 105k | 85 min / 20k | 102 min / 150k | 90 min / 60k | — | 90 min / 3.5k | — | — |
+| J4→JCBD (Depok) | 70 min / 70k | 65 min / 13k | 77 min / 98k | 70 min / 43k | 50 min / 5k | 65 min / 3.5k | — | — |
+| J5→JCBD (S. Jakarta) | 35 min / 40k | 30 min / 8k | 42 min / 60k | 35 min / 22k | 35 min / 4k | 30 min / 3.5k | — | 25 min / 6k |
 
-Costs in Rp. GoCar/GoRide times = own-vehicle time + wait. Cost = per-km rate × network distance + booking fee.
+4WRH/2WRH times = own-vehicle time + wait. Ridehailing cost = per-km rate × network distance + booking fee.
 
-**J1b and J3b have no transit options** — choice set is Own Vehicle + Ridehailing only. Their
-logsum is structurally lower before any policy intervention. This is the central equity finding.
+**J1b and J3b have no transit** — choice set is Own Vehicle + Ridehailing only. Their logsum
+is structurally lower before any policy intervention. This is the central equity finding.
+
+**J5 South Jakarta** shows the inner-city dynamic: distances are 3–5× shorter than outer zones,
+so absolute ridehailing costs (Rp 22k–60k) are far lower — not a different tariff structure,
+just shorter OD distance. MRT gives J5 the best transit option in the study.
 
 ### 6.3 Value of Time (VoT) — Indonesian literature
 
@@ -254,22 +290,25 @@ generated from the DGP, then recovered by estimation. This is transparent and de
 | β_cost | −0.0015 /Rp | ~1 std dev below V-City Japanese value, scaled for Indonesian income |
 | ASC_Car | +1.20 | Strong revealed car preference in Jakarta (JUTPI 2010) |
 | ASC_Moto | +1.80 | Dominant mode — highest intrinsic preference |
-| ASC_GoCar | +0.60 | Below own car (waiting time disutility, surge uncertainty) but above transit |
-| ASC_GoRide | +1.20 | Close to own motorcycle; slightly below due to waiting time |
+| ASC_4WRH | +0.60 | Below own car (waiting time, surge uncertainty); above transit for comfort |
+| ASC_2WRH | +1.20 | Close to own motorcycle; slight penalty for waiting time and weather exposure |
 | ASC_KRL | 0.00 | Reference |
 | ASC_TJ | −0.30 | Slightly less preferred than KRL (lower reliability perception) |
-| ASC_LRT | −0.10 | Slightly below KRL (newer, less familiar, limited reach); set near KRL |
+| ASC_LRT | −0.10 | Near KRL baseline; newer, less familiar, limited corridor reach |
+| ASC_MRT | +0.20 | Slightly above KRL — premium comfort, AC, punctual; well-received since 2019 opening |
 
 ### NL DGP — 3-nest structure
 
 | Parameter | Value | Notes |
 |---|---|---|
-| ρ_OwnVehicle (Car + Moto nest) | 0.55 | Strong substitution — both require ownership, both door-to-door |
-| ρ_Ridehailing (GoCar + GoRide nest) | 0.70 | Looser — GoCar and GoRide differ significantly in comfort; shared app platform only |
-| ρ_Transit (KRL + TJ nest) | 0.75 | Moderate — both schedule-bound public modes but different route structures |
+| ρ_OwnVehicle (Car + Moto) | 0.55 | Strong substitution — both require ownership, both fully door-to-door |
+| ρ_Ridehailing (4WRH + 2WRH) | 0.70 | Looser — 4WRH and 2WRH share app-platform utility but differ sharply in comfort/price |
+| ρ_Transit (KRL, TJ, LRT, MRT) | 0.75 | Moderate — all schedule-bound public modes; different corridors but shared rider identity |
 | β_time, β_cost, ASCs | Same as MNL table | Only nest structure differs |
 
-ρ closer to 1.0 = weaker correlation within nest (approaches MNL). ρ closer to 0 = strong within-nest substitution (IIA violation is large).
+ρ closer to 1.0 = weaker within-nest correlation (approaches MNL). ρ closer to 0 = strong
+substitution within the nest. Ordering: ρ_OwnVehicle < ρ_Ridehailing < ρ_Transit reflects
+decreasing within-nest similarity across the three groups.
 
 ---
 
@@ -345,8 +384,10 @@ Target: ~3,000–4,000 words + figures. Saved at `notebooks/trans-eng-final/repo
      the welfare gap quantified here is the demand-side evidence for what the supply-side TAI shows
    - First/last mile: Option A used; Options B (GoRide as feeder sub-model) + C (full trip chain)
      as future directions
-   - Ridehailing dynamics (surge pricing, availability heterogeneity) not modelled
-   - No peak-hour congestion feedback; single trip purpose; LRT scope limited to J2
+   - Ridehailing disaggregation: 4WRH and 2WRH are aggregated; premium taxis (Bluebird,
+     GreenSM) and discount dynamics (Maxim/GrabBike promotions) not modelled
+   - No peak-hour congestion feedback; single trip purpose
+   - LRT scope limited to J2 (Bekasi); MRT scope limited to J5 (South Jakarta)
 
 7. Conclusion (200w)
 ```
@@ -380,8 +421,10 @@ These are the questions most likely from Prof. Chikaraishi. Each must be answera
 | "How does the logsum welfare measure work?" | Expected maximum utility over all alternatives; ΔCS = Δlogsum/|β_cost| in Rp; equivalent to compensating variation. Derived in L06 lecture. |
 | "What's the equity finding?" | ΔCS from rail extension is largest for low-income KRL-dependent zones (Bogor); ridehailing welfare gain is highest for middle income (can afford GoRide, can't afford car) → corridor prioritization argument. |
 | "Why not model first/last mile explicitly?" | Access/egress time is already embedded in r5py GTFS skims (Option A). Explicit access mode choice (Option B) is a natural extension — GoRide as first-mile feeder to KRL — but requires a two-stage nested model outside this scope. |
+| "Why aggregate GoRide/GrabBike/Maxim into one alternative?" | Discount dynamics (Maxim and GrabBike run heavy promotions with time-varying effective prices) cannot be represented as a fixed cost in the LOS matrix. A single effective average price is used. Within-tier heterogeneity goes in Limitations. Premium 4WRH (Bluebird/GreenSM) is excluded for the same reason — their users are better captured via income-segment β_cost interaction than a separate alternative. |
+| "Why add South Jakarta? It's close to the CBD." | J5 is an origin zone (~10–20 km from SCBD), not the CBD itself. Its analytical value is as an inner-city reference: it has MRT access and shorter OD distances, so absolute ridehailing and car costs are 3–5× lower than outer zones — not because of a different tariff, but because of distance. This upper-bound welfare zone makes the equity contrast with J1b/J3b sharper. |
 | "Why use geographic zones instead of TAI quadrant zones?" | Geographic zones are nameable and defensible — J1b is Parung/Leuwiliyang, Kabupaten Bogor, which any examiner can place on a map. TAI quadrant zones are abstract and require explaining the equity mapper framework first. Instead, zones are *annotated* with TAI proxy (Q2/Q4 etc.) in the Discussion to bridge the two projects without complicating the choice model. |
-| "What are the limitations?" | No RP data; ownership endogenous; surge pricing not modelled; no peak-hour congestion feedback; single trip purpose; LRT limited to J2; first/last mile absorbed not explicit. |
+| "What are the limitations?" | No RP data; ownership endogenous; surge/discount dynamics not modelled; premium ridehailing excluded; no peak-hour congestion feedback; single trip purpose; LRT limited to J2; MRT limited to J5; first/last mile absorbed not explicit. |
 
 ---
 
