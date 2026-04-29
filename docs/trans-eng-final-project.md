@@ -4,7 +4,34 @@
 **Deadline**: June 3, 2026 (Session L15 — Final Presentation & Q&A)
 **Branch**: `trans-eng/final-project-jabodetabek`
 **Notebook folder**: `notebooks/trans-eng-final/`
-**Status**: Scoping complete — data prep in progress
+**Status**: Scoping complete — ready to begin `01_data_prep.ipynb`
+
+---
+
+## ⚑ MASTER PLAN — READ FIRST (for agents and future-self)
+
+This document is the **single source of truth** for the trans-eng final project track.
+CLAUDE.md instructs every agent to read this before touching any notebook in this track.
+
+**Before doing any work**:
+1. Read this entire document
+2. Check **§13 Current Status** for the next incomplete notebook
+3. Check **§14 Key Files** for code/data to reuse before writing anything from scratch
+4. Read `docs/state.md` "Trans-Eng Track" section for last action
+
+**Before ending a session**:
+1. Update **§13 Current Status** — mark ✅ what was completed
+2. Update `docs/state.md` "Trans-Eng Track" — last action + next action
+3. Commit with `feat(trans-eng): ...` or `docs(trans-eng): ...`
+
+**Do not unilaterally change**:
+- The mode list in §5 (9 modes, 3 nests, ownership-based nesting)
+- The DGP parameters in §7 — these are the literature-anchored values defended in Q&A
+- The zone definitions in §4 — these are the geographically defensible zones
+- The nest structure in §5 — see §3.4 for why ownership-based, not vehicle-type
+
+If a section needs revision because of new data or methodological insight, flag it in
+the next session's commit message; do not silently rewrite.
 
 ---
 
@@ -55,38 +82,87 @@ The logsum welfare measure computed here is the same analytical layer as the TAI
 ### 3.1 Model sequence
 
 ```
-Zone attributes + LOS matrix
+Zone attributes + LOS matrix (§4, §6)
         ↓
-MNL mode choice (baseline)          ← L05 framework
+MNL mode choice (baseline, 9 modes, flat)        ← L05 framework
         ↓
-Nested Logit (motorized nest)       ← L06 framework, corrects IIA
+Nested Logit (3 nests, ownership-based)          ← L06 framework, corrects IIA
         ↓
-Logsum / Consumer Surplus           ← L06 welfare measure
+Logsum / Consumer Surplus (upper-level IV)       ← L06 welfare measure
         ↓
-Policy simulation (ΔCS by zone + income group)
+Policy simulation (ΔCS by zone + income group)   ← §8 scenarios
 ```
 
 ### 3.2 Why Nested Logit?
 
-In Indonesia, car and motorcycle share a strong unobserved "motorization" attribute (ownership cost sunk, door-to-door convenience, cultural preference). Ridehailing (GoRide/GoCar) shares the app-platform utility but lacks the ownership component. Transit modes share schedule-bound public infrastructure. A plain MNL would assume all cross-elasticities are equal — clearly wrong when a KRL improvement draws far more from GoRide than from Car.
+In Indonesia, car and motorcycle share a strong unobserved "motorization" attribute (ownership
+cost sunk, door-to-door convenience). Ridehailing modes share an app-platform utility but lack
+the ownership component. Transit modes share schedule-bound public infrastructure. A plain MNL
+would assume all cross-elasticities are equal — clearly wrong when a KRL improvement draws
+much more from 2WRH than from Car.
 
-**3-nest structure**:
+**3-nest structure** (full version in §5):
 ```
-           Mode Choice
-      /         |           \
-Own Vehicle  Ridehailing   Transit
-(Car, Moto)  (GoCar,GoRide) (KRL, TJ)
-```
-
-### 3.3 Welfare measure
-
-Consumer Surplus change from a policy shock:
-
-```
-ΔCS_n = [logsum_n(after) − logsum_n(before)] / |β_cost|
+              Mode Choice
+       /           |            \
+Own Vehicle    Ridehailing          Transit
+(Car, Moto)   (4WRH, 2WRH)  (KRL, TJ, Royal, LRT, MRT)
 ```
 
-This is in Rupiah per trip. Aggregated by zone and income segment = equity-comparable welfare gain.
+### 3.3 Formal model — MNL, NL, logsum, welfare
+
+**MNL choice probability** (L05 derivation, Gumbel i.i.d. errors):
+```
+P_m = exp(V_m) / Σ_k exp(V_k)
+```
+where `V_m = ASC_m + β_time · T_m + β_cost · C_m` is the linked-trip systematic utility.
+
+**MNL logsum** (expected maximum utility over the choice set):
+```
+LS = ln Σ_m exp(V_m)
+```
+
+**Nested Logit** (3 nests, with inclusive value parameter ρ ∈ (0, 1]):
+```
+IV_nest = ρ · ln Σ_{m ∈ nest} exp(V_m / ρ)        ← lower-nest inclusive value
+P(nest) = exp(IV_nest) / Σ_n exp(IV_n)            ← upper-level choice over nests
+P(m | nest) = exp(V_m / ρ) / Σ_{m' ∈ nest} exp(V_m' / ρ)   ← within-nest conditional
+P_m = P(m | nest) · P(nest)                       ← unconditional
+```
+
+ρ = 1 collapses to MNL. ρ → 0 means perfect within-nest substitution. We use the
+**dividing convention** `V_m / ρ` (matches L06 lecture and the existing
+`notebooks/logit_eda_mle.ipynb`).
+
+**Welfare measure** (McFadden 1978 log-sum rule for consumer surplus):
+```
+ΔCS_n = [LS_after − LS_before] / |β_cost|        ← in Rupiah per trip
+```
+where `LS = ln Σ_nest exp(IV_nest)` is the upper-level NL logsum.
+Aggregated by zone and income segment = equity-comparable welfare change.
+
+### 3.4 Notation map and methodological notes
+
+**ρ vs μ symbol**: the L06 lecture uses ρ; the existing `notebooks/logit_eda_mle.ipynb`
+uses μ. They are the same parameter (inclusive value scale). Notebooks in this project
+should use ρ in markdown explanations and may use either symbol in code, with a comment
+clarifying the equivalence.
+
+**Why ownership-based nesting and not vehicle-type (2W/4W) nesting?**
+The existing `notebooks/logit_eda_mle.ipynb` uses a 2W (Moto+GoRide) / 4W (Car+GoCar) /
+Transit nesting for its V-City-style synthetic exercise. This project chooses
+**ownership-based** nesting (Own Vehicle / Ridehailing / Transit) for two reasons:
+
+1. **Equity narrative**: ridehailing's distinguishing feature is that it has no ownership
+   barrier — this is the central equity finding (low-income commuters use ridehailing
+   precisely because they cannot own a car). Vehicle-type nesting hides this distinction
+   inside the same nest as private modes.
+2. **IIA pattern**: a KRL improvement should draw more from ridehailing than from owned
+   vehicles (a sunk-cost effect). Ownership-based nesting captures this pattern; 2W/4W
+   nesting does not.
+
+Both are theoretically defensible. Document this choice explicitly in the report Methods
+section. Vehicle-type nesting goes in Limitations as an alternative specification.
 
 ---
 
@@ -529,6 +605,8 @@ mode choice) until convergence. This is the academically complete model.
 
 ## 12. Timeline
 
+(Numbering note: this section is §12; the Q&A table that follows is §13; Current Status is §14; Key Files is §15. Earlier drafts had a duplicate §12 — corrected here.)
+
 | Date | Milestone | Track |
 |---|---|---|
 | 2026-04-28 | Branch created; project scoped | Core |
@@ -544,20 +622,21 @@ mode choice) until convergence. This is the academically complete model.
 
 ---
 
-## 12. Q&A Preparation — Anticipated Questions
+## 13. Q&A Preparation — Anticipated Questions
 
 These are the questions most likely from Prof. Chikaraishi. Each must be answerable cold.
 
 | Question | Prepared answer anchor |
 |---|---|
 | "Why nested logit and not MNL?" | IIA violation — Car/Moto substitution is much stronger than Car/KRL; the 3-nest structure captures three distinct unobserved components (ownership, app convenience, schedule-bound). ρ < 1 estimated from data confirms it. |
-| "Why include ridehailing?" | GoRide/GoCar are the dominant discretionary modes in Jakarta — omitting them would misattribute their share to Car/Moto and bias welfare estimates. No ownership barrier makes them especially relevant for equity analysis. |
+| "Why include ridehailing?" | 2WRH (GoRide/GrabBike/Maxim) and 4WRH (GoCar/GrabCar) are the dominant discretionary modes in Jakarta — omitting them would misattribute their share to Car/Moto and bias welfare estimates. No ownership barrier makes them especially relevant for equity analysis. |
 | "Where does your β_time come from?" | Literature VoT anchor (BAPPENAS + Indonesian transport appraisal); calibrated so VoT = β_time/β_cost matches Rp 25,000/hr for middle income. Sensitivity table shows results are robust to ±30% VoT. |
 | "Your data is synthetic — is this valid?" | V-City approach: known DGP, demonstrate parameter recovery (estimated ≈ true within SE), then apply to realistic Indonesian LOS values. The methodology is the contribution, not the raw observations. |
 | "How does the logsum welfare measure work?" | Expected maximum utility over all alternatives; ΔCS = Δlogsum/|β_cost| in Rp; equivalent to compensating variation. Derived in L06 lecture. |
-| "What's the equity finding?" | ΔCS from rail extension is largest for low-income KRL-dependent zones (Bogor); ridehailing welfare gain is highest for middle income (can afford GoRide, can't afford car) → corridor prioritization argument. |
-| "How do you handle multi-modal journeys like GoRide→KRL→GoRide?" | Alternatives are modelled as linked-trip journeys, not individual segments. The KRL alternative's utility sums impedance across all legs: V = β_t(T_access + T_trunk + T_egress) + β_c(C_access + C_fare + C_egress). Under Option A, access/egress times come from r5py's walk routing; transfer disutility is absorbed into ASC_KRL. Explicit access mode competition — GoRide vs walk to station — is Option B: a lower nest under the transit alternative with GoRide access cost and β_transfer explicit. |
-| "Why aggregate GoRide/GrabBike/Maxim into one alternative?" | Discount dynamics (Maxim and GrabBike run heavy promotions with time-varying effective prices) cannot be represented as a fixed cost in the LOS matrix. A single effective average price is used. Within-tier heterogeneity goes in Limitations. Premium 4WRH (Bluebird/GreenSM) is excluded for the same reason — their users are better captured via income-segment β_cost interaction than a separate alternative. |
+| "What's the equity finding?" | ΔCS from rail extension is largest for low-income KRL-dependent zones (J1a Kota Bogor, J4 Depok); ridehailing welfare gain is highest for middle income (can afford 2WRH, can't afford car) → corridor prioritization argument. J1b and J3b have no transit at all — they receive zero benefit from any transit-side policy and lose most from the toll scenario. |
+| "How do you handle multi-modal journeys like 2WRH→KRL→2WRH?" | Alternatives are modelled as linked-trip journeys, not individual segments. The KRL alternative's utility sums impedance across all legs: V = β_t(T_access + T_trunk + T_egress) + β_c(C_access + C_fare + C_egress). Under Option A, access/egress times come from r5py's walk routing; transfer disutility is absorbed into ASC_KRL. Explicit access mode competition — 2WRH vs walk to station — is Option B: a lower nest under the transit alternative with 2WRH access cost and β_transfer explicit. |
+| "Why aggregate 2WRH (GoRide/GrabBike/Maxim) into one alternative?" | Discount dynamics (Maxim and GrabBike run heavy promotions with time-varying effective prices) cannot be represented as a fixed cost in the LOS matrix. A single effective average price is used. Within-tier heterogeneity goes in Limitations. Premium 4WRH (Bluebird/GreenSM) is excluded for the same reason — their users are better captured via income-segment β_cost interaction than a separate alternative. |
+| "Why ownership-based nesting and not 2W/4W vehicle-type nesting?" | Ridehailing's distinguishing feature is no ownership barrier — central to the equity narrative. Vehicle-type nesting (Moto+2WRH, Car+4WRH) hides this distinction. Also, IIA: a KRL improvement should draw more from ridehailing than from owned modes (sunk cost effect) — ownership-based nesting captures this; 2W/4W does not. The alternative specification is acknowledged in Limitations. |
 | "Why model RoyalTrans separately from regular TransJakarta?" | RoyalTrans and regular TJ have fundamentally different cost structures (Rp 3,500 vs Rp 20,000–40,000) and destination profiles. Regular TJ may require an onward MRT transfer to reach JCBD from some termini (Lebak Bulus, Fatmawati), making its true linked-trip cost higher than Rp 3,500. RoyalTrans routes terminate at Sudirman/Kuningan directly — zero egress cost at JCBD. Modelling them as one alternative would conflate a budget feeder mode with an express premium service. Separate ASCs and cost inputs capture this correctly. |
 | "Why add South Jakarta? It's close to the CBD." | J5 is an origin zone (~10–20 km from SCBD), not the CBD itself. Its analytical value is as an inner-city reference: it has MRT access and shorter OD distances, so absolute ridehailing and car costs are 3–5× lower than outer zones — not because of a different tariff, but because of distance. This upper-bound welfare zone makes the equity contrast with J1b/J3b sharper. |
 | "Why use geographic zones instead of TAI quadrant zones?" | Geographic zones are nameable and defensible — J1b is Parung/Leuwiliyang, Kabupaten Bogor, which any examiner can place on a map. TAI quadrant zones are abstract and require explaining the equity mapper framework first. Instead, zones are *annotated* with TAI proxy (Q2/Q4 etc.) in the Discussion to bridge the two projects without complicating the choice model. |
@@ -567,29 +646,41 @@ These are the questions most likely from Prof. Chikaraishi. Each must be answera
 
 ---
 
-## 13. Current Status
+## 14. Current Status
+
+**Last reviewed**: 2026-04-29 (full doc audit; mode set + nest structure + DGP all confirmed)
+
+**Immediate next action**: Create `notebooks/trans-eng-final/` folder structure, then begin
+`01_data_prep.ipynb`. Build the J-City zone table, mode availability matrix, LOS matrix
+(adapt §6.2 values, refine using r5py output for KRL/TJ/LRT/MRT), and synthetic person
+sample with income segments per §4.
 
 | Item | Status | Notes |
 |---|---|---|
 | Project scoping | ✅ Done | This document |
 | Branch | ✅ `trans-eng/final-project-jabodetabek` | Off `ui/stitch-redesign` |
-| Folder structure | ⬜ Not created | Next action |
-| `01_data_prep.ipynb` | ⬜ Not started | |
-| `02_mnl_estimation.ipynb` | ⬜ Not started | Can reuse logic from `notebooks/logit_eda_mle.ipynb` |
-| `03_nl_estimation.ipynb` | ⬜ Not started | Can reuse NL cells 27-36 from `notebooks/logit_eda_mle.ipynb` |
-| `04_policy_simulation.ipynb` | ⬜ Not started | Can reuse logsum cells 43-54 from `notebooks/logit_eda_mle.ipynb` |
-| `05_car_ue_assignment.ipynb` | ⏸ On hold | Extension D — unlock after L08 lecture; requires core notebooks complete |
-| Report draft | ⬜ Not started | |
+| Folder structure | ⬜ Not created | **Next action** — create `notebooks/trans-eng-final/{data,figures,report}/` |
+| `01_data_prep.ipynb` | ⬜ Not started | Zone table, LOS matrix per §6, synthetic persons per §4. Output: `data/jabodetabek_zones.csv`, `data/od_skim_jkt.csv`, `data/persons_jkt.csv` |
+| `02_mnl_estimation.ipynb` | ⬜ Not started | Reuse cells 13–23 from `notebooks/logit_eda_mle.ipynb`. 9-mode flat MNL with zone-specific availability per §4. Output: parameter recovery table, VoT by segment |
+| `03_nl_estimation.ipynb` | ⬜ Not started | Reuse cells 27–36 from `notebooks/logit_eda_mle.ipynb`. Adapt to ownership-based 3-nest per §3.2/§3.4. Output: ρ estimates, IIA test, NL vs MNL share comparison |
+| `04_policy_simulation.ipynb` | ⬜ Not started | Reuse cells 43–54 from `notebooks/logit_eda_mle.ipynb`. Run the 3 scenarios in §8. Output: ΔCS heatmap by zone × income segment, mode share shift charts |
+| `05_car_ue_assignment.ipynb` | ⏸ On hold | Extension D (§11) — unlock after L08 lecture (~2026-05-10); only if core notebooks 01–04 are stable |
+| Report draft | ⬜ Not started | Begin after `04_policy_simulation.ipynb` produces results; structure per §10 |
 
 ---
 
-## 14. Key Files to Reference
+## 15. Key Files to Reference
 
 | File | Why |
 |---|---|
-| `notebooks/logit_eda_mle.ipynb` | Existing MNL + NL + logsum implementation — reuse cells, adapt to J-City data |
+| `docs/trans-eng-final-project.md` | **THIS FILE** — master plan, single source of truth |
+| `CLAUDE.md` (Trans-Eng Track section) | Session start/end protocol for this track |
+| `docs/state.md` (Track 2 section) | Last-action / next-action handover between sessions |
+| `notebooks/logit_eda_mle.ipynb` | Existing MNL + NL + logsum + 3-SE estimators implementation — reuse cells 13–23 (MNL), 27–36 (NL), 43–54 (logsum/CS) — adapt to J-City data and ownership-based nesting |
 | `notebooks/trans-eng-lectures/vcity_spec.md` | V-City DGP reference — methodology template |
-| `notebooks/trans-eng-lectures/L06_logsum_concept.md` | Logsum formula + welfare measure derivation |
-| `notebooks/trans-eng-lectures/L05_pres_discrete_choice.pdf` | MNL specification reference |
-| `notebooks/trans-eng-lectures/L06_pres_nested_logit.pdf` | NL specification reference |
-| `data/processed/scores/kelurahan_scores.geojson` | r5py routing output — source for KRL/TJ travel times per zone |
+| `notebooks/trans-eng-lectures/logit_derivation_concept.md` | Full MNL derivation (Gumbel, integration, four equalities) — reference for the report Methods section |
+| `notebooks/trans-eng-lectures/L06_logsum_concept.md` | Logsum formula + welfare measure derivation; the ρ inclusive-value parameter |
+| `notebooks/trans-eng-lectures/L06_se_estimators_concept.md` | Hessian / BHHH / Robust SE — for Results section diagnostics |
+| `notebooks/trans-eng-lectures/L05_pres_discrete_choice.pdf` | MNL specification reference (lecture slides) |
+| `notebooks/trans-eng-lectures/L06_pres_nested_logit.pdf` | NL specification reference (lecture slides) |
+| `data/processed/scores/kelurahan_scores.geojson` | r5py routing output — source for KRL/TJ/LRT/MRT travel times per zone |
