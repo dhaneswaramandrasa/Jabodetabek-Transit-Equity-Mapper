@@ -216,13 +216,61 @@ differ significantly in comfort), and weakest within Transit (KRL/TJ/LRT/MRT sha
 "public transit commuter" identity but serve different corridors). ρ values reflect this
 ordering: ρ_OwnVehicle < ρ_Ridehailing < ρ_Transit.
 
-### First-mile / Last-mile (access/egress)
+### Multi-modal journey modelling — linked trip framework
 
-**Current scope — Option A (absorbed)**: r5py routes include walking access to the nearest boarding stop and egress to the destination. KRL and TJ travel times in the LOS matrix already embed first/last mile walking time. This is the standard skim-based approach and is methodologically sufficient for this analysis.
+MNL/NL alternatives in this project are **journey alternatives** (linked trips), not
+individual mode segments. The choice set is:
 
-**Further study — Option B (explicit access mode choice)**: Model GoRide as a first-mile feeder to KRL stations as a separate sub-choice. This requires a two-stage nested model (access mode → main mode) and is a natural extension given Gojek's real-world role at Jakarta station forecourts.
+```
+Alt 1: Car direct          (one door-to-door journey)
+Alt 2: Motorcycle direct
+Alt 3: 4WRH direct
+Alt 4: 2WRH direct
+Alt 5: KRL chain           (access + trunk + egress — one journey utility)
+Alt 6: TJ chain
+Alt 7: LRT chain           (J2 only)
+Alt 8: MRT chain           (J5 only)
+```
 
-**Further study — Option C (full trip chain)**: Model the full multi-modal sequence (origin → access leg → trunk leg → egress leg → destination) as a behavioural discrete choice problem. Equivalent to what r5py does for routing but rendered as a utility-maximising sequential choice. Relevant if origin-destination micro-data becomes available.
+For any transit alternative, the utility function sums impedance across all legs:
+
+```
+V_transit = ASC_transit
+          + β_time × (T_access + T_trunk + T_egress)
+          + β_cost × (C_access + C_transit_fare + C_egress)
+```
+
+Under Option A, `T_access` and `T_egress` are walk times from r5py; `C_access = C_egress = 0`
+(walking is free). `ASC_transit` implicitly absorbs transfer disutility.
+This is the standard linked-trip skim approach used in four-step models including JUTPI.
+
+### First-mile / Last-mile options — progressive extensions
+
+**Option A — PRIMARY METHOD (in scope)**: r5py computes the full composite journey time
+(walk access + trunk + walk egress). This goes directly into the LOS matrix. Transit
+alternatives compete against Car/Moto/Ridehailing as complete journey alternatives.
+Methodologically sound and standard practice. No changes needed to implement.
+
+**Option B — EXTENSION (if core notebooks done before ~May 17)**: Add a lower nest under
+each transit alternative for access mode choice (walk vs GoRide vs park & ride):
+
+```
+Upper nest: journey alternatives
+├── Car / Moto / 4WRH / 2WRH  (direct, unchanged)
+└── Transit chain
+    └── Lower nest: access mode to station
+        ├── Walk          (r5py time, free)
+        ├── 2WRH to station  (GoRide cost explicit)
+        └── Park & ride   (moto fuel to station)
+```
+
+Logsum of lower nest = effective transit utility entering upper nest comparison.
+GoRide access cost and a β_transfer parameter become explicit.
+Trigger: core notebooks 01–04 stable AND L08+ material covered.
+
+**Option C — EXTENSION (only if B stable with >2 weeks to June 3)**: Model both access
+AND egress as sequential sub-choices. True trip-chain model. Requires per-person
+station proximity data. Do not attempt if <2 weeks to deadline.
 
 ---
 
@@ -468,7 +516,7 @@ These are the questions most likely from Prof. Chikaraishi. Each must be answera
 | "Your data is synthetic — is this valid?" | V-City approach: known DGP, demonstrate parameter recovery (estimated ≈ true within SE), then apply to realistic Indonesian LOS values. The methodology is the contribution, not the raw observations. |
 | "How does the logsum welfare measure work?" | Expected maximum utility over all alternatives; ΔCS = Δlogsum/|β_cost| in Rp; equivalent to compensating variation. Derived in L06 lecture. |
 | "What's the equity finding?" | ΔCS from rail extension is largest for low-income KRL-dependent zones (Bogor); ridehailing welfare gain is highest for middle income (can afford GoRide, can't afford car) → corridor prioritization argument. |
-| "Why not model first/last mile explicitly?" | Access/egress time is already embedded in r5py GTFS skims (Option A). Explicit access mode choice (Option B) is a natural extension — GoRide as first-mile feeder to KRL — but requires a two-stage nested model outside this scope. |
+| "How do you handle multi-modal journeys like GoRide→KRL→GoRide?" | Alternatives are modelled as linked-trip journeys, not individual segments. The KRL alternative's utility sums impedance across all legs: V = β_t(T_access + T_trunk + T_egress) + β_c(C_access + C_fare + C_egress). Under Option A, access/egress times come from r5py's walk routing; transfer disutility is absorbed into ASC_KRL. Explicit access mode competition — GoRide vs walk to station — is Option B: a lower nest under the transit alternative with GoRide access cost and β_transfer explicit. |
 | "Why aggregate GoRide/GrabBike/Maxim into one alternative?" | Discount dynamics (Maxim and GrabBike run heavy promotions with time-varying effective prices) cannot be represented as a fixed cost in the LOS matrix. A single effective average price is used. Within-tier heterogeneity goes in Limitations. Premium 4WRH (Bluebird/GreenSM) is excluded for the same reason — their users are better captured via income-segment β_cost interaction than a separate alternative. |
 | "Why add South Jakarta? It's close to the CBD." | J5 is an origin zone (~10–20 km from SCBD), not the CBD itself. Its analytical value is as an inner-city reference: it has MRT access and shorter OD distances, so absolute ridehailing and car costs are 3–5× lower than outer zones — not because of a different tariff, but because of distance. This upper-bound welfare zone makes the equity contrast with J1b/J3b sharper. |
 | "Why use geographic zones instead of TAI quadrant zones?" | Geographic zones are nameable and defensible — J1b is Parung/Leuwiliyang, Kabupaten Bogor, which any examiner can place on a map. TAI quadrant zones are abstract and require explaining the equity mapper framework first. Instead, zones are *annotated* with TAI proxy (Q2/Q4 etc.) in the Discussion to bridge the two projects without complicating the choice model. |
