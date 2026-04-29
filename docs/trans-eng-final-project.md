@@ -137,20 +137,21 @@ zones is structurally lower before any policy change.
 
 | Zone | Car | Moto | 4WRH | 2WRH | KRL | TJ | Royal | LRT | MRT |
 |---|---|---|---|---|---|---|---|---|---|
-| J1a Kota Bogor | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| J1a Kota Bogor | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | J1b Kab. Bogor | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| J2 Bekasi | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| J3a BSD Serpong | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
-| J3b Gading Serpong | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ partial | ✅ | ❌ | ❌ |
-| J4 Depok | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ partial | ✅ | ❌ | ❌ |
+| J2 Bekasi | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ direct | ✅ | ❌ |
+| J3a BSD Serpong | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ +MRT | ❌ | ❌ |
+| J3b Gading Serpong | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ partial | ✅ +MRT | ❌ | ❌ |
+| J4 Depok | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ partial | ✅ direct | ❌ | ❌ |
 | J5 South Jakarta | ✅ | ✅ | ✅ | ✅ | ✅ partial | ✅ | ❌ | ❌ | ✅ |
 
-4WRH = GoCar/GrabCar (economy 4-wheel ridehailing aggregate).
-2WRH = GoRide/GrabBike/Maxim (2-wheel ridehailing aggregate).
-Royal = RoyalTrans (TransJakarta express, direct to Sudirman/Kuningan/Senayan).
+4WRH = GoCar/GrabCar economy class aggregate.
+2WRH = GoRide/GrabBike/Maxim aggregate.
+Royal = RoyalTrans express. "direct" = terminates at JCBD (Kuningan/Senayan). "+MRT" = terminates at Lebak Bulus or Fatmawati, requires onward MRT leg to reach JCBD.
 
-**J1b remains the only zone with no transit of any kind** — not even RoyalTrans serves
-Parung/Leuwiliyang. This reinforces its Q4 transit desert classification.
+**J1a and J1b have no RoyalTrans** — no published routes serve Bogor corridor.
+**J1b remains the only zone with zero transit of any kind.**
+**J3a/J3b Royal is not cost-equivalent to J2/J4 Royal** — the +MRT transfer adds ~Rp 9k and 25 min, making the full linked-trip cost ~Rp 39k and ~110 min.
 
 ### Population segments
 
@@ -180,22 +181,34 @@ Parung/Leuwiliyang. This reinforces its Q4 transit desert classification.
 
 **Bike is excluded** (distances 30–60 km — infeasible unlike V-City's ≤5 km constraint).
 
-### RoyalTrans note — destination alignment advantage
+### RoyalTrans — actual routes and destination reachability
 
-RoyalTrans routes terminate at Sudirman, Kuningan, or Senayan — the JCBD destination in this
-study. This means the linked-trip utility has **zero egress cost and minimal egress time**:
+Based on the published TransJakarta RoyalTrans route list, destinations vary significantly
+by origin zone. Not all routes reach JCBD (Sudirman/Kuningan/Senayan) directly.
+
+| Zone | Route | Terminus | JCBD direct? | Extra leg to JCBD |
+|---|---|---|---|---|
+| J1a Kota Bogor | None | — | ❌ no service | — |
+| J1b Kab. Bogor | None | — | ❌ no service | — |
+| J2 Bekasi | B14 Summarecon Bekasi → Kuningan | Kuningan | ✅ | none |
+| J3a BSD Serpong | S12 Terminal BSD → Fatmawati | Fatmawati | ❌ | MRT Fatmawati→Sudirman |
+| J3b Gading Serpong | S14 Summarecon Serpong → Lebak Bulus | Lebak Bulus | ❌ | MRT Lebak Bulus→Sudirman |
+| J4 Depok (Cinere) | D31/D32 Cinere → Kuningan / Bundaran Senayan | Kuningan / Senayan | ✅ | none |
+| J5 South Jakarta | None relevant | — | — | MRT already available |
+
+**Linked-trip cost for J3a/J3b using Royal** is a two-leg chain:
+Royal fare (~Rp 30k) + MRT fare (~Rp 9k) + MRT time (~25 min)
+= total ~Rp 39,000 and ~110 min — barely cheaper than 4WRH and slower.
 
 ```
-V_Royal = ASC_Royal + β_time × (T_access + T_Royal_trunk) + β_cost × C_Royal_fare
-                                                       ↑ no egress term needed
+V_Royal_J3x = ASC_Royal + β_time × (T_access + T_Royal + T_MRT_egress)
+                        + β_cost × (C_Royal_fare + C_MRT_fare)
 ```
 
-Regular TJ routes that terminate at Lebak Bulus or Fatmawati require an onward MRT leg
-to reach JCBD — adding ~Rp 9,000–12,000 and 20–25 min to the linked-trip total. R5py
-handles this routing automatically (it will route TJ→MRT as needed), so the LOS values
-in §6.2 already reflect this. But it is worth noting explicitly in the notebook: the
-**effective cost of regular TJ from some zones is higher than Rp 3,500** once the MRT
-transfer is included.
+This is the same linked-trip structure as regular TJ for zones that don't reach JCBD
+directly. R5py handles the full routing automatically. The equity implication: J3b has
+Royal *available* but the full-chain cost (~Rp 39k, ~110 min) erodes the advantage over
+direct private modes, particularly for low-income commuters.
 
 ### Ridehailing aggregation rationale
 
@@ -318,13 +331,16 @@ station proximity data. Do not attempt if <2 weeks to deadline.
 
 | OD pair | Car | Moto | 4WRH | 2WRH | KRL | TJ | Royal | LRT | MRT |
 |---|---|---|---|---|---|---|---|---|---|
-| J1a→JCBD (Kota Bogor) | 110 min / 120k | 100 min / 20k | 117 min / 175k | 105 min / 72k | 75 min / 8k | — | 80 min / 35k | — | — |
+| J1a→JCBD (Kota Bogor) | 110 min / 120k | 100 min / 20k | 117 min / 175k | 105 min / 72k | 75 min / 8k | — | — | — | — |
 | J1b→JCBD (Kab. Bogor outer) | 130 min / 90k | 120 min / 22k | 137 min / 130k | 125 min / 80k | — | — | — | — | — |
-| J2→JCBD (Bekasi) | 75 min / 80k | 70 min / 15k | 82 min / 112k | 75 min / 49k | 55 min / 6k | 70 min / 3.5k | 65 min / 28k | 65 min / 5k | — |
-| J3a→JCBD (BSD Serpong) | 90 min / 100k | 80 min / 18k | 97 min / 143k | 85 min / 56k | 85 min / 7k | — | 80 min / 30k | — | — |
-| J3b→JCBD (Gading Serpong) | 95 min / 105k | 85 min / 20k | 102 min / 150k | 90 min / 60k | — | 90 min / 3.5k | 85 min / 30k | — | — |
-| J4→JCBD (Depok) | 70 min / 70k | 65 min / 13k | 77 min / 98k | 70 min / 43k | 50 min / 5k | 65 min / 3.5k | 60 min / 22k | — | — |
+| J2→JCBD (Bekasi) | 75 min / 80k | 70 min / 15k | 82 min / 112k | 75 min / 49k | 55 min / 6k | 70 min / 3.5k | 65 min / 28k ✅ | 65 min / 5k | — |
+| J3a→JCBD (BSD Serpong) | 90 min / 100k | 80 min / 18k | 97 min / 143k | 85 min / 56k | 85 min / 7k | — | 110 min / 39k ⚠️ | — | — |
+| J3b→JCBD (Gading Serpong) | 95 min / 105k | 85 min / 20k | 102 min / 150k | 90 min / 60k | — | 90 min / 3.5k | 115 min / 39k ⚠️ | — | — |
+| J4→JCBD (Depok) | 70 min / 70k | 65 min / 13k | 77 min / 98k | 70 min / 43k | 50 min / 5k | 65 min / 3.5k | 60 min / 22k ✅ | — | — |
 | J5→JCBD (S. Jakarta) | 35 min / 40k | 30 min / 8k | 42 min / 60k | 35 min / 22k | 35 min / 4k | 30 min / 3.5k | — | — | 25 min / 6k |
+
+✅ = Royal terminates at JCBD directly (no egress leg).
+⚠️ = Royal terminates at Lebak Bulus or Fatmawati; time and cost include onward MRT leg (~25 min, ~Rp 9k).
 
 4WRH/2WRH times = own-vehicle time + wait. Ridehailing cost = per-km rate × network distance + booking fee.
 
