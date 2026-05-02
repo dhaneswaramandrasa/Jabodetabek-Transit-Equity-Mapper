@@ -85,7 +85,11 @@ This is a **portfolio / independent research project** — no academic gating.
   - **#5 Moto cost**: Replaced pipeline `gc_motorcycle_idr` (~Rp 2,000/km, includes time-monetisation) with fuel-only Rp 500/km.
   - **#6 Poverty pct**: Multiplied by 100 in cell 4 agg (was fractional 0.0–0.1, now percent 2–14).
   - **#7 Stale mnl_estimates.json**: Deleted from data/.
-  - **CSVs still stale** — all 3 need re-run in Jupyter (NumPy 1.x/2.x incompatibility blocks CLI).
+  - **CSVs regenerated + committed**: All 3 CSVs verified correct and pushed to PR #38.
+- **#8 Person-level time variation**: Added cell after cell 20 — Normal(0, 0.15×time) noise, clipped ±30%.
+  - **Root cause**: All persons in a zone had identical V (1 unique V pattern per zone). Gumbel(0,1) noise (σ≈1.28) can't overcome V gaps of 1–75 utils → zones were 100% single-mode → 5 modes with 0% share → SE=0 or SE=1000 for those params → only 10/18 recovered.
+  - **Fix**: Person-specific travel time variation (CV=15%) creates realistic within-zone utility spread before V computation.
+- **CSVs need re-run** to pick up the time variation fix.
 
 ### Next Action
 1. ~~Create `notebooks/trans-eng-final/` folder structure + `data/` subfolder~~ ✅ Done
@@ -98,7 +102,7 @@ This is a **portfolio / independent research project** — no academic gating.
 ### Notebook Status
 | Notebook | Status | Notes |
 |---|---|---|
-| `01_data_prep.ipynb` | ⚠️ Needs re-run | 29 cells; code correct — CSVs stale. Re-run in Jupyter to regenerate jabodetabek_zones.csv, od_skim_jkt.csv, persons_jkt.csv |
+| `01_data_prep.ipynb` | ⚠️ Needs re-run | 30 cells (was 29); added person-level time variation cell. Re-run in Jupyter to regenerate CSVs with within-zone heterogeneity. |
 | `02_mnl_estimation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 13-23 |
 | `03_nl_estimation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 27-36 |
 | `03b_mixed_logit.ipynb` | ⬜ Not started | Adapt L07 lab Tasks 3 + 3.5; random β_time, Wald primary, Mixed-DGP recovery |
@@ -106,5 +110,5 @@ This is a **portfolio / independent research project** — no academic gating.
 | Report draft | ⬜ Not started | After all 5 notebooks done |
 
 ### Blockers
-- **01 CSVs stale**: `jabodetabek_zones.csv`, `od_skim_jkt.csv`, `persons_jkt.csv` need regeneration. Run `01_data_prep.ipynb` in Jupyter (system NumPy 2.4.4 incompatible with pandas/geopandas — Jupyter kernel has compatible env).
-- 02_mnl_estimation.ipynb can't start until CSVs are regenerated with correct income/ownership distributions.
+- **01 CSVs stale**: `jabodetabek_zones.csv`, `od_skim_jkt.csv`, `persons_jkt.csv` need regeneration with person-level time variation. Run `01_data_prep.ipynb` in Jupyter (system NumPy 2.4.4 incompatible with pandas/geopandas — Jupyter kernel has compatible env).
+- **02_mnl_estimation.ipynb** has scaffold (30 cells) but old outputs pre-fix — re-run in Jupyter after 01 CSVs regenerated.
