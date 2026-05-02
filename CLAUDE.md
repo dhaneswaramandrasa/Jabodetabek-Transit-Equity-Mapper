@@ -905,7 +905,7 @@ Read docs/state.md and docs/EPICS_TASKS.md first.
 ## Trans-Eng Final Project Track
 
 **Parallel track** — independent of E1–E10 research project. No Linear tickets. No paper.
-Full spec: `docs/trans-eng-final-project.md` — read it before touching any notebook in this track.
+Full spec: `notebooks/trans-eng-final/trans-eng-final-project.md` — read it before touching any notebook in this track.
 
 ### What this track is
 Hiroshima University Transportation Engineering AY2026 final project.
@@ -916,14 +916,14 @@ Study area: 4 Jabodetabek zones → Jakarta CBD (J-City analog to V-City).
 ### On session start (Trans-Eng track)
 ```
 1. Read docs/state.md — check "Trans-Eng Track" section for last action
-2. Read docs/trans-eng-final-project.md §13 Current Status — find next incomplete notebook
+2. Read notebooks/trans-eng-final/trans-eng-final-project.md §13 Current Status — find next incomplete notebook
 3. Say: "Trans-Eng: resuming [notebook name]. Last action: [from state.md]. Ready."
 ```
 
 ### On session end (Trans-Eng track)
 ```
 1. Update docs/state.md — "Trans-Eng Track" section: what was done, next action
-2. Update docs/trans-eng-final-project.md §13 Current Status — mark completed items ✅
+2. Update notebooks/trans-eng-final/trans-eng-final-project.md §13 Current Status — mark completed items ✅
 3. Commit: feat(trans-eng): [what was built]
 ```
 
@@ -939,7 +939,7 @@ Cells 13-36 = MNL + NL estimation. Cells 43-54 = logsum + CS. Adapt; do not dupl
 
 ### Data strategy
 No RP dataset exists. Use synthetic DGP (same as V-City) with:
-- Indonesian VoT anchors from literature (see §6.3 in trans-eng-final-project.md)
+- Indonesian VoT anchors from literature (see §6.3 in notebooks/trans-eng-final/trans-eng-final-project.md)
 - KRL/TransJakarta LOS from r5py GTFS routing (`data/processed/scores/`)
 - Car/motorcycle LOS from BPR estimates + Indonesian toll tariff
 

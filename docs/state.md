@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated**: 2026-04-28
+**Last updated**: 2026-05-01
 **Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — scoping done
 
 ---
@@ -74,27 +74,37 @@ This is a **portfolio / independent research project** — no academic gating.
 
 **Branch**: `trans-eng/final-project-jabodetabek`
 **Deadline**: June 3, 2026 (Session L15 — Presentation & Q&A)
-**Full spec**: `docs/trans-eng-final-project.md`
+**Full spec**: `notebooks/trans-eng-final/trans-eng-final-project.md`
 
-### Last Action (2026-04-28)
-- Project scoped and framed
-- `docs/trans-eng-final-project.md` created — J-City zones, modes, DGP parameters, policy scenarios, Q&A prep
-- `CLAUDE.md` updated with Trans-Eng track section
-- Branch `trans-eng/final-project-jabodetabek` created
+### Last Action (2026-05-03)
+- **01_data_prep.ipynb fix pass** — 6 blockers + 2 cosmetic issues resolved:
+  - **#1 J1b kec list**: Dropped Leuwiliang, Jasinga, Dramaga → 4 kec (Parung corridor only). Matches spec §4 and cell 2 markdown.
+  - **#2 Zone populations**: Replaced data-driven scaling with spec §4 hard-coded values (J1a 1.1M, J1b 800k, J2 2.4M, J3a 250k, J3b 400k, J4 1.1M, J5 700k).
+  - **#3 Income unit**: `mean_expenditure_k` now divided by 1000 in cell 4 agg (was treating raw IDR as thousand-IDR).
+  - **#4 Income directionality**: `avg_income_k` from spec §4 hard-coded values. J1a=3500 > J1b=2800, J3a=9000 > J3b=7500 — equity contrast restored.
+  - **#5 Moto cost**: Replaced pipeline `gc_motorcycle_idr` (~Rp 2,000/km, includes time-monetisation) with fuel-only Rp 500/km.
+  - **#6 Poverty pct**: Multiplied by 100 in cell 4 agg (was fractional 0.0–0.1, now percent 2–14).
+  - **#7 Stale mnl_estimates.json**: Deleted from data/.
+  - **CSVs still stale** — all 3 need re-run in Jupyter (NumPy 1.x/2.x incompatibility blocks CLI).
 
 ### Next Action
-1. Create `notebooks/trans-eng-final/` folder structure + `data/` subfolder
-2. Build `01_data_prep.ipynb` — zone table, LOS matrix, synthetic population
-3. Then `02_mnl_estimation.ipynb` (reuse cells 13-23 from `logit_eda_mle.ipynb`, adapt to J-City data)
+1. ~~Create `notebooks/trans-eng-final/` folder structure + `data/` subfolder~~ ✅ Done
+2. ~~Build `01_data_prep.ipynb` — zone table, LOS matrix, synthetic population~~ ✅ Done
+3. Build `02_mnl_estimation.ipynb` (reuse cells 13-23 from `logit_eda_mle.ipynb`, adapt to 9-mode J-City data with zone-specific availability)
+4. Build `03_nl_estimation.ipynb` (reuse cells 27-36)
+5. Build `03b_mixed_logit.ipynb` — reuse `notebooks/trans-eng-lectures/L07/L07_estimation_lab.ipynb` Tasks 3 + 3.5 cells; output recommendation row to `data/best_model.json`
+6. Build `04_policy_simulation.ipynb` — read `best_model.json` and route to NL or MXL logsum
 
 ### Notebook Status
 | Notebook | Status | Notes |
 |---|---|---|
-| `01_data_prep.ipynb` | ⬜ Not started | Zone table + LOS matrix + synthetic persons |
+| `01_data_prep.ipynb` | ⚠️ Needs re-run | 29 cells; code correct — CSVs stale. Re-run in Jupyter to regenerate jabodetabek_zones.csv, od_skim_jkt.csv, persons_jkt.csv |
 | `02_mnl_estimation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 13-23 |
 | `03_nl_estimation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 27-36 |
-| `04_policy_simulation.ipynb` | ⬜ Not started | Adapt from `logit_eda_mle.ipynb` cells 43-54 |
-| Report draft | ⬜ Not started | After all 4 notebooks done |
+| `03b_mixed_logit.ipynb` | ⬜ Not started | Adapt L07 lab Tasks 3 + 3.5; random β_time, Wald primary, Mixed-DGP recovery |
+| `04_policy_simulation.ipynb` | ⬜ Not started | 8 scenarios (A–H) from §8; reads `best_model.json` |
+| Report draft | ⬜ Not started | After all 5 notebooks done |
 
 ### Blockers
-- None yet. LOS values in `docs/trans-eng-final-project.md §6.2` are approximations — refine in `01_data_prep.ipynb` using r5py output.
+- **01 CSVs stale**: `jabodetabek_zones.csv`, `od_skim_jkt.csv`, `persons_jkt.csv` need regeneration. Run `01_data_prep.ipynb` in Jupyter (system NumPy 2.4.4 incompatible with pandas/geopandas — Jupyter kernel has compatible env).
+- 02_mnl_estimation.ipynb can't start until CSVs are regenerated with correct income/ownership distributions.
