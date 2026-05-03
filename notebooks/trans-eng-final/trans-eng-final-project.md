@@ -895,15 +895,45 @@ Our ASC spread (−0.30 to +1.20) is narrower than Ilahi's (−4.76 to +0.29). I
 spread is partly an artifact of the SP experimental design (UAM alternatives, congestion
 charging scenarios). Our compressed range is appropriate for a simpler RP-style DGP.
 
-### Parameter recovery (MLE validation)
+### Scale convention and error structure
 
 **18 parameters**: 9 β_time + 1 β_cost + 8 ASCs (KRL ASC fixed to 0 for identification).
 
-The parameter recovery exercise in `02_mnl_estimation.ipynb` uses MLE on synthetic choice
-data generated from the DGP parameters above, with Gumbel-distributed errors. All 18
-parameters must recover within 2 SE. This validates the estimator implementation — it
-does NOT validate the DGP values themselves. Those are validated by the literature sources
-cited in the tables above.
+**σ = 25 normalization —** The Ilahi-anchored β values and ASCs, combined with
+LOS data (time in minutes, cost in Thousand IDR), produce systematic utility
+differences of 5–75 utils at Gumbel scale μ = 1. With σ_Gumbel ≈ 1.28, these
+gaps are functionally deterministic — the highest-V mode receives >99.9% of
+simulated choices, leaving most parameters unidentified.
+
+We divide all V values by 25 before choice generation. This is mathematically
+equivalent to drawing ε ~ Gumbel(0, 25) rather than Gumbel(0, 1). The MNL utility
+scale is not separately identified from the Gumbel variance (Train 2009 §2.5),
+so the estimator recovers parameters at μ = 25 scale. The value of travel time
+VOT = β_time / β_cost × 60,000 is **scale-invariant** — it recovers Ilahi
+Table 11 VOT values regardless of the normalisation.
+
+**Nest correlation —** The DGP error structure is a Nested Logit GEV with 3
+mode-class nests and λ = 0.7 (see NL DGP below). λ = 0.7 represents moderate
+correlation of unobserved comfort/safety attributes within each mode class
+(Train 2009 §4). Choice probabilities are simulated via the exact GEV formula
+(P(m) = P(m ∣ k) · P(k) with P(k) = S_k^λ / Σ S_ℓ^λ) — no correlated Gumbel
+draws needed.
+
+**No random coefficients —** The DGP has no person-level random parameters
+(β is fixed across all persons). The Mixed Logit in 03b will estimate
+flexible σ_β, and the LR test is expected to find only a partial reduction
+of the NL ρ² advantage — consistent with a DGP that has nest correlation
+but no unobserved taste heterogeneity.
+
+### Parameter recovery (MLE validation)
+
+The parameter recovery exercise in `02_mnl_estimation.ipynb` estimates an
+18-parameter MNL on the NL DGP data. Because the DGP has nest correlation
+but the estimator assumes independent Gumbel errors, the MNL estimates
+will be slightly biased (within 2 SE for most parameters). This is
+**intentional** — it demonstrates that the MNL is misspecified when
+nest correlation exists, motivating the NL in `03_nl_estimation.ipynb`.
+All 18 parameters must recover within 2 SE of the scaled true values.
 
 ### NL DGP — 3-nest structure
 
