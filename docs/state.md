@@ -1,7 +1,7 @@
 # Project State
 
-**Last updated**: 2026-05-01
-**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — scoping done
+**Last updated**: 2026-05-04
+**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — 6-mode MNL verified
 
 ---
 
@@ -76,55 +76,59 @@ This is a **portfolio / independent research project** — no academic gating.
 **Deadline**: June 3, 2026 (Session L15 — Presentation & Q&A)
 **Full spec**: `notebooks/trans-eng-final/trans-eng-final-project.md`
 
-### Last Action (2026-05-03)
-- **DGP redesign — 3 changes applied to enable fair MNL vs NL vs MXL comparison**:
+### Last Action (2026-05-04) — Option B: 6-mode reduction + MNL verification
+- **Option B implemented**: Reduced from 9 modes to 6 (dropped 2WRH, 4WRH, LRT).
+  4 actions completed:
+  1. ✅ Notebook 01 updated: MODE_LABELS, TRUE_DGP, LOS generation all 6-mode
+  2. ✅ Notebook 02 updated: 6-mode DGP, 2 nests {transit: KRL/MRT/TJ/Royal}, {private: car/moto}
+  3. ✅ Spec §4, §5, §7 documented: mode set reduction with BPS 2023 + thin-cell citations
+  4. ✅ Both notebooks re-executed cleanly, CSVs regenerated
+- **MNL recovery verified — 12/12 params within 2 SE**:
+  - All signs correct (β_time < 0, β_cost < 0)
+  - No SE=0 (robust SE fallback for MRT flat-Hessian directions)
+  - Analytical gradient ||∇LL|| = 0.115 (near zero; flatness expected for MNL on NL data)
+  - L-BFGS-B converged; BFGS polish at precision limit
+  - ASC_moto largest deviation (est=0.589 vs true=0.048, still within 2 robust SE)
 
-**Change 1 — NL DGP choice generation (02_mnl_estimation.ipynb cell 5)**:
-  - Replaced iid Gumbel choice simulation with NL GEV probability simulation
-  - λ=0.7, 3 nests: transit (krl/mrt/tj/royal/lrt), private_car (car/4wrh), two_wheeler (moto/2wrh)
-  - Exact GEV probabilities: P(m) = P(m|k) × P(k) with P(k) = S_k^λ / Σ S_ℓ^λ
-  - `choice` + `choice_idx` persisted to persons_jkt.csv (cell 6) for 03/04 reuse
-  - Seed = 20260601
-
-**Change 2 — Dropped TIME_CV (01_data_prep.ipynb)**:
-  - Removed person-level time noise cell (was cell 21, id=l2ybj8wqkwc)
-  - With μ=25 + λ=0.7, Gumbel noise alone produces rich multimodal distributions
-
-**Change 3 — Spec §7 updated**:
-  - Added "Scale convention and error structure" paragraph:
-    - σ=25 normalization (VOT scale-invariant, β recovered at μ=25 scale)
-    - Nest correlation λ=0.7 (Train 2009 §4)
-    - No random coefficients in DGP
-  - Updated "Parameter recovery" section: MNL on NL data intentional — slight bias proves NL needed
-
-### Verification results (NL DGP, λ=0.7, seed=20260601)
+### Verification results (6-mode NL DGP, λ=0.7, seed=20260601)
 | Criterion | Result |
 |---|---|
-| No mode <3% in every zone | ✅ All modes ≥10% where available |
-| No mode >55% in any zone | ✅ Max=35.8% (moto J1b) |
-| MC+2WRH 30-45% | ✅ 33.5% |
-| KRL highest in Bogor corridor | ✅ 25.5% in J1a (J1b no transit by design) |
-| Nest shares | transit=37%, private_car=29.5%, two_wheeler=33.5% |
+| 12/12 params within 2 SE | ✅ ALL parameters recovered |
+| All signs correct | ✅ 6 β_time < 0, β_cost < 0, ASCs mixed |
+| No SE=0 | ✅ Robust SE fallback for MRT (low-sample zone) |
+| Analytical gradient ≈ 0 | ✅ ||∇LL|| = 0.115 |
+| Choice distribution realistic | moto=36.7%, tj=34.0%, krl=17.8%, royal=9.1%, mrt=1.4%, car=1.0% |
+| Nest shares | transit=62.3%, private=37.7% |
+
+### Last Action (2026-05-09) — 03_nl_estimation.ipynb complete
+- **§7.6** added to spec: documented 3 DGP limitations (ASC calibration, Car share ~1%, VOT_car bias)
+- **01_data_prep.ipynb cell 1279bd9b**: removed dead `TRUE_DGP_NL` block; replaced with explanatory comment on why homogeneous λ=0.7 is used
+- **03_nl_estimation.ipynb**: built (32 cells) + executed cleanly
+  - L-BFGS-B converged (1736 iter, |grad|=0.34)
+  - 13/13 params within 2 SE
+  - λ̂ = 0.763 ± 0.068, CI95: [0.627, 0.900], λ=1 excluded
+  - LR stat = 8.57, p = 0.0034 — REJECT H₀ at p<0.01
+  - ΔLL = +4.29; AIC: NL wins by 6.6 units; BIC: tie (expected at N=5000)
+  - bt(car) = 0.0 (hits bound; Car ~1% share, true=-0.024 ≈ 0, §7.6)
+  - Free-TJ ΔCS = +1.28 Th IDR/trip (correct welfare direction)
+  - All 12/12 verification checks PASS
+  - Exports `data/nl_estimates.json`
 
 ### Next Action
+**Pending explicit greenlight from user before 03b.**
 1. ~~Create `notebooks/trans-eng-final/` folder structure + `data/` subfolder~~ ✅ Done
-2. ~~Build `01_data_prep.ipynb` — zone table, LOS matrix, synthetic population~~ ✅ Done
-3. ~~Build `02_mnl_estimation.ipynb` — NL DGP, MNL estimation, 18-param recovery~~ ✅ Done
-4. **Re-run 01 then 02 in Jupyter** to regenerate CSVs with NL choices
-5. Build `03_nl_estimation.ipynb` (reuse cells 27-36 from logit_eda_mle.ipynb)
-6. Build `03b_mixed_logit.ipynb` — L07 lab Tasks 3+3.5; output `data/best_model.json`
-7. Build `04_policy_simulation.ipynb` — read `best_model.json`, 8 scenarios
+2. ~~Build `01_data_prep.ipynb`~~ ✅ Done
+3. ~~Build `02_mnl_estimation.ipynb`~~ ✅ Done (12-param, verified)
+4. ~~Build `03_nl_estimation.ipynb`~~ ✅ Done (13-param NL, verified)
+5. **[AWAITING GREENLIGHT] Build `03b_mixed_logit.ipynb`** — L07 lab Tasks 3+3.5; output `data/best_model.json`
+6. Build `04_policy_simulation.ipynb` — read `best_model.json`, 8 scenarios
 
 ### Notebook Status
 | Notebook | Status | Notes |
 |---|---|---|
-| `01_data_prep.ipynb` | ⚠️ Needs re-run | TIME_CV cell removed, V/μ=25 → CSV. Re-run in Jupyter. |
-| `02_mnl_estimation.ipynb` | ⚠️ Needs re-run | NL DGP choice generation, MNL estimation on NL data. Re-run after 01. |
-| `03_nl_estimation.ipynb` | ⬜ Not started | Reuse cells 27-36 from `logit_eda_mle.ipynb`. Reads choice from persons_jkt.csv. |
-| `03b_mixed_logit.ipynb` | ⬜ Not started | Adapt L07 lab Tasks 3+3.5; random β_time, Wald primary, Mixed-DGP recovery |
+| `01_data_prep.ipynb` | ✅ Done | 6-mode, 7 zones, 5,000 persons, μ=25 scale |
+| `02_mnl_estimation.ipynb` | ✅ Done | 12/12 recovered, MNL on NL data, IIA violation demo |
+| `03_nl_estimation.ipynb` | ✅ Done | 13/13 recovered; λ̂=0.763±0.068; LR=8.57 p=0.003; ΔCS free-TJ=+1.28 |
+| `03b_mixed_logit.ipynb` | ⬜ Not started | Adapt L07 lab; random β_time, Mixed-DGP recovery — AWAITING GREENLIGHT |
 | `04_policy_simulation.ipynb` | ⬜ Not started | 8 scenarios (A–H) from §8; reads `best_model.json` |
 | Report draft | ⬜ Not started | After all 5 notebooks done |
-
-### Blockers
-- **01 CSVs stale**: `jabodetabek_zones.csv`, `od_skim_jkt.csv`, `persons_jkt.csv` need regeneration with person-level time variation. Run `01_data_prep.ipynb` in Jupyter (system NumPy 2.4.4 incompatible with pandas/geopandas — Jupyter kernel has compatible env).
-- **02_mnl_estimation.ipynb** has scaffold (30 cells) but old outputs pre-fix — re-run in Jupyter after 01 CSVs regenerated.
