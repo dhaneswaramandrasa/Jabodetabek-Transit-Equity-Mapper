@@ -114,14 +114,26 @@ This is a **portfolio / independent research project** — no academic gating.
   - All 12/12 verification checks PASS
   - Exports `data/nl_estimates.json`
 
+### Last Action (2026-05-11) — 03b_mixed_logit.ipynb complete
+- **spec §7.6.4** added: documented λ̂ upward bias (9%, within 2 SE) + BIC tie explanation
+- **03b_mixed_logit.ipynb**: built (32 cells) + executed cleanly (12/12 checks PASS)
+  - Random β_cost only: β_cost_n = μ_cost + σ_cost·η_n, η ~ N(0,1)
+  - 13 params: 6 β_time + μ_cost + σ_cost + 5 ASC; σ_cost = exp(σ_raw)
+  - R=100 Halton draws (base=2); L-BFGS-B converged (66 iter)
+  - σ̂_cost = 0.0100 ± 0.0331; Wald stat = 0.0908, p = 0.763 → FAIL TO REJECT σ=0
+  - LL_MXL = −5048.79 ≈ LL_MNL = −5048.83 (|ΔLL|=0.03 — MXL adds no signal)
+  - AIC: NL=10115 beats MXL=10123 by 8.5 units; BIC: MXL=10208 >> NL=10200
+  - Mixed-DGP Wald correctly detects σ>0 when σ_TRUE=0.02 (p≈0) ✅
+  - Exports `mxl_estimates.json` and `best_model.json` (selected: NL)
+- **spec §14**: 03b updated to ✅ Done
+
 ### Next Action
-**Pending explicit greenlight from user before 03b.**
-1. ~~Create `notebooks/trans-eng-final/` folder structure + `data/` subfolder~~ ✅ Done
-2. ~~Build `01_data_prep.ipynb`~~ ✅ Done
-3. ~~Build `02_mnl_estimation.ipynb`~~ ✅ Done (12-param, verified)
-4. ~~Build `03_nl_estimation.ipynb`~~ ✅ Done (13-param NL, verified)
-5. **[AWAITING GREENLIGHT] Build `03b_mixed_logit.ipynb`** — L07 lab Tasks 3+3.5; output `data/best_model.json`
-6. Build `04_policy_simulation.ipynb` — read `best_model.json`, 8 scenarios
+**Pending explicit greenlight from user before 04.**
+1. ~~Build `01_data_prep.ipynb`~~ ✅ Done
+2. ~~Build `02_mnl_estimation.ipynb`~~ ✅ Done
+3. ~~Build `03_nl_estimation.ipynb`~~ ✅ Done
+4. ~~Build `03b_mixed_logit.ipynb`~~ ✅ Done
+5. **[AWAITING GREENLIGHT] Build `04_policy_simulation.ipynb`** — 8 scenarios (A–H), reads `best_model.json`
 
 ### Notebook Status
 | Notebook | Status | Notes |
@@ -129,6 +141,6 @@ This is a **portfolio / independent research project** — no academic gating.
 | `01_data_prep.ipynb` | ✅ Done | 6-mode, 7 zones, 5,000 persons, μ=25 scale |
 | `02_mnl_estimation.ipynb` | ✅ Done | 12/12 recovered, MNL on NL data, IIA violation demo |
 | `03_nl_estimation.ipynb` | ✅ Done | 13/13 recovered; λ̂=0.763±0.068; LR=8.57 p=0.003; ΔCS free-TJ=+1.28 |
-| `03b_mixed_logit.ipynb` | ⬜ Not started | Adapt L07 lab; random β_time, Mixed-DGP recovery — AWAITING GREENLIGHT |
-| `04_policy_simulation.ipynb` | ⬜ Not started | 8 scenarios (A–H) from §8; reads `best_model.json` |
+| `03b_mixed_logit.ipynb` | ✅ Done | σ̂=0.010 (p_Wald=0.763); NL wins AIC+8.5; best_model=NL |
+| `04_policy_simulation.ipynb` | ⬜ Not started | 8 scenarios (A–H) from §8; reads `best_model.json` — AWAITING GREENLIGHT |
 | Report draft | ⬜ Not started | After all 5 notebooks done |

@@ -990,6 +990,17 @@ cause: small-sample identification — only 51 of 5,000 persons chose Car, so
 an identification artifact, not an estimator failure; SE_β_time_car (0.283) is
 correspondingly large.
 
+**(4) Mild upward bias in λ̂.** NL recovers λ̂ = 0.763 ± 0.068 against the true
+DGP value λ = 0.700. This is a 9% upward bias, comfortably within 2 SE
+(|0.063| < 2 × 0.068 = 0.136), and the 95% CI excludes 1.0 — confirming
+nest correlation is statistically present. The bias is consistent with
+finite-sample identification of λ from a single nest with rich within-nest
+substitution (transit: krl 17.8%, tj 34%, royal 9.1%, mrt 1.4%) while the
+private nest contributes weakly (car 1%, moto 36.7%). At N=5,000, BIC tied
+between MNL and NL because the BIC penalty for one parameter (log(5000) ≈ 8.52)
+is approximately equal to twice the ΔLL (≈ 8.57). AIC, which penalises
+parameters less, selects NL by 6.6 units.
+
 **Implications for §8 welfare scenarios.** Policy scenarios that target the
 private-vehicle nest (e.g., toll increases) will produce ΔCS estimates with large
 uncertainty for the Car mode. Scenarios targeting transit (free TJ, new lines)
@@ -1405,7 +1416,7 @@ sample with income segments per §4.
 | `01_data_prep.ipynb` | ✅ Done | 26 cells; data-driven from kelurahan scores + GTFS + transit stops; exports zones.csv, od_skim_jkt.csv, persons_jkt.csv |
 | `02_mnl_estimation.ipynb` | ✅ Done | 12/12 params recovered, MNL on NL DGP data, IIA violation demo, VOT table; exports `mnl_estimates.json` |
 | `03_nl_estimation.ipynb` | ✅ Done | 13/13 params recovered; λ̂=0.763±0.068; LR=8.57 (p=0.003); NL AIC wins; BIC tie expected at N=5000; ΔCS free-TJ=+1.28 Th IDR; exports `nl_estimates.json` |
-| `03b_mixed_logit.ipynb` | ⬜ Not started | Reuse cells from `notebooks/trans-eng-lectures/L07/L07_estimation_lab.ipynb` Tasks 3 + 3.5 (random β_time, `mixed_nll`, `halton`, `hess_se`). Adapt for 6-mode + zone availability. Output: MXL on MNL data + MXL on Mixed-DGP recovery; Wald test as primary diagnostic; recommendation row for which model carries forward |
+| `03b_mixed_logit.ipynb` | ✅ Done | 12/12 checks pass; σ̂_cost=0.010 (p_Wald=0.763, fail to reject σ=0); NL wins AIC by 8.5 units; Mixed-DGP Wald detects σ>0 (p≈0); best_model=NL; exports `mxl_estimates.json`, `best_model.json` |
 | `04_policy_simulation.ipynb` | ⬜ Not started | Reuse cells 43–54 from `notebooks/logit_eda_mle.ipynb`. Read `best_model.json` from 03b → route to NL or MXL logsum. Run the 8 scenarios in §8 (A–H). Output: ΔCS heatmap by zone × income segment, mode share shift charts, scenario comparison matrix |
 | `05_car_ue_assignment.ipynb` | ⏸ On hold | Extension D (§11) — unlock after L08 lecture (~2026-05-10); only if core notebooks 01–04 are stable |
 | Report draft | ⬜ Not started | Begin after `04_policy_simulation.ipynb` produces results; structure per §10 |
