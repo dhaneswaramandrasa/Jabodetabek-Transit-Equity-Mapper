@@ -1,7 +1,7 @@
 # Project State
 
-**Last updated**: 2026-05-04
-**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — 6-mode MNL verified
+**Last updated**: 2026-05-14
+**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — 04 policy simulation bugfixes done
 
 ---
 
@@ -76,29 +76,16 @@ This is a **portfolio / independent research project** — no academic gating.
 **Deadline**: June 3, 2026 (Session L15 — Presentation & Q&A)
 **Full spec**: `notebooks/trans-eng-final/trans-eng-final-project.md`
 
-### Last Action (2026-05-04) — Option B: 6-mode reduction + MNL verification
-- **Option B implemented**: Reduced from 9 modes to 6 (dropped 2WRH, 4WRH, LRT).
-  4 actions completed:
-  1. ✅ Notebook 01 updated: MODE_LABELS, TRUE_DGP, LOS generation all 6-mode
-  2. ✅ Notebook 02 updated: 6-mode DGP, 2 nests {transit: KRL/MRT/TJ/Royal}, {private: car/moto}
-  3. ✅ Spec §4, §5, §7 documented: mode set reduction with BPS 2023 + thin-cell citations
-  4. ✅ Both notebooks re-executed cleanly, CSVs regenerated
-- **MNL recovery verified — 12/12 params within 2 SE**:
-  - All signs correct (β_time < 0, β_cost < 0)
-  - No SE=0 (robust SE fallback for MRT flat-Hessian directions)
-  - Analytical gradient ||∇LL|| = 0.115 (near zero; flatness expected for MNL on NL data)
-  - L-BFGS-B converged; BFGS polish at precision limit
-  - ASC_moto largest deviation (est=0.589 vs true=0.048, still within 2 robust SE)
-
-### Verification results (6-mode NL DGP, λ=0.7, seed=20260601)
-| Criterion | Result |
-|---|---|
-| 12/12 params within 2 SE | ✅ ALL parameters recovered |
-| All signs correct | ✅ 6 β_time < 0, β_cost < 0, ASCs mixed |
-| No SE=0 | ✅ Robust SE fallback for MRT (low-sample zone) |
-| Analytical gradient ≈ 0 | ✅ ||∇LL|| = 0.115 |
-| Choice distribution realistic | moto=36.7%, tj=34.0%, krl=17.8%, royal=9.1%, mrt=1.4%, car=1.0% |
-| Nest shares | transit=62.3%, private=37.7% |
+### Last Action (2026-05-14) — 04 bugfix: NL P(m) mode shares + truncated-Normal bootstrap CIs
+- **Bug 1 fixed**: Replaced argmax(V) mode classification with NL P(m) probabilistic shares in cells 8, 10, 15, 17, 19, 31, 36. Added compute_P_m() helper.
+  - Baseline shares now match 02-realized (moto 36.7%, tj 34%, krl 17.8%, royal 9.1%, mrt 1.4%, car 1.0%) — sum = 1.000000
+  - 33/33 verification checks pass
+- **Bug 2 fixed**: Truncated bootstrap β_cost draws to upper bound = -0.3·|β̂_cost| to prevent EMU/|β_cost| divergence near β_cost=0
+  - Sc A: 90% CI [+0.00, +0.61] | B: [-36.69, -0.00] | D: [+0.00, +15.81] — all bracket point estimates
+- **Spec updated**: §7.6.6 documents truncation rationale; §14 status updated
+- **Build script synced**: build_04.py updated to match notebook edits; docstrings fixed (''' not \""" in raw strings)
+- **ΔCS values unchanged**: compute_logsum_CS untouched — welfare numbers identical to previous output
+- **Next**: Report draft — do NOT start without explicit greenlight
 
 ### Last Action (2026-05-09) — 03_nl_estimation.ipynb complete
 - **§7.6** added to spec: documented 3 DGP limitations (ASC calibration, Car share ~1%, VOT_car bias)

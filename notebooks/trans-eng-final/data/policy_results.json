@@ -1,0 +1,405 @@
+{
+  "model": "NL",
+  "lambda_hat": 0.7632773608053806,
+  "beta_cost": -0.07730185424797524,
+  "gumbel_scale": 25.0,
+  "working_days": 250,
+  "baseline": {
+    "cs_mean_th_idr": -53.65282675776919,
+    "cs_p10": -115.30351334727594,
+    "cs_p90": -9.476040900782777
+  },
+  "scenarios": {
+    "A": {
+      "label": "A: KRL\u2192J3b",
+      "desc": "Add KRL to J3b (Gading Serpong/Karawaci): T=70 min, C=7.5k IDR",
+      "equity_dir": "pro-equity",
+      "mean_dCS_th_idr": 0.0014140957903136496,
+      "annual_aggregate_bn_idr": 2.2234210539522796,
+      "n_winners": 318,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 0.0014,
+        "low": 0.0015,
+        "mid": 0.0013
+      },
+      "dCS_by_zone": {
+        "J1a": 0.0,
+        "J1b": 0.0,
+        "J2": 0.0,
+        "J3a": 0.0,
+        "J3b": 0.0222,
+        "J4": 0.0,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.1782,
+        "tj": 0.3394,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_delta": {
+        "car": 0.0,
+        "moto": 0.0,
+        "krl": 0.0002,
+        "tj": -0.0001,
+        "royal": 0.0,
+        "mrt": 0.0
+      },
+      "bootstrap_90ci": {
+        "mean": 0.1361,
+        "p5": 0.0,
+        "p95": 0.609
+      }
+    },
+    "B": {
+      "label": "B: Toll +40k",
+      "desc": "Inner-Jakarta toll +40k IDR for car users in all origin zones",
+      "equity_dir": "regressive",
+      "mean_dCS_th_idr": -0.09994917338179136,
+      "annual_aggregate_bn_idr": -168.02071769160918,
+      "n_winners": 0,
+      "n_losers": 5000,
+      "dCS_by_income": {
+        "high": -0.0989,
+        "low": -0.0981,
+        "mid": -0.1016
+      },
+      "dCS_by_zone": {
+        "J1a": -0.0387,
+        "J1b": -0.1495,
+        "J2": -0.0842,
+        "J3a": -0.1375,
+        "J3b": -0.0487,
+        "J4": -0.0622,
+        "J5": -0.265
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0002,
+        "moto": 0.3721,
+        "krl": 0.1793,
+        "tj": 0.342,
+        "royal": 0.0919,
+        "mrt": 0.0145
+      },
+      "mode_share_delta": {
+        "car": -0.01,
+        "moto": 0.0055,
+        "krl": 0.0013,
+        "tj": 0.0025,
+        "royal": 0.0005,
+        "mrt": 0.0003
+      },
+      "bootstrap_90ci": {
+        "mean": -7.1141,
+        "p5": -36.6891,
+        "p95": -0.0
+      }
+    },
+    "C": {
+      "label": "C: KRL freq \u221220%",
+      "desc": "KRL wait+IVT \u221220% in J1a/J2/J3a/J4; J1b/J3b unchanged",
+      "equity_dir": "mixed",
+      "mean_dCS_th_idr": 3.764879864203734,
+      "annual_aggregate_bn_idr": 6580.376312295686,
+      "n_winners": 3580,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 3.9668,
+        "low": 3.7656,
+        "mid": 3.696
+      },
+      "dCS_by_zone": {
+        "J1a": 15.7918,
+        "J1b": 0.0,
+        "J2": 1.8791,
+        "J3a": 6.9222,
+        "J3b": 0.0,
+        "J4": 2.4638,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0089,
+        "moto": 0.2884,
+        "krl": 0.3271,
+        "tj": 0.2886,
+        "royal": 0.0727,
+        "mrt": 0.0142
+      },
+      "mode_share_delta": {
+        "car": -0.0013,
+        "moto": -0.0782,
+        "krl": 0.1491,
+        "tj": -0.0509,
+        "royal": -0.0187,
+        "mrt": 0.0
+      }
+    },
+    "D": {
+      "label": "D: TJ\u2192J1b",
+      "desc": "Add TJ to J1b (Parung/Leuwiliyang): T=90 min, C=3.5k IDR",
+      "equity_dir": "strongly pro-equity",
+      "mean_dCS_th_idr": 3.2919887956602,
+      "annual_aggregate_bn_idr": 5685.645588359587,
+      "n_winners": 579,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 3.0279,
+        "low": 3.3757,
+        "mid": 3.3257
+      },
+      "dCS_by_zone": {
+        "J1a": 0.0,
+        "J1b": 28.4282,
+        "J2": 0.0,
+        "J3a": 0.0,
+        "J3b": 0.0,
+        "J4": 0.0,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0086,
+        "moto": 0.2652,
+        "krl": 0.178,
+        "tj": 0.4425,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_delta": {
+        "car": -0.0016,
+        "moto": -0.1014,
+        "krl": 0.0,
+        "tj": 0.103,
+        "royal": 0.0,
+        "mrt": 0.0
+      },
+      "bootstrap_90ci": {
+        "mean": 4.1552,
+        "p5": 0.0008,
+        "p95": 15.8144
+      }
+    },
+    "E": {
+      "label": "E: MRT\u2192J3a",
+      "desc": "Add MRT to J3a (BSD Serpong): T=60 min, C=12.0k IDR",
+      "equity_dir": "mildly pro-equity",
+      "mean_dCS_th_idr": 0.0020831931957045525,
+      "annual_aggregate_bn_idr": 3.390613925300378,
+      "n_winners": 192,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 0.0022,
+        "low": 0.0019,
+        "mid": 0.0022
+      },
+      "dCS_by_zone": {
+        "J1a": 0.0,
+        "J1b": 0.0,
+        "J2": 0.0,
+        "J3a": 0.0542,
+        "J3b": 0.0,
+        "J4": 0.0,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0102,
+        "moto": 0.3665,
+        "krl": 0.1779,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0144
+      },
+      "mode_share_delta": {
+        "car": 0.0,
+        "moto": -0.0001,
+        "krl": -0.0001,
+        "tj": 0.0,
+        "royal": 0.0,
+        "mrt": 0.0002
+      }
+    },
+    "F": {
+      "label": "F: TJ BSD\u2192CBD direct",
+      "desc": "TJ direct to CBD: J3b T=80min/C=3.5k; J3a adds TJ T=80min/C=3.5k",
+      "equity_dir": "strongly pro-equity",
+      "mean_dCS_th_idr": 0.5292049961648317,
+      "annual_aggregate_bn_idr": 852.5984488338773,
+      "n_winners": 510,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 0.5562,
+        "low": 0.5044,
+        "mid": 0.5366
+      },
+      "dCS_by_zone": {
+        "J1a": 0.0,
+        "J1b": 0.0,
+        "J2": 0.0,
+        "J3a": 9.6649,
+        "J3b": 2.4854,
+        "J4": 0.0,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0099,
+        "moto": 0.3547,
+        "krl": 0.1666,
+        "tj": 0.3651,
+        "royal": 0.0896,
+        "mrt": 0.0142
+      },
+      "mode_share_delta": {
+        "car": -0.0003,
+        "moto": -0.0119,
+        "krl": -0.0114,
+        "tj": 0.0256,
+        "royal": -0.0018,
+        "mrt": 0.0
+      }
+    },
+    "G": {
+      "label": "G: RoyalTrans freq",
+      "desc": "RoyalTrans wait \u221215 min (20\u21925 min) in J2/J3a/J3b/J4",
+      "equity_dir": "regressive",
+      "mean_dCS_th_idr": 1.2567659865716108,
+      "annual_aggregate_bn_idr": 2093.2162423313903,
+      "n_winners": 3132,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 1.2563,
+        "low": 1.2552,
+        "mid": 1.258
+      },
+      "dCS_by_zone": {
+        "J1a": 0.0,
+        "J1b": 0.0,
+        "J2": 2.3487,
+        "J3a": 0.8796,
+        "J3b": 0.2512,
+        "J4": 2.196,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0095,
+        "moto": 0.3468,
+        "krl": 0.1625,
+        "tj": 0.282,
+        "royal": 0.185,
+        "mrt": 0.0142
+      },
+      "mode_share_delta": {
+        "car": -0.0007,
+        "moto": -0.0198,
+        "krl": -0.0155,
+        "tj": -0.0575,
+        "royal": 0.0936,
+        "mrt": 0.0
+      }
+    },
+    "H": {
+      "label": "H: RoyalTrans fare \u221250%",
+      "desc": "RoyalTrans fares halved in J2/J3a/J3b/J4",
+      "equity_dir": "pro-equity",
+      "mean_dCS_th_idr": 1.9853173211180706,
+      "annual_aggregate_bn_idr": 3303.366976297021,
+      "n_winners": 3132,
+      "n_losers": 0,
+      "dCS_by_income": {
+        "high": 1.9836,
+        "low": 1.984,
+        "mid": 1.9868
+      },
+      "dCS_by_zone": {
+        "J1a": 0.0,
+        "J1b": 0.0,
+        "J2": 3.4955,
+        "J3a": 2.5676,
+        "J3b": 0.853,
+        "J4": 3.492,
+        "J5": 0.0
+      },
+      "mode_share_base": {
+        "car": 0.0102,
+        "moto": 0.3666,
+        "krl": 0.178,
+        "tj": 0.3395,
+        "royal": 0.0914,
+        "mrt": 0.0142
+      },
+      "mode_share_policy": {
+        "car": 0.0091,
+        "moto": 0.3359,
+        "krl": 0.1538,
+        "tj": 0.255,
+        "royal": 0.2319,
+        "mrt": 0.0142
+      },
+      "mode_share_delta": {
+        "car": -0.0011,
+        "moto": -0.0307,
+        "krl": -0.0242,
+        "tj": -0.0845,
+        "royal": 0.1405,
+        "mrt": 0.0
+      }
+    }
+  }
+}

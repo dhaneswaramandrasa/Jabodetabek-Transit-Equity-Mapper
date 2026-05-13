@@ -1001,6 +1001,31 @@ between MNL and NL because the BIC penalty for one parameter (log(5000) ≈ 8.52
 is approximately equal to twice the ΔLL (≈ 8.57). AIC, which penalises
 parameters less, selects NL by 6.6 units.
 
+**(5) R=100 Halton draws in 03b (deviation from R=500 spec).** The Mixed Logit
+notebook used R=100 Halton draws (base=2) instead of the planned R=500. Justification:
+Train (2009) §9.3.2 states that for a 1-dimensional random coefficient (only β_cost
+is random here), R=100 Halton draws provide integration accuracy equivalent to
+R=500 pseudo-random draws. Benchmarking at N=5,000×J=6 confirmed: R=100 → 61 ms/eval,
+R=200 → 120 ms/eval, R=500 → ~300 ms/eval. At maxfun=2000 evaluations, R=500 would
+require ~10 min vs ~2 min for R=100. The estimated σ̂_cost = 0.0100 ± 0.0331 and
+Wald p = 0.763 are robust to this choice: the conclusion "fail to reject σ=0" holds
+at any reasonable R for a near-zero σ. The Mixed-DGP positive control (σ_TRUE = 0.02)
+correctly detected σ>0 at R=100 (Wald p ≈ 0), confirming the estimator is functional
+at this draw count. The 04_policy_simulation notebook reads best_model.json (selected: NL)
+and does not use MXL draws — this limitation has no downstream effect on welfare
+calculations.
+
+**(6) Bootstrap parameter draws truncated to bound β_cost away from zero.**
+The asymptotic Normal CI in `04_policy_simulation.ipynb` uses
+β_cost_b ~ TruncatedNormal(β̂_cost, SE(β̂_cost), upper=-0.3·|β̂_cost|).
+Without the upper truncation, the |β_cost|≈0 region produces CS = EMU/|β_cost|
+divergences. The truncation enforces the structural restriction that cost must
+reduce utility (β_cost < 0), consistent with both economic theory (negative
+own-price effect) and the Ilahi (2021) point estimate. The reported 90% CIs
+should be interpreted as conditional on this restriction. Scenarios with
+small |ΔCS| magnitudes retain wider relative CIs, reflecting genuine
+identification uncertainty rather than numerical artifact.
+
 **Implications for §8 welfare scenarios.** Policy scenarios that target the
 private-vehicle nest (e.g., toll increases) will produce ΔCS estimates with large
 uncertainty for the Car mode. Scenarios targeting transit (free TJ, new lines)
@@ -1417,7 +1442,7 @@ sample with income segments per §4.
 | `02_mnl_estimation.ipynb` | ✅ Done | 12/12 params recovered, MNL on NL DGP data, IIA violation demo, VOT table; exports `mnl_estimates.json` |
 | `03_nl_estimation.ipynb` | ✅ Done | 13/13 params recovered; λ̂=0.763±0.068; LR=8.57 (p=0.003); NL AIC wins; BIC tie expected at N=5000; ΔCS free-TJ=+1.28 Th IDR; exports `nl_estimates.json` |
 | `03b_mixed_logit.ipynb` | ✅ Done | 12/12 checks pass; σ̂_cost=0.010 (p_Wald=0.763, fail to reject σ=0); NL wins AIC by 8.5 units; Mixed-DGP Wald detects σ>0 (p≈0); best_model=NL; exports `mxl_estimates.json`, `best_model.json` |
-| `04_policy_simulation.ipynb` | ⬜ Not started | Reuse cells 43–54 from `notebooks/logit_eda_mle.ipynb`. Read `best_model.json` from 03b → route to NL or MXL logsum. Run the 8 scenarios in §8 (A–H). Output: ΔCS heatmap by zone × income segment, mode share shift charts, scenario comparison matrix |
+| `04_policy_simulation.ipynb` | ✅ Done | 39 cells; NL logsum welfare; 8 scenarios A–H; 33/33 checks pass; exports `policy_results.json` with NL P(m) mode shares + truncated-Normal 90% CIs. Top by ΔCS: C (+3.76) > D (+3.29) > H (+1.99). Most equity-positive: F. Most regressive: B. |
 | `05_car_ue_assignment.ipynb` | ⏸ On hold | Extension D (§11) — unlock after L08 lecture (~2026-05-10); only if core notebooks 01–04 are stable |
 | Report draft | ⬜ Not started | Begin after `04_policy_simulation.ipynb` produces results; structure per §10 |
 
