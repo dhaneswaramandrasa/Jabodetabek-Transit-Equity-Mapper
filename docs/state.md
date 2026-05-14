@@ -1,7 +1,7 @@
 # Project State
 
 **Last updated**: 2026-05-14
-**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — 04 policy simulation bugfixes done
+**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — report drafted, awaiting review
 
 ---
 
@@ -85,7 +85,14 @@ This is a **portfolio / independent research project** — no academic gating.
 - **Spec updated**: §7.6.6 documents truncation rationale; §14 status updated
 - **Build script synced**: build_04.py updated to match notebook edits; docstrings fixed (''' not \""" in raw strings)
 - **ΔCS values unchanged**: compute_logsum_CS untouched — welfare numbers identical to previous output
-- **Next**: Report draft — do NOT start without explicit greenlight
+- **Report expanded (2026-05-14)**: `notebooks/trans-eng-final/report/report.md` — 8,252 words, 9 sections, all numbers cross-verified against notebook outputs
+  - §4.2: Added IIA cross-elasticity demo (within-nest/cross-nest ratio 1.67×), parameter recovery details, red-bus/blue-bus test
+  - §4.3: Added Halton draws explanation (R=100, base=2, η mean=−0.04 std=0.97, 100 Halton ≈ 500 pseudo-random)
+  - §4.4: Added three-model Goodness-of-Fit Summary (Table 3)
+  - Table numbering fixed (Table 3→4, 4→5 downstream)
+  - **stop-slop 36/50** (Directness 8, Rhythm 7, Trust 7, Authenticity 7, Density 7 — all dims ≥7, passes ≥35 gate)
+  - All numbers verified: cross-elasticity ratios, Halton stats, goodness-of-fit values match notebook outputs exactly
+- **Next**: User review of report; Q&A prep (slides), final submission by June 3
 
 ### Last Action (2026-05-09) — 03_nl_estimation.ipynb complete
 - **§7.6** added to spec: documented 3 DGP limitations (ASC calibration, Car share ~1%, VOT_car bias)
@@ -115,12 +122,13 @@ This is a **portfolio / independent research project** — no academic gating.
 - **spec §14**: 03b updated to ✅ Done
 
 ### Next Action
-**Pending explicit greenlight from user before 04.**
 1. ~~Build `01_data_prep.ipynb`~~ ✅ Done
 2. ~~Build `02_mnl_estimation.ipynb`~~ ✅ Done
 3. ~~Build `03_nl_estimation.ipynb`~~ ✅ Done
 4. ~~Build `03b_mixed_logit.ipynb`~~ ✅ Done
-5. **[AWAITING GREENLIGHT] Build `04_policy_simulation.ipynb`** — 8 scenarios (A–H), reads `best_model.json`
+5. ~~Build `04_policy_simulation.ipynb`~~ ✅ Done
+6. ~~Draft final report~~ ✅ Done
+7. **User review of report** — then Q&A prep (slides), final submission
 
 ### Notebook Status
 | Notebook | Status | Notes |
@@ -129,5 +137,5 @@ This is a **portfolio / independent research project** — no academic gating.
 | `02_mnl_estimation.ipynb` | ✅ Done | 12/12 recovered, MNL on NL data, IIA violation demo |
 | `03_nl_estimation.ipynb` | ✅ Done | 13/13 recovered; λ̂=0.763±0.068; LR=8.57 p=0.003; ΔCS free-TJ=+1.28 |
 | `03b_mixed_logit.ipynb` | ✅ Done | σ̂=0.010 (p_Wald=0.763); NL wins AIC+8.5; best_model=NL |
-| `04_policy_simulation.ipynb` | ⬜ Not started | 8 scenarios (A–H) from §8; reads `best_model.json` — AWAITING GREENLIGHT |
-| Report draft | ⬜ Not started | After all 5 notebooks done |
+| `04_policy_simulation.ipynb` | ✅ Done | 33/33 checks pass; exports policy_results.json with NL P(m) mode shares + truncated-Normal 90% CIs |
+| Report draft | ✅ Done | 8,252 words; stop-slop 36/50; path: `notebooks/trans-eng-final/report/report.md` |
