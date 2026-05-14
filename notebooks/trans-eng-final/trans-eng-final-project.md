@@ -1444,7 +1444,8 @@ sample with income segments per §4.
 | `03b_mixed_logit.ipynb` | ✅ Done | 12/12 checks pass; σ̂_cost=0.010 (p_Wald=0.763, fail to reject σ=0); NL wins AIC by 8.5 units; Mixed-DGP Wald detects σ>0 (p≈0); best_model=NL; exports `mxl_estimates.json`, `best_model.json` |
 | `04_policy_simulation.ipynb` | ✅ Done | 39 cells; NL logsum welfare; 8 scenarios A–H; 33/33 checks pass; exports `policy_results.json` with NL P(m) mode shares + truncated-Normal 90% CIs. Top by ΔCS: C (+3.76) > D (+3.29) > H (+1.99). Most equity-positive: F. Most regressive: B. |
 | `05_car_ue_assignment.ipynb` | ⏸ On hold | Extension D (§11) — unlock after L08 lecture (~2026-05-10); only if core notebooks 01–04 are stable |
-| Report draft | ⬜ Not started | Begin after `04_policy_simulation.ipynb` produces results; structure per §10 |
+| Report draft | ✅ Done | 8,252 words, 9 sections; stop-slop 36/50; path: `report/report.md` |
+| Presentation slides | ✅ Done | 15 slides (12 main + 3 backup), Marp gaia; path: `report/slides.md` + `report/slides.pdf` |
 
 ---
 

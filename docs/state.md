@@ -93,6 +93,9 @@ This is a **portfolio / independent research project** — no academic gating.
   - **stop-slop 36/50** (Directness 8, Rhythm 7, Trust 7, Authenticity 7, Density 7 — all dims ≥7, passes ≥35 gate)
   - All numbers verified: cross-elasticity ratios, Halton stats, goodness-of-fit values match notebook outputs exactly
 - **Next**: User review of report; Q&A prep (slides), final submission by June 3
+- **Slides drafted (2026-05-14)**: `notebooks/trans-eng-final/report/slides.md` + `slides.pdf` — 15 slides (12 main + 3 backup), Marp gaia theme, 1,275 words
+  - Embedded figures: fig04_scenario_comparison.png, fig04_dcs_heatmap.png
+  - Backup slides cover: Gumbel scale σ=25, ride-hailing/LRT exclusion, Car share ~1%
 
 ### Last Action (2026-05-09) — 03_nl_estimation.ipynb complete
 - **§7.6** added to spec: documented 3 DGP limitations (ASC calibration, Car share ~1%, VOT_car bias)
@@ -139,3 +142,4 @@ This is a **portfolio / independent research project** — no academic gating.
 | `03b_mixed_logit.ipynb` | ✅ Done | σ̂=0.010 (p_Wald=0.763); NL wins AIC+8.5; best_model=NL |
 | `04_policy_simulation.ipynb` | ✅ Done | 33/33 checks pass; exports policy_results.json with NL P(m) mode shares + truncated-Normal 90% CIs |
 | Report draft | ✅ Done | 8,252 words; stop-slop 36/50; path: `notebooks/trans-eng-final/report/report.md` |
+| Presentation slides | ✅ Done | 15 slides (12 main + 3 backup), Marp, 1,275 words; path: `notebooks/trans-eng-final/report/slides.md` + `.pdf` |
