@@ -1,0 +1,8 @@
+zone_id,zone_name,corridor,population,avg_income_k,poverty_pct,distance_cbd_km,gc_car_idr,gc_motorcycle_idr,n_transit_stops,mean_headway_min,mode_diversity,q4_pct,character,pop_share,avail_car,avail_moto,avail_4wrh,avail_2wrh,avail_krl,avail_tj,avail_royal,avail_lrt,avail_mrt
+J1a,Kota Bogor,Bogor,1100000,3500,8.8,43.9,176135.0,86186.0,1,118.3,0.0,16.0,Mid-income KRL corridor; moderate car ownership; established transit,16.3,1,1,1,1,1,0,0,0,0
+J1b,Kab. Bogor Outer (Parung/Leuwiliyang),Bogor,800000,2800,6.6,30.6,131860.0,66550.0,0,120.0,0.0,32.0,Low-income outer; zero transit; motorcycle-dominant Q4 desert,11.9,1,1,1,1,0,0,0,0,0
+J2,Kota Bekasi,Bekasi,2400000,4200,5.7,19.5,91526.0,45342.0,59,98.3,0.2,12.0,Mixed-income; most transit-rich (KRL+TJ+Royal+LRT); high mode diversity,35.6,1,1,1,1,1,1,1,1,0
+J3a,BSD Serpong,Tangerang,250000,9000,6.0,23.5,105493.0,53420.0,6,103.4,0.2,9.0,High-income planned suburb; KRL+RoyalTrans; low poverty,3.7,1,1,1,1,1,0,1,0,0
+J3b,Gading Serpong / Karawaci,Tangerang,400000,7500,6.2,26.1,114472.0,58274.0,0,120.0,0.0,14.0,Upper-mid mixed-use; limited transit (TJ to Grogol only),5.9,1,1,1,1,0,1,1,0,0
+J4,Kota Depok,Depok,1100000,3800,5.3,21.6,98613.0,49386.0,134,99.7,0.2,4.0,Mid-income; KRL+TJ+RoyalTrans; strong transit competitiveness,16.3,1,1,1,1,1,1,1,0,0
+J5,South Jakarta,Inner,700000,8000,4.0,8.7,52755.0,23097.0,623,12.5,1.1,0.0,High-income inner-city; MRT access; shortest CBD distance; Q1 dominant,10.4,1,1,1,1,1,1,0,0,1

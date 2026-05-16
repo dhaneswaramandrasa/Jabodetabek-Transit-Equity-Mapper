@@ -1,14 +1,14 @@
 # Project State
 
-**Last updated**: 2026-04-28
-**Active focus**: L06 notebook extension DONE — Claude Design + remaining UX improvements next
-**Branch**: `ui/stitch-redesign`
+**Last updated**: 2026-05-14
+**Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — report drafted, awaiting review
 
 ---
 
-## Current Focus
+## Track 1: Main Research Project
 
 **Phase**: E7 (UI Foundation) — UX P1 issues resolved, L06 discrete choice extensions complete.
+**Branch**: `ui/stitch-redesign`
 This is a **portfolio / independent research project** — no academic gating.
 
 ## Last Session Summary (2026-04-28)
@@ -67,3 +67,79 @@ This is a **portfolio / independent research project** — no academic gating.
 - H3 routing coverage 11.2% — methodologically valid (reflects true transit coverage gaps) but should be noted in Results limitations
 - Methods section is ~5,450 words (above target). MVP-88 will flag for human decision.
 - MVP-89 convergence decisions resolved 2026-03-25. Introduction + Discussion v0.1 ready for MVP-12.
+
+---
+
+## Track 2: Trans-Eng Final Project (Hiroshima University AY2026)
+
+**Branch**: `trans-eng/final-project-jabodetabek`
+**Deadline**: June 3, 2026 (Session L15 — Presentation & Q&A)
+**Full spec**: `notebooks/trans-eng-final/trans-eng-final-project.md`
+
+### Last Action (2026-05-14) — 04 bugfix: NL P(m) mode shares + truncated-Normal bootstrap CIs
+- **Bug 1 fixed**: Replaced argmax(V) mode classification with NL P(m) probabilistic shares in cells 8, 10, 15, 17, 19, 31, 36. Added compute_P_m() helper.
+  - Baseline shares now match 02-realized (moto 36.7%, tj 34%, krl 17.8%, royal 9.1%, mrt 1.4%, car 1.0%) — sum = 1.000000
+  - 33/33 verification checks pass
+- **Bug 2 fixed**: Truncated bootstrap β_cost draws to upper bound = -0.3·|β̂_cost| to prevent EMU/|β_cost| divergence near β_cost=0
+  - Sc A: 90% CI [+0.00, +0.61] | B: [-36.69, -0.00] | D: [+0.00, +15.81] — all bracket point estimates
+- **Spec updated**: §7.6.6 documents truncation rationale; §14 status updated
+- **Build script synced**: build_04.py updated to match notebook edits; docstrings fixed (''' not \""" in raw strings)
+- **ΔCS values unchanged**: compute_logsum_CS untouched — welfare numbers identical to previous output
+- **Report expanded (2026-05-14)**: `notebooks/trans-eng-final/report/report.md` — 8,252 words, 9 sections, all numbers cross-verified against notebook outputs
+  - §4.2: Added IIA cross-elasticity demo (within-nest/cross-nest ratio 1.67×), parameter recovery details, red-bus/blue-bus test
+  - §4.3: Added Halton draws explanation (R=100, base=2, η mean=−0.04 std=0.97, 100 Halton ≈ 500 pseudo-random)
+  - §4.4: Added three-model Goodness-of-Fit Summary (Table 3)
+  - Table numbering fixed (Table 3→4, 4→5 downstream)
+  - **stop-slop 36/50** (Directness 8, Rhythm 7, Trust 7, Authenticity 7, Density 7 — all dims ≥7, passes ≥35 gate)
+  - All numbers verified: cross-elasticity ratios, Halton stats, goodness-of-fit values match notebook outputs exactly
+- **Next**: User review of report; Q&A prep (slides), final submission by June 3
+- **Slides drafted (2026-05-14)**: `notebooks/trans-eng-final/report/slides.md` + `slides.pdf` — 15 slides (12 main + 3 backup), Marp gaia theme, 1,275 words
+  - Embedded figures: fig04_scenario_comparison.png, fig04_dcs_heatmap.png
+  - Backup slides cover: Gumbel scale σ=25, ride-hailing/LRT exclusion, Car share ~1%
+
+### Last Action (2026-05-09) — 03_nl_estimation.ipynb complete
+- **§7.6** added to spec: documented 3 DGP limitations (ASC calibration, Car share ~1%, VOT_car bias)
+- **01_data_prep.ipynb cell 1279bd9b**: removed dead `TRUE_DGP_NL` block; replaced with explanatory comment on why homogeneous λ=0.7 is used
+- **03_nl_estimation.ipynb**: built (32 cells) + executed cleanly
+  - L-BFGS-B converged (1736 iter, |grad|=0.34)
+  - 13/13 params within 2 SE
+  - λ̂ = 0.763 ± 0.068, CI95: [0.627, 0.900], λ=1 excluded
+  - LR stat = 8.57, p = 0.0034 — REJECT H₀ at p<0.01
+  - ΔLL = +4.29; AIC: NL wins by 6.6 units; BIC: tie (expected at N=5000)
+  - bt(car) = 0.0 (hits bound; Car ~1% share, true=-0.024 ≈ 0, §7.6)
+  - Free-TJ ΔCS = +1.28 Th IDR/trip (correct welfare direction)
+  - All 12/12 verification checks PASS
+  - Exports `data/nl_estimates.json`
+
+### Last Action (2026-05-11) — 03b_mixed_logit.ipynb complete
+- **spec §7.6.4** added: documented λ̂ upward bias (9%, within 2 SE) + BIC tie explanation
+- **03b_mixed_logit.ipynb**: built (32 cells) + executed cleanly (12/12 checks PASS)
+  - Random β_cost only: β_cost_n = μ_cost + σ_cost·η_n, η ~ N(0,1)
+  - 13 params: 6 β_time + μ_cost + σ_cost + 5 ASC; σ_cost = exp(σ_raw)
+  - R=100 Halton draws (base=2); L-BFGS-B converged (66 iter)
+  - σ̂_cost = 0.0100 ± 0.0331; Wald stat = 0.0908, p = 0.763 → FAIL TO REJECT σ=0
+  - LL_MXL = −5048.79 ≈ LL_MNL = −5048.83 (|ΔLL|=0.03 — MXL adds no signal)
+  - AIC: NL=10115 beats MXL=10123 by 8.5 units; BIC: MXL=10208 >> NL=10200
+  - Mixed-DGP Wald correctly detects σ>0 when σ_TRUE=0.02 (p≈0) ✅
+  - Exports `mxl_estimates.json` and `best_model.json` (selected: NL)
+- **spec §14**: 03b updated to ✅ Done
+
+### Next Action
+1. ~~Build `01_data_prep.ipynb`~~ ✅ Done
+2. ~~Build `02_mnl_estimation.ipynb`~~ ✅ Done
+3. ~~Build `03_nl_estimation.ipynb`~~ ✅ Done
+4. ~~Build `03b_mixed_logit.ipynb`~~ ✅ Done
+5. ~~Build `04_policy_simulation.ipynb`~~ ✅ Done
+6. ~~Draft final report~~ ✅ Done
+7. **User review of report** — then Q&A prep (slides), final submission
+
+### Notebook Status
+| Notebook | Status | Notes |
+|---|---|---|
+| `01_data_prep.ipynb` | ✅ Done | 6-mode, 7 zones, 5,000 persons, μ=25 scale |
+| `02_mnl_estimation.ipynb` | ✅ Done | 12/12 recovered, MNL on NL data, IIA violation demo |
+| `03_nl_estimation.ipynb` | ✅ Done | 13/13 recovered; λ̂=0.763±0.068; LR=8.57 p=0.003; ΔCS free-TJ=+1.28 |
+| `03b_mixed_logit.ipynb` | ✅ Done | σ̂=0.010 (p_Wald=0.763); NL wins AIC+8.5; best_model=NL |
+| `04_policy_simulation.ipynb` | ✅ Done | 33/33 checks pass; exports policy_results.json with NL P(m) mode shares + truncated-Normal 90% CIs |
+| Report draft | ✅ Done | 8,252 words; stop-slop 36/50; path: `notebooks/trans-eng-final/report/report.md` |
+| Presentation slides | ✅ Done | 15 slides (12 main + 3 backup), Marp, 1,275 words; path: `notebooks/trans-eng-final/report/slides.md` + `.pdf` |

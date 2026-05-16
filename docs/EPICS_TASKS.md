@@ -26,6 +26,8 @@
 **Current phase**: E4 active + E6 Done + E7 active (MVP-111 Done, UX P1 fixes applied). Commuter journey planner built with scientifically grounded estimation: GC formula, nested logit mode choice, 5-mode comparison. L06 discrete choice extensions added to EDA notebook (logsum, option value, CS, 3 SE estimators). MVP-14 Results DONE (2,543w). MVP-88 consistency check is next gate.
 **Last synced**: 2026-04-28
 
+**Trans-Eng Final Project Track** (separate, no Linear tickets): Report drafted (8,252 words, stop-slop 36/50). Slides drafted (15 slides, Marp, 1,275 words, PDF rendered). Next: user review, Q&A rehearsal, final submission by June 3. Branch: `trans-eng/final-project-jabodetabek`.
+
 Dependency order: E0 ✅ → E1 → E2 → [E3/E4/E5 ∥ E6/E7/E8/E9] → E10
 
 ---
