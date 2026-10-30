@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jabodetabek Transit Equity · 3D map</title>
+<meta name="description" content="Where Jabodetabek needs transit, where it goes, and where the gap is. Real open data (GTFS, OSM, BPS, WorldPop) on a 3D map, with the unfinished parts labelled.">
+<meta property="og:title" content="Jabodetabek Transit Equity · 3D map">
+<meta property="og:description" content="28% of Jabodetabek is a transit desert: high need, low access. A scroll-through 3D map built on real open data.">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Jabodetabek Transit Equity: 3D showcase. Data from data/showcase.json, written by scripts/export_showcase.py. */
+:root { --bg: #0b0d17; --panel: rgba(14,16,28,.86); --fg: #f4f4f8; --muted: #9298b0; --ink2: #c9cbd8; --line: rgba(255,255,255,.12); --accent: #ff6b86; --well: rgba(255,255,255,.06); --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; --done: #4fbf8f; --prelim: #ffb347; --plan: #9298b0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 14.5px/1.5 "Archivo", -apple-system, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+#map { position: fixed; inset: 0; }
+.panel, .card { position: absolute; z-index: 2; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.45); overflow: auto; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.panel { top: 16px; left: 16px; width: 360px; max-height: calc(100% - 32px); padding: 18px 20px 14px; }
+.card { top: 16px; right: 16px; width: 330px; max-height: calc(100% - 110px); padding: 16px 18px 14px; }
+.card:empty { display: none; }
+.kick { font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+h1 { font-weight: 800; font-size: 28px; letter-spacing: -0.03em; line-height: 1.04; margin: 10px 0 0; }
+.lede { margin: 10px 0 0; color: var(--ink2); font-size: 13.5px; }
+.steps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 16px 0 0; }
+.steps button { font: 500 9.5px var(--mono); letter-spacing: .02em; text-transform: uppercase; color: var(--muted); background: none; border: 0; border-top: 3px solid var(--line); padding: 7px 0 0; text-align: left; cursor: pointer; }
+.steps button[aria-current="step"] { color: var(--accent); border-top-color: var(--accent); }
+.steps button.done { border-top-color: #b9bbe6; }
+.step h2 { margin: 14px 0 0; font-size: 19px; font-weight: 800; letter-spacing: -0.01em; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.step p { margin: 6px 0 0; color: var(--ink2); font-size: 13.5px; }
+.badge { font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 2px 9px; border: 1.5px solid; white-space: nowrap; }
+.badge.done { color: var(--done); border-color: var(--done); }
+.badge.prelim { color: var(--prelim); border-color: var(--prelim); }
+.badge.plan { color: var(--plan); border: 1.5px dashed var(--plan); }
+.sec { margin: 14px 0 6px; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.sec small { letter-spacing: 0; text-transform: none; }
+.nav { display: flex; justify-content: space-between; margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+button.b, .chips button { font: 600 12.5px "Archivo", sans-serif; color: var(--fg); background: var(--well); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+button.b:hover, .chips button:hover { border-color: var(--accent); color: var(--accent); }
+button.b.go { background: var(--accent); border-color: var(--accent); color: #0b0d17; }
+button.b:disabled { opacity: .35; cursor: default; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chips button { font-size: 12px; padding: 3px 10px; display: inline-flex; gap: 6px; align-items: center; }
+.chips button i { width: 9px; height: 9px; border-radius: 50%; }
+.chips button[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: #0b0d17; }
+.chips button[aria-pressed="false"] i { opacity: .35; }
+.big { font-weight: 800; font-size: 38px; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.big small { font-size: 15px; font-weight: 700; margin-left: 2px; }
+.sub { font: 12px var(--mono); color: var(--muted); margin-top: 3px; }
+.bars { display: grid; grid-template-columns: 96px 1fr 46px; gap: 5px 8px; align-items: center; font-size: 12.5px; }
+.bars .tr { position: relative; height: 9px; background: var(--well); border-radius: 2px; }
+.bars .tr b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 3px 3px 0; }
+.bars .v { font: 11.5px var(--mono); color: var(--muted); text-align: right; }
+.kv { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.kv div { background: var(--well); border-radius: 8px; padding: 7px 9px; }
+.kv b { display: block; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.kv span { font: 10.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.note { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.list { margin: 6px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--ink2); }
+.list li { padding: 3px 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; }
+.list li em { font: normal 10.5px var(--mono); color: var(--prelim); text-transform: uppercase; white-space: nowrap; }
+.mock { border: 1.5px dashed var(--plan); border-radius: 10px; padding: 8px 10px; font: 500 11.5px var(--mono); color: var(--prelim); margin-top: 10px; }
+.quad { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; font-size: 11.5px; }
+.quad div { border-radius: 6px; padding: 8px 8px; color: #0b0d17; font-weight: 700; line-height: 1.2; }
+.quad span { display: block; font: 500 10px var(--mono); opacity: .75; }
+.axes { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--muted); margin-top: 3px; text-transform: uppercase; }
+table.cm { border-collapse: collapse; width: 100%; font: 11px var(--mono); margin-top: 8px; text-align: right; }
+table.cm th { color: var(--muted); font-weight: 500; padding: 2px 4px; }
+table.cm td { padding: 4px; border: 2px solid var(--panel); color: #fff; }
+.foot { margin: 12px 0 0; font-size: 11.5px; color: var(--muted); }
+.foot a, .note a { color: var(--accent); text-decoration: none; }
+.tt { position: absolute; z-index: 3; pointer-events: none; background: #1a1d2e; color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; box-shadow: 0 8px 24px rgba(0,0,0,.4); display: none; }
+.tt span { display: block; font: 11px var(--mono); color: var(--muted); }
+#load { position: fixed; z-index: 5; left: 50%; top: 50%; transform: translate(-50%,-50%); font: 500 13px var(--mono); color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; }
+body.embed .panel, body.embed .card { display: none; }
+@media (max-width: 860px) {
+  .panel { top: auto; bottom: 0; left: 0; right: 0; width: auto; max-height: 48%; border-radius: 14px 14px 0 0; padding: 12px 16px 10px; }
+  h1 { font-size: 21px; margin-top: 4px; } .lede { display: none; }
+  .steps { margin-top: 8px; }
+  .card { top: 10px; left: 10px; right: 10px; width: auto; max-height: 30%; padding: 10px 14px; }
+  .card .big { font-size: 28px; }
+}
+.maplibregl-ctrl-group { background: #1a1d2e; } .maplibregl-ctrl-group button + button { border-top-color: rgba(255,255,255,.1); }
+.maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: invert(1); }
+.maplibregl-ctrl-attrib { background: rgba(14,16,28,.7) !important; color: var(--muted); } .maplibregl-ctrl-attrib a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="map" role="img" aria-label="3D map of Jabodetabek showing transit need, access and the gap between them"></div>
+<div class="tt" id="tt"></div>
+<div id="load">Loading map data…</div>
+
+<aside class="panel" aria-label="Story and controls">
+  <p class="kick">Jabodetabek Transit Equity</p>
+  <h1>Who needs transit, and who gets it?</h1>
+  <p class="lede">Every hex is about 0.74 km². Seven steps from need to access to the gap, and then to what comes next. Real open data; unfinished parts are labelled.</p>
+  <nav class="steps" id="steps" aria-label="Story steps"></nav>
+  <div id="step"></div>
+  <div class="nav"><button class="b" type="button" id="prev">← Back</button><button class="b go" type="button" id="next">Next →</button></div>
+  <p class="foot">Real open data: GTFS (Mobility Database), OSM, BPS, WorldPop. Methods and paper in this repo. <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper">Code &amp; paper</a> · <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Interactive app</a></p>
+</aside>
+<aside class="card" id="card" aria-live="polite"></aside>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var MOBILE = matchMedia('(max-width: 860px)').matches;
+  var $ = function (id) { return document.getElementById(id); };
+  var D, ST, H, N, cells, kel, maxPop, maxKelPop, ringCells;
+  var S = { step: 0, res: 'h3', qOn: { 1: true, 2: true, 3: true, 4: true } };
+
+  // ---------- colour helpers ----------
+  function hex2rgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
+  function mix(a, b, t) { return [0, 1, 2].map(function (i) { return Math.round(a[i] + (b[i] - a[i]) * t); }); }
+  function makeRamp(stops) { var c = stops.map(hex2rgb); return function (t) { t = Math.max(0, Math.min(1, t)) * (c.length - 1); var i = Math.min(c.length - 2, Math.floor(t)); return mix(c[i], c[i + 1], t - i); }; }
+  var NEED = makeRamp(['#2b1660', '#8a1d8f', '#e0446a', '#fb9a3c', '#fde16a']);
+  var ACCESS = makeRamp(['#0b1f4d', '#1d4e89', '#2a9fd6', '#7fe3f0']);
+  var QC = { 1: '#4fbf8f', 2: '#6c7bd9', 3: '#5b6070', 4: '#ff3b5c' }, QRGB = {};
+  [1, 2, 3, 4].forEach(function (q) { QRGB[q] = hex2rgb(QC[q]); });
+  var QN = { 1: 'Well served', 2: 'Overserved', 3: 'Low priority', 4: 'Transit desert' };
+  var LC = ['#3a3f55', '#ff3b5c', '#2a9fd6', '#ffb347', '#9b7bff'].map(hex2rgb), LN = ['Not significant', 'High-High', 'Low-Low', 'High-Low', 'Low-High'];
+  var MC = { mrt: hex2rgb('#e5484d'), lrt: hex2rgb('#9b7bff'), krl: hex2rgb('#ffb347'), transjakarta: hex2rgb('#38bdf8') };
+  var MN = { mrt: 'MRT', lrt: 'LRT', krl: 'KRL', transjakarta: 'TransJakarta' };
+  var COMMUTE = makeRamp(['#7fe3f0', '#fde16a', '#fb9a3c', '#e0446a']);
+  var AMBER = hex2rgb('#ffb347'), RED = hex2rgb('#ff3b5c');
+  function css(c) { return 'rgb(' + c.join(',') + ')'; }
+  function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
+  function pct(x, d) { return x.toFixed(d === undefined ? 1 : d) + '%'; }
+  function sq(v, mx) { return Math.sqrt(Math.max(0, v) / (mx || 1)); }
+
+  var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/dark',
+    center: [106.83, -6.3], zoom: MOBILE ? 8.2 : 9.4, pitch: 50, bearing: -12, attributionControl: { compact: true } });
+  var overlay = new deck.MapboxOverlay({ interleaved: true, layers: [] });
+  map.addControl(overlay);
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+
+  // ---------- hex column config per step ----------
+  function hexFill(d) {
+    var st = S.step;
+    if (st === 0) return NEED((d.tni - 0.05) / 0.9).concat(235);
+    if (st === 1) return ACCESS(Math.sqrt(d.tai) / 0.9).concat(225);
+    if (st === 2) return QRGB[d.q].concat(d.q === 4 ? 245 : 95);
+    if (st === 4) return LC[d.lisa].concat(d.lisa ? 235 : 70);
+    if (st === 5) return (d.cbd >= 0 ? [60, 66, 90] : [44, 48, 66]).concat(150);
+    if (st === 6) return (d.q === 4 ? [110, 45, 65] : [48, 52, 74]).concat(190);
+    return [60, 60, 80, 200];
+  }
+  function hexElev(d) {
+    var st = S.step, p = sq(d.pop, maxPop);
+    if (st === 0) return p * 9000;
+    if (st === 1) return p * 2600;
+    if (st === 2) return d.q === 4 ? 1200 + p * 8000 : 250 + p * 900;
+    if (st === 4) return d.lisa ? 800 + p * 4500 : 150 + p * 600;
+    if (st === 5) return 350 + p * 700;
+    if (st === 6) return 40 + p * 350;
+    return 400;
+  }
+  function hexLayer() {
+    var st = S.step, vis = st === 2 ? S.qOn : null;
+    return new deck.ColumnLayer({
+      id: 'hex', data: cells, diskResolution: 6, radius: 440, angle: 30, extruded: true, pickable: true,
+      visible: !(st === 3 && S.res === 'kel'), getPosition: function (d) { return d.p; },
+      getElevation: function (d) { return vis && !vis[d.q] ? 0 : hexElev(d); },
+      getFillColor: function (d) { return vis && !vis[d.q] ? [0, 0, 0, 0] : hexFill(d); },
+      material: { ambient: 0.55, diffuse: 0.6, shininess: 24 },
+      updateTriggers: { getElevation: [st, JSON.stringify(vis)], getFillColor: [st, JSON.stringify(vis)] },
+      transitions: { getElevation: 600, getFillColor: 400 },
+      onHover: function (i) { tip(i, function (d) { return '<b>Hex · pop ' + fmt(d.pop) + '</b>' + metricLine(d); }); }
+    });
+  }
+  function metricLine(d) {
+    var st = S.step;
+    if (st === 0) return '<span>Need (TNI) ' + d.tni.toFixed(2) + '</span>';
+    if (st === 1) return '<span>Access (TAI) ' + d.tai.toFixed(2) + '</span>';
+    if (st === 2 || st === 3) return '<span>' + QN[d.q] + ' · TNI ' + d.tni.toFixed(2) + ' · TAI ' + d.tai.toFixed(2) + '</span>';
+    if (st === 4) return '<span>LISA: ' + LN[d.lisa] + '</span>';
+    if (st === 5) return '<span>' + (d.cbd >= 0 ? d.cbd + ' min to Sudirman–Thamrin (r5py)' : 'Not routed') + '</span>';
+    return '<span>' + QN[d.q] + '</span>';
+  }
+  function tip(info, html) {
+    var tt = $('tt');
+    if (!info.object) { tt.style.display = 'none'; return; }
+    tt.innerHTML = html(info.object); tt.style.display = 'block'; tt.style.left = info.x + 14 + 'px'; tt.style.top = info.y + 10 + 'px';
+  }
+  function kelLayer() {
+    return new deck.GeoJsonLayer({
+      id: 'kel', data: kel, extruded: true, filled: true, stroked: true, pickable: true, visible: S.step === 3 && S.res === 'kel',
+      getElevation: function (f) { var p = f.properties; return (p.q === 4 ? 900 : 200) + sq(p.pop, maxKelPop) * 3200; },
+      getFillColor: function (f) { return QRGB[f.properties.q].concat(f.properties.q === 4 ? 240 : 130); },
+      getLineColor: [11, 13, 23, 200], lineWidthMinPixels: 0.6,
+      material: { ambient: 0.55, diffuse: 0.6, shininess: 24 },
+      transitions: { getElevation: 600 },
+      onHover: function (i) { tip(i, function (f) { var p = f.properties; return '<b>' + p.name + '</b><span>' + p.kota + ' · pop ' + fmt(p.pop) + ' · ' + QN[p.q] + '</span>'; }); }
+    });
+  }
+  function transitLayers() {
+    var on = S.step === 1, mc = function (f) { return MC[f.properties.type] || [200, 200, 200]; };
+    return [
+      new deck.PathLayer({ id: 'routes-glow', data: D.routes.features, visible: on, getPath: function (f) { return f.geometry.coordinates; }, getColor: function (f) { return mc(f).concat(55); }, widthMinPixels: 9, jointRounded: true, capRounded: true }),
+      new deck.PathLayer({ id: 'routes', data: D.routes.features, visible: on, getPath: function (f) { return f.geometry.coordinates; }, getColor: function (f) { return mc(f).concat(235); }, widthMinPixels: 2, jointRounded: true, capRounded: true, pickable: true,
+        onHover: function (i) { tip(i, function (f) { return '<b>' + f.properties.line + '</b><span>' + MN[f.properties.type] + '</span>'; }); } }),
+      new deck.ScatterplotLayer({ id: 'stops', data: D.stops.features, visible: on, getPosition: function (f) { return f.geometry.coordinates; }, getFillColor: function (f) { return mc(f).concat(255); }, getRadius: 260, radiusMinPixels: 2.5, radiusMaxPixels: 6, pickable: true,
+        onHover: function (i) { tip(i, function (f) { return '<b>' + f.properties.name + '</b><span>' + MN[f.properties.type] + ' stop</span>'; }); } })
+    ];
+  }
+  function arcLayer() {
+    return new deck.ArcLayer({
+      id: 'arcs', data: cells.filter(function (c) { return c.cbd >= 0; }), visible: S.step === 5,
+      getSourcePosition: function (d) { return d.p; }, getTargetPosition: function () { return D.meta.cbd; },
+      getSourceColor: function (d) { return COMMUTE((d.cbd - 1) / 120).concat(210); }, getTargetColor: [253, 225, 106, 120],
+      getWidth: 1.3, greatCircle: false, getHeight: 0.7
+    });
+  }
+  function stationLayers(t) {
+    var on = S.step === 6, ms = D.meta.mockup_station, pos = ms.lonlat, k = (t % 2400) / 2400;
+    var pulse = function (ph) { var u = (k + ph) % 1; return { r: u, a: Math.round(200 * (1 - u)) }; };
+    return [
+      new deck.ColumnLayer({ id: 'ring-hex', data: ringCells, visible: on, diskResolution: 6, radius: 440, angle: 30, extruded: true,
+        getPosition: function (d) { return d.p; },
+        getElevation: function (d) { return 900 + sq(d.pop, maxPop) * 4500 * (1 - 0.35 * Math.min(1, k * 2)); },
+        getFillColor: function (d) { var a = Math.min(1, k * 2); return mix(RED, AMBER, a).concat(245); },
+        updateTriggers: { getElevation: [Math.round(k * 30)], getFillColor: [Math.round(k * 30)] } }),
+      new deck.ScatterplotLayer({ id: 'ring-800', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 800, stroked: true, filled: true, getFillColor: [255, 179, 71, 28], getLineColor: [255, 179, 71, 230], lineWidthMinPixels: 2 }),
+      new deck.ScatterplotLayer({ id: 'ring-1500', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 1500, stroked: true, filled: false, getLineColor: [255, 179, 71, 140], lineWidthMinPixels: 1.5 }),
+      new deck.ScatterplotLayer({ id: 'ring-pulse', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 400 + pulse(0).r * 1400, stroked: true, filled: false, getLineColor: [255, 255, 255, pulse(0).a], lineWidthMinPixels: 2,
+        updateTriggers: { getRadius: [Math.round(k * 30)], getLineColor: [Math.round(k * 30)] } }),
+      new deck.ScatterplotLayer({ id: 'pin', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 160, radiusMinPixels: 7, getFillColor: [255, 255, 255, 255], stroked: true, getLineColor: [255, 59, 92, 255], lineWidthMinPixels: 3 })
+    ];
+  }
+  var t0 = performance.now();
+  function draw() {
+    overlay.setProps({ layers: [hexLayer(), kelLayer(), arcLayer()].concat(transitLayers(), stationLayers(performance.now() - t0)) });
+  }
+  function loop() { if (S.step === 6) draw(); setTimeout(function () { requestAnimationFrame(loop); }, 90); }
+
+  // ---------- story ----------
+  var BADGE = { done: ['Done', 'done'], prelim: ['Preliminary', 'prelim'], plan: ['Planned', 'plan'] };
+  var CAM = { zoom: 9.4, pitch: 50, bearing: -12, center: [106.83, -6.3] };
+  function legend(items) { return '<div class="chips" style="margin-top:8px">' + items.map(function (i) { return '<button type="button" style="cursor:default"><i style="background:' + i[0] + '"></i>' + i[1] + '</button>'; }).join('') + '</div>'; }
+  function grad(r, a, b) { var s = []; for (var i = 0; i <= 8; i++) s.push(css(r(i / 8))); return '<div style="height:8px;border-radius:4px;margin-top:10px;background:linear-gradient(90deg,' + s.join(',') + ')"></div><div class="axes"><span>' + a + '</span><span>' + b + '</span></div>'; }
+  function quadChips() { return '<div class="chips" id="qchips">' + [1, 2, 3, 4].map(function (q) { return '<button type="button" data-q="' + q + '" aria-pressed="' + S.qOn[q] + '"><i style="background:' + QC[q] + '"></i>Q' + q + ' ' + QN[q] + '</button>'; }).join('') + '</div>'; }
+  function qBars(sc, color) {
+    var tot = 0; [1, 2, 3, 4].forEach(function (q) { tot += sc['Q' + q]; });
+    return '<div class="bars">' + [1, 2, 3, 4].map(function (q) { var c = sc['Q' + q]; return '<span>Q' + q + ' ' + QN[q] + '</span><span class="tr"><b style="width:' + (c / tot * 100 * 2.2) + '%;background:' + QC[q] + '"></b></span><span class="v">' + fmt(c) + '</span>'; }).join('') + '</div>';
+  }
+  function layerList() {
+    var L = [['L1 First mile', ''], ['L2 Service quality', ''], ['L3 CBD journey', ''], ['L4 Last mile', 'placeholder'], ['L5 Cost vs car', 'placeholder']];
+    return '<ul class="list">' + L.map(function (l) { return '<li><span>' + l[0] + '</span>' + (l[1] ? '<em>' + l[1] + '</em>' : '') + '</li>'; }).join('') + '</ul>';
+  }
+  function confusion() {
+    var cm = ST.resolution_comparison.confusion_matrix, qs = ['Q1', 'Q2', 'Q3', 'Q4'], mx = 0;
+    // pipeline stores {H3 quadrant: {kelurahan quadrant: count}}; rows below = kelurahan, columns = H3
+    qs.forEach(function (a) { qs.forEach(function (b) { mx = Math.max(mx, cm[a][b]); }); });
+    var rows = qs.map(function (kq, ri) { return '<tr><th>' + kq + '</th>' + qs.map(function (hq, ci) { var v = cm[hq][kq], diag = ri === ci;
+      return '<td style="background:' + (diag ? 'rgba(79,191,143,' + (0.25 + 0.6 * v / mx) + ')' : 'rgba(255,59,92,' + (0.08 + 0.7 * v / mx) + ')') + '">' + fmt(v) + '</td>'; }).join('') + '</tr>'; }).join('');
+    return '<table class="cm"><tr><th></th>' + qs.map(function (q) { return '<th>H3 ' + q + '</th>'; }).join('') + '</tr>' + rows + '</table><p class="note">Rows: kelurahan class. Columns: H3 class. Green diagonal = same answer.</p>';
+  }
+  var STEPS = [
+    { t: 'Need', h: 'Who needs transit', st: 'done',
+      body: function () { return '<p>Each column is one hex. <b>Height is population</b>, colour is the <b>Transit Need Index</b>: hotter means more people who depend on transit.</p>' + grad(NEED, 'Lower need', 'Higher need'); },
+      card: function () { return '<p class="kick">Transit Need Index (TNI)</p><div class="big">' + (D.meta.total_pop / 1e6).toFixed(1) + '<small>M people</small></div><div class="sub">in ' + fmt(N) + ' hexes across Jabodetabek</div><p class="sec">What TNI is made of</p><ul class="list"><li>Population density</li><li>Poverty rate</li><li>Household expenditure</li><li>Zero-vehicle households</li><li>Dependency ratio</li></ul>'; } },
+    { t: 'Access', h: 'Where transit goes', st: 'done', cam: { zoom: 9.9, center: [106.84, -6.24], pitch: 52 },
+      body: function () { return '<p>Routes in mode colours. Hexes now show the <b>Transit Accessibility Index</b>, lower and cooler: bright means a trip to the CBD is easy.</p>' + legend(Object.keys(MC).map(function (k) { return [css(MC[k]), MN[k]]; })) + grad(ACCESS, 'Low access', 'High access'); },
+      card: function () { var c = D.meta.route_counts; return '<p class="kick">Routes in the data</p><div class="bars" style="margin-top:8px">' + ['mrt', 'lrt', 'krl', 'transjakarta'].map(function (k) { return '<span>' + MN[k] + '</span><span class="tr"><b style="width:' + Math.min(100, c[k] / 61 * 100 * 1.3) + '%;background:' + css(MC[k]) + '"></b></span><span class="v">' + c[k] + '</span>'; }).join('') + '</div><p class="sec">The 5 TAI layers</p>' + layerList() + '<p class="note">Layers 4 and 5 are placeholders, not measured yet.</p>'; } },
+    { t: 'Gap', h: 'The gap', st: 'done', cam: { zoom: 9.4 },
+      body: function () { return '<p>Need against access gives four groups. <b>Q4 is the problem:</b> high need, low access. Those hexes rise in red; the rest sink back.</p><p class="sec">Show groups <small>· tap to toggle</small></p>' + quadChips(); },
+      card: function () { var h = ST.h3, k = ST.kelurahan;
+        return '<p class="kick">Transit deserts (Q4)</p><div class="big" style="color:' + QC[4] + '">' + pct(h.q4_pct) + '</div><div class="sub">of hexes · ' + pct(k.q4_pct) + ' of kelurahan</div><p class="sec">Hexes by group</p>' + qBars(h.quadrant_counts) +
+          '<p class="sec">How the groups are cut</p><div class="quad"><div style="background:' + QC[4] + '">Q4 Desert<span>high need · low access</span></div><div style="background:' + QC[1] + '">Q1 Well served<span>high need · high access</span></div><div style="background:' + QC[3] + ';color:#fff">Q3 Low priority<span>low need · low access</span></div><div style="background:' + QC[2] + '">Q2 Overserved<span>low need · high access</span></div></div><div class="axes"><span>← access low</span><span>access high →</span></div>'; } },
+    { t: 'Resolution', h: 'Resolution changes the story', st: 'done',
+      body: function () { return '<p>The same data, drawn two ways. Switch between <b>administrative kelurahan</b> and <b>equal-size H3 hexes</b>. Big kelurahan hide the sharp edges that hexes show.</p><div class="chips" id="rchips" style="margin-top:10px"><button type="button" data-r="kel" aria-pressed="' + (S.res === 'kel') + '">Kelurahan</button><button type="button" data-r="h3" aria-pressed="' + (S.res === 'h3') + '">H3 hexes</button></div>'; },
+      card: function () { var rc = ST.resolution_comparison;
+        return '<p class="kick">Inequality of access (Gini of TAI)</p><div class="big">' + ST.kelurahan.gini_tai.toFixed(2) + ' → ' + ST.h3.gini_tai.toFixed(2) + '</div><div class="sub">kelurahan → H3</div><div class="kv"><div><b>' + rc.cohen_kappa.toFixed(2) + '</b><span>Cohen\'s κ</span></div><div><b>' + Math.round(rc.pct_reclassified) + '%</b><span>change quadrant</span></div></div>' + confusion(); } },
+    { t: 'Clusters', h: 'Clusters, not noise', st: 'done',
+      body: function () { return '<p>Local Moran\'s I (LISA) finds places where neighbours look alike. <b>Red clusters (High-High)</b> are connected stretches of high gap, not scattered points.</p>' + legend([1, 2, 3, 4, 0].map(function (i) { return [css(LC[i]), LN[i]]; })); },
+      card: function () { var k = ST.kelurahan, h = ST.h3, c = h.lisa_cluster_counts;
+        return '<p class="kick">Global Moran\'s I of TAI</p><div class="kv"><div><b>' + k.global_morans_i_tai.moran_i.toFixed(2) + '</b><span>kelurahan</span></div><div><b>' + h.global_morans_i_tai.moran_i.toFixed(2) + '</b><span>H3 hexes</span></div></div><p class="note">p = ' + h.global_morans_i_tai.p_value + ' for both. 1 would be perfect clustering.</p><p class="sec">H3 cluster counts</p><div class="bars">' + [1, 2, 3, 4, 0].map(function (i) { var key = ['NS', 'HH', 'LL', 'HL', 'LH'][i]; return '<span>' + LN[i] + '</span><span class="tr"><b style="width:' + (c[key] / N * 100) + '%;background:' + css(LC[i]) + '"></b></span><span class="v">' + fmt(c[key]) + '</span>'; }).join('') + '</div>'; } },
+    { t: 'Commute', h: 'The commute to Sudirman', st: 'prelim', cam: { zoom: 9.7, center: [106.85, -6.3], pitch: 55 },
+      body: function () { return '<p>Arcs run from each routed hex to Sudirman–Thamrin, coloured by travel time from the r5py routing run.</p>' + grad(COMMUTE, '1 min', '121 min') + '<p class="note">Grey hexes were not routed.</p>'; },
+      card: function () { var n = D.meta.n_routed;
+        return '<p class="kick">Routed with r5py</p><div class="big">' + fmt(n) + '<small>of ' + fmt(N) + '</small></div><div class="sub">' + pct(n / N * 100) + ' of hexes</div><div class="mock" style="color:var(--prelim)">Known limit: GTFS coverage is thin outside the core. The other ' + fmt(N - n) + ' hexes have no routing result and default to 180 min in the score.</div><p class="note">So the access numbers for the outer ring are conservative until more feeds are added.</p>'; } },
+    { t: 'What-if', h: 'What a new station would change', st: 'plan', cam: 'station',
+      body: function () { var m = D.meta.mockup_station; return '<p>The pin sits in the largest connected Q4 High-High cluster in Bodetabek (' + fmt(m.component_hexes) + ' hexes, ' + (m.component_pop / 1e6).toFixed(1) + 'M people). Rings are ~800 m and 1.5 km. Hexes inside turn from red to amber.</p><div class="mock">Mock-up: simulator not built yet</div>'; },
+      card: function () { var m = D.meta.mockup_station;
+        return '<p class="kick">Planned method</p><ul class="list"><li>Re-score first-mile (L1) and service (L2) inside the catchment</li><li>Recount Q4 before and after</li></ul><p class="note">This pin: ' + m.q4_hexes_in_ring + ' Q4 hexes (' + fmt(m.pop_in_ring) + ' people) within 1.5 km.</p><p class="sec">Missing before it is real</p><ul class="list"><li><span>L4 last-mile layer</span><em>placeholder</em></li><li><span>L5 cost layer</span><em>placeholder</em></li><li><span>Full r5py routing</span><em>' + pct(D.meta.n_routed / N * 100) + ' routed</em></li></ul><p class="sec">Roadmap</p><ul class="list"><li>More GTFS feeds for Bodetabek</li><li>Station simulator in the app</li><li>Paper and open dataset</li></ul><p class="note"><a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Open the interactive app →</a></p>'; } }
+  ];
+
+  function renderStep() {
+    var s = STEPS[S.step], b = BADGE[s.st];
+    $('step').innerHTML = '<div class="step"><h2>' + s.h + '<span class="badge ' + b[1] + '">' + b[0] + '</span></h2>' + s.body() + '</div>';
+    $('card').innerHTML = s.card();
+    [].forEach.call(document.querySelectorAll('#qchips button'), function (el) { el.onclick = function () { var q = el.dataset.q; S.qOn[q] = !S.qOn[q]; renderStep(); draw(); }; });
+    [].forEach.call(document.querySelectorAll('#rchips button'), function (el) { el.onclick = function () { S.res = el.dataset.r; renderStep(); draw(); }; });
+  }
+  function go(i, instant) {
+    if (i < 0 || i >= STEPS.length) return;
+    S.step = i; var s = STEPS[i];
+    if (i === 3) S.res = 'kel'; else S.res = 'h3';
+    [].forEach.call($('steps').children, function (b, k) { if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); b.classList.toggle('done', k < i); });
+    $('prev').disabled = i === 0; $('next').disabled = i === STEPS.length - 1;
+    renderStep(); draw();
+    var cam = s.cam === 'station' ? { center: D.meta.mockup_station.lonlat, zoom: MOBILE ? 10.2 : 10.9, pitch: 52, bearing: -20 } : Object.assign({}, CAM, s.cam || {});
+    if (MOBILE && s.cam !== 'station') cam.zoom -= 1.2;
+    var o = Object.assign({ duration: instant ? 0 : 1600 }, cam);
+    if (instant) map.jumpTo(o); else map.flyTo(o);
+  }
+  $('prev').onclick = function () { go(S.step - 1); };
+  $('next').onclick = function () { go(S.step + 1); };
+
+  fetch('data/showcase.json').then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function (json) {
+    D = json; ST = D.meta.stats; H = D.hex; N = H.q.length;
+    cells = new Array(N);
+    for (var i = 0; i < N; i++) cells[i] = { p: [H.lon[i], H.lat[i]], pop: H.pop[i], tni: H.tni[i], tai: H.tai[i], gap: H.gap[i], q: H.q[i], lisa: H.lisa[i], cbd: H.cbd_min[i] };
+    kel = D.kel; maxPop = Math.max.apply(null, H.pop); maxKelPop = 0;
+    kel.features.forEach(function (f) { maxKelPop = Math.max(maxKelPop, f.properties.pop); });
+    var sp = D.meta.mockup_station.lonlat, cosl = Math.cos(sp[1] * Math.PI / 180);
+    ringCells = cells.filter(function (c) { var dx = (c.p[0] - sp[0]) * 111320 * cosl, dy = (c.p[1] - sp[1]) * 110540; return c.q === 4 && Math.sqrt(dx * dx + dy * dy) <= 1500; });
+    STEPS.forEach(function (s, i) { var b = document.createElement('button'); b.type = 'button'; b.textContent = s.t; b.onclick = function () { go(i); }; $('steps').appendChild(b); });
+    if (/[?&]embed/.test(location.search)) document.body.classList.add('embed');
+    var q = /[?&]step=(\d)/.exec(location.search), first = q ? Math.min(6, +q[1]) : 0;
+    $('load').style.display = 'none';
+    var start = function () { go(first, !!q); requestAnimationFrame(loop); };
+    if (map.loaded()) start(); else map.on('load', start);
+  }).catch(function (e) { $('load').textContent = 'Could not load map data (' + e.message + '). Reload to try again.'; });
+})();
+</script>
+</body>
+</html>

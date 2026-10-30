@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated**: 2026-05-14
+**Last updated**: 2026-10-30
 **Active tracks**: (1) Main research project — E7 UI; (2) Trans-Eng final project — report drafted, awaiting review
 
 ---
@@ -25,6 +25,10 @@ This is a **portfolio / independent research project** — no academic gating.
 - **Previous session (2026-04-27)**:
   - UX P1 fixes DONE (R1–R4 from `docs/ux-review-commuter.md`)
   - EDA notebook DONE: 43 cells, MNL + Nested Logit MLE from scratch
+
+## 3D Showcase (2026-10-30, branch `showcase/3d-map-build`)
+
+Built per `docs/3d-showcase-plan.md`: `scripts/export_showcase.py` -> `showcase/data/showcase.json` (1.4 MB), `showcase/index.html` (7 steps), `.github/workflows/pages.yml`, README GIF (`docs/showcase-3d.gif`). Step 7 pin = member hex of the largest Bodetabek Q4-HH cluster with the biggest 1.5 km catchment (population-weighted centroid fell in a sparse part, so it is only stored as `cluster_centroid`). Repo owner must set Pages source to GitHub Actions. Portfolio card (separate repo) not done.
 
 ## Blockers
 

@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/"><img src="docs/showcase-3d.gif" alt="3D map: transit deserts in Jabodetabek rising out of the map" width="720"></a><br>
+  <a href="https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/"><b>▶ Open the 3D map</b></a><br>
+  <sub>28% of Jabodetabek is a transit desert: high need, low access. Seven steps on real open data; unfinished parts are labelled.</sub>
+</p>
+
 # Jabodetabek Transit Equity Mapper
 
 A dual-resolution spatial diagnostic that maps transit equity gaps across the Jabodetabek metropolitan region (Jakarta + Bogor, Depok, Tangerang, Bekasi). Identifies where public transit accessibility fails to match socioeconomic need — and where the next bus route or station would reduce transit poverty the most.
