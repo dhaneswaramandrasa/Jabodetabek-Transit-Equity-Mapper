@@ -22,6 +22,7 @@
 
 ```
 jabodetabek-transity-equity-mapper/        ← single monorepo (MVP-109)
+├── showcase/                   — static 3D story map (index.html + data/showcase.json); GitHub Pages, no build step
 ├── web/                        — Next.js 14 web app (run: cd web && npm run dev)
 │   ├── src/
 │   │   ├── app/                — App Router pages (page.tsx, layout.tsx, api/)
@@ -171,6 +172,7 @@ layout.tsx
 - **CDN**: Vercel Edge Network for static assets
 - **Domain**: TBD (custom domain optional)
 - **Performance targets**: Initial load < 5s, map click response < 1s
+- **3D showcase** (`showcase/`): static page on GitHub Pages via `.github/workflows/pages.yml` (Settings → Pages → Source: GitHub Actions). Live: https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/ . Data file regenerated with `python scripts/export_showcase.py` (reads `web/public/data/`, writes `showcase/data/showcase.json`, < 3 MB). MapLibre 4.7.1 + deck.gl 9.0.38 from unpkg. Independent of the Vercel app.
 
 ---
 
