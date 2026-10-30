@@ -109,7 +109,7 @@ body.embed .panel, body.embed .card { display: none; }
   var MOBILE = matchMedia('(max-width: 860px)').matches;
   var $ = function (id) { return document.getElementById(id); };
   var D, ST, H, N, cells, kel, maxPop, maxKelPop, ringCells;
-  var S = { step: 0, res: 'h3', qOn: { 1: true, 2: true, 3: true, 4: true } };
+  var S = { step: 0, res: 'h3', qOn: { 1: true, 2: true, 3: true, 4: true }, pin: null, radius: 1500 };
 
   // ---------- colour helpers ----------
   function hex2rgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
@@ -214,7 +214,7 @@ body.embed .panel, body.embed .card { display: none; }
     });
   }
   function stationLayers(t) {
-    var on = S.step === 6, ms = D.meta.mockup_station, pos = ms.lonlat, k = (t % 2400) / 2400;
+    var on = S.step === 6, pos = S.pin, k = (t % 2400) / 2400;
     var pulse = function (ph) { var u = (k + ph) % 1; return { r: u, a: Math.round(200 * (1 - u)) }; };
     return [
       new deck.ColumnLayer({ id: 'ring-hex', data: ringCells, visible: on, diskResolution: 6, radius: 440, angle: 30, extruded: true,
@@ -222,12 +222,16 @@ body.embed .panel, body.embed .card { display: none; }
         getElevation: function (d) { return 900 + sq(d.pop, maxPop) * 4500 * (1 - 0.35 * Math.min(1, k * 2)); },
         getFillColor: function (d) { var a = Math.min(1, k * 2); return mix(RED, AMBER, a).concat(245); },
         updateTriggers: { getElevation: [Math.round(k * 30)], getFillColor: [Math.round(k * 30)] } }),
-      new deck.ScatterplotLayer({ id: 'ring-800', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 800, stroked: true, filled: true, getFillColor: [255, 179, 71, 28], getLineColor: [255, 179, 71, 230], lineWidthMinPixels: 2 }),
-      new deck.ScatterplotLayer({ id: 'ring-1500', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 1500, stroked: true, filled: false, getLineColor: [255, 179, 71, 140], lineWidthMinPixels: 1.5 }),
-      new deck.ScatterplotLayer({ id: 'ring-pulse', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 400 + pulse(0).r * 1400, stroked: true, filled: false, getLineColor: [255, 255, 255, pulse(0).a], lineWidthMinPixels: 2,
-        updateTriggers: { getRadius: [Math.round(k * 30)], getLineColor: [Math.round(k * 30)] } }),
+      new deck.ScatterplotLayer({ id: 'ring-800', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: S.radius, updateTriggers: { getRadius: [S.radius] }, stroked: true, filled: true, getFillColor: [255, 179, 71, 28], getLineColor: [255, 179, 71, 230], lineWidthMinPixels: 2 }),
+      new deck.ScatterplotLayer({ id: 'ring-pulse', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: S.radius * (0.25 + pulse(0).r * 0.9), stroked: true, filled: false, getLineColor: [255, 255, 255, pulse(0).a], lineWidthMinPixels: 2,
+        updateTriggers: { getRadius: [Math.round(k * 30), S.radius], getLineColor: [Math.round(k * 30)] } }),
       new deck.ScatterplotLayer({ id: 'pin', data: [pos], visible: on, parameters: { depthTest: false }, getPosition: function (p) { return p; }, getRadius: 160, radiusMinPixels: 7, getFillColor: [255, 255, 255, 255], stroked: true, getLineColor: [255, 59, 92, 255], lineWidthMinPixels: 3 })
     ];
+  }
+  // Mock-up rule: every Q4 hex whose centroid is within the radius counts as fixed. The real method would re-score L1/L2.
+  function calcRing() {
+    var sp = S.pin, cosl = Math.cos(sp[1] * Math.PI / 180), R = S.radius; S.ringPop = 0;
+    ringCells = cells.filter(function (c) { var dx = (c.p[0] - sp[0]) * 111320 * cosl, dy = (c.p[1] - sp[1]) * 110540; var ok = c.q === 4 && Math.sqrt(dx * dx + dy * dy) <= R; if (ok) S.ringPop += c.pop; return ok; });
   }
   var t0 = performance.now();
   function draw() {
@@ -282,9 +286,9 @@ body.embed .panel, body.embed .card { display: none; }
       card: function () { var n = D.meta.n_routed;
         return '<p class="kick">Routed with r5py</p><div class="big">' + fmt(n) + '<small>of ' + fmt(N) + '</small></div><div class="sub">' + pct(n / N * 100) + ' of hexes</div><div class="mock" style="color:var(--prelim)">Known limit: GTFS coverage is thin outside the core. The other ' + fmt(N - n) + ' hexes have no routing result and default to 180 min in the score.</div><p class="note">So the access numbers for the outer ring are conservative until more feeds are added.</p>'; } },
     { t: 'What-if', h: 'What a new station would change', st: 'plan', cam: 'station',
-      body: function () { var m = D.meta.mockup_station; return '<p>The pin sits in the largest connected Q4 High-High cluster in Bodetabek (' + fmt(m.component_hexes) + ' hexes, ' + (m.component_pop / 1e6).toFixed(1) + 'M people). Rings are ~800 m and 1.5 km. Hexes inside turn from red to amber.</p><div class="mock">Mock-up: simulator not built yet</div>'; },
-      card: function () { var m = D.meta.mockup_station;
-        return '<p class="kick">Planned method</p><ul class="list"><li>Re-score first-mile (L1) and service (L2) inside the catchment</li><li>Recount Q4 before and after</li></ul><p class="note">This pin: ' + m.q4_hexes_in_ring + ' Q4 hexes (' + fmt(m.pop_in_ring) + ' people) within 1.5 km.</p><p class="sec">Missing before it is real</p><ul class="list"><li><span>L4 last-mile layer</span><em>placeholder</em></li><li><span>L5 cost layer</span><em>placeholder</em></li><li><span>Full r5py routing</span><em>' + pct(D.meta.n_routed / N * 100) + ' routed</em></li></ul><p class="sec">Roadmap</p><ul class="list"><li>More GTFS feeds for Bodetabek</li><li>Station simulator in the app</li><li>Paper and open dataset</li></ul><p class="note"><a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Open the interactive app →</a></p>'; } }
+      body: function () { var m = D.meta.mockup_station; return '<p><b>Click the map</b> to drop a station, then set the catchment. Q4 hexes inside turn from red to amber. The start pin is the largest connected Q4 High-High cluster in Bodetabek (' + fmt(m.component_hexes) + ' hexes, ' + (m.component_pop / 1e6).toFixed(1) + 'M people).</p><p class="sec">Catchment radius · <span id="rv">' + (S.radius / 1000).toFixed(1) + ' km</span></p><input type="range" id="rad" min="400" max="3000" step="100" value="' + S.radius + '" style="width:100%;accent-color:var(--accent)"><div class="chips" style="margin-top:8px"><button type="button" id="reset">Reset pin</button></div><div class="mock">Mock-up: simulator not built yet</div>'; },
+      card: function () { var tot = ST.h3.quadrant_counts.Q4, n = ringCells.length, pc = function (x) { return (x / N * 100).toFixed(1) + '%'; };
+        return '<p class="kick">If this station were built (mock)</p><div class="kv"><div><b>' + fmt(n) + '</b><span>Q4 hexes in catchment</span></div><div><b>' + fmt(S.ringPop) + '</b><span>people reached</span></div></div><p class="sec">Q4 share of all hexes</p><div class="big"><span style="color:' + QC[4] + '">' + pc(tot) + '</span> → <span style="color:#ffb347">' + pc(tot - n) + '</span></div><div class="mock">Mock rule: every Q4 hex inside the radius counts as fixed. Not a result.</div><p class="sec">Planned method</p><ul class="list"><li>Re-score first-mile (L1) and service (L2) in the catchment</li><li>Recount Q4 before and after</li></ul><p class="sec">Missing before it is real</p><ul class="list"><li><span>L4 last-mile layer</span><em>placeholder</em></li><li><span>L5 cost layer</span><em>placeholder</em></li><li><span>Full r5py routing</span><em>' + pct(D.meta.n_routed / N * 100) + ' routed</em></li></ul><p class="note"><a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Open the interactive app →</a></p>'; } }
   ];
 
   function renderStep() {
@@ -292,6 +296,7 @@ body.embed .panel, body.embed .card { display: none; }
     $('step').innerHTML = '<div class="step"><h2>' + s.h + '<span class="badge ' + b[1] + '">' + b[0] + '</span></h2>' + s.body() + '</div>';
     $('card').innerHTML = s.card();
     [].forEach.call(document.querySelectorAll('#qchips button'), function (el) { el.onclick = function () { var q = el.dataset.q; S.qOn[q] = !S.qOn[q]; renderStep(); draw(); }; });
+    var rad = $('rad'); if (rad) { rad.oninput = function () { S.radius = +rad.value; $('rv').textContent = (S.radius / 1000).toFixed(1) + ' km'; calcRing(); $('card').innerHTML = STEPS[6].card(); draw(); }; $('reset').onclick = function () { S.pin = D.meta.mockup_station.lonlat.slice(); S.radius = 1500; calcRing(); renderStep(); draw(); }; }
     [].forEach.call(document.querySelectorAll('#rchips button'), function (el) { el.onclick = function () { S.res = el.dataset.r; renderStep(); draw(); }; });
   }
   function go(i, instant) {
@@ -301,7 +306,7 @@ body.embed .panel, body.embed .card { display: none; }
     [].forEach.call($('steps').children, function (b, k) { if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); b.classList.toggle('done', k < i); });
     $('prev').disabled = i === 0; $('next').disabled = i === STEPS.length - 1;
     renderStep(); draw();
-    var cam = s.cam === 'station' ? { center: D.meta.mockup_station.lonlat, zoom: MOBILE ? 10.2 : 10.9, pitch: 52, bearing: -20 } : Object.assign({}, CAM, s.cam || {});
+    var cam = s.cam === 'station' ? { center: S.pin, zoom: MOBILE ? 10.2 : 10.9, pitch: 52, bearing: -20 } : Object.assign({}, CAM, s.cam || {});
     if (MOBILE && s.cam !== 'station') cam.zoom -= 1.2;
     var o = Object.assign({ duration: instant ? 0 : 1600 }, cam);
     if (instant) map.jumpTo(o); else map.flyTo(o);
@@ -315,8 +320,8 @@ body.embed .panel, body.embed .card { display: none; }
     for (var i = 0; i < N; i++) cells[i] = { p: [H.lon[i], H.lat[i]], pop: H.pop[i], tni: H.tni[i], tai: H.tai[i], gap: H.gap[i], q: H.q[i], lisa: H.lisa[i], cbd: H.cbd_min[i] };
     kel = D.kel; maxPop = Math.max.apply(null, H.pop); maxKelPop = 0;
     kel.features.forEach(function (f) { maxKelPop = Math.max(maxKelPop, f.properties.pop); });
-    var sp = D.meta.mockup_station.lonlat, cosl = Math.cos(sp[1] * Math.PI / 180);
-    ringCells = cells.filter(function (c) { var dx = (c.p[0] - sp[0]) * 111320 * cosl, dy = (c.p[1] - sp[1]) * 110540; return c.q === 4 && Math.sqrt(dx * dx + dy * dy) <= 1500; });
+    S.pin = D.meta.mockup_station.lonlat.slice(); calcRing();
+    map.on('click', function (e) { if (S.step !== 6) return; S.pin = [e.lngLat.lng, e.lngLat.lat]; calcRing(); renderStep(); draw(); });
     STEPS.forEach(function (s, i) { var b = document.createElement('button'); b.type = 'button'; b.textContent = s.t; b.onclick = function () { go(i); }; $('steps').appendChild(b); });
     if (/[?&]embed/.test(location.search)) document.body.classList.add('embed');
     var q = /[?&]step=(\d)/.exec(location.search), first = q ? Math.min(6, +q[1]) : 0;
