@@ -1,0 +1,576 @@
+\documentclass[12pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{enumitem}
+\onehalfspacing
+
+% --- Title ---
+\title{Mode Choice and Welfare Analysis in Jabodetabek:\\A Nested Logit Approach with Policy Simulations}
+\author{}
+\date{Transportation Engineering Final Project\\Hiroshima University --- AY2026\\\vspace{0.5cm}\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+This study estimates a Nested Logit (NL) mode choice model for commuters in the Jabodetabek metropolitan area and applies it to evaluate eight transit policy scenarios through logsum-based consumer surplus measurement. Using a synthetic population of 5,000 commuters across seven origin zones with level-of-service data anchored to GTFS-based r5py routing, we estimate three discrete choice specifications: Multinomial Logit (MNL), Nested Logit with private and transit nests, and Mixed Logit (MXL) with a random cost coefficient. The NL model is selected as the best specification (AIC $=$ 10,115 vs MNL 10,122 and MXL 10,124; likelihood ratio test rejects MNL at $p = 0.003$). The estimated nest correlation parameter $\hat{\lambda} = 0.763$ (SE $=$ 0.068) indicates significant within-nest substitution among transit modes, consistent with empirical evidence from Indonesian commuter studies. Mean baseline consumer surplus is $-$53.65~Thousand IDR per trip. The largest welfare gain occurs under KRL frequency improvement ($+$3.76~Th IDR/trip), while a toll increase of Rp~40,000 produces a welfare loss of $-$0.10~Th IDR/trip distributed regressively across zones. Transit expansion to currently unserved zones---TJ to J1b ($+$3.29~Th IDR/trip) and KRL to J3b ($+$0.001~Th IDR/trip)---yields welfare gains concentrated among low-income commuters. The analysis demonstrates that service quality improvements in transit-served corridors can widen equity gaps relative to transit-desert zones unless paired with network expansion.
+
+\vspace{0.3cm}
+\noindent\textbf{Keywords:} mode choice, Nested Logit, logsum welfare, Jabodetabek, transit equity, policy simulation
+\end{abstract}
+
+%=====================================================================
+\section{Introduction}
+%=====================================================================
+
+The Jabodetabek metropolitan area---Jakarta, Bogor, Depok, Tangerang, and Bekasi---is Southeast Asia's largest urban agglomeration, with a population exceeding 30 million and an estimated 3.5 million daily commuters entering Jakarta from surrounding satellite cities \citep{bps2023}. The region's transit network has expanded substantially over the past decade: the KRL Commuter Line carries over 1 million passengers daily, the MRT Jakarta Phase~1 opened in 2019, and TransJakarta operates the world's longest BRT network. Yet this expansion has been spatially uneven. Several outer-zone corridors, particularly in Kabupaten Bogor (Parung/Leuwiliyang) and Tangerang (Gading Serpong/Karawaci), remain entirely unserved by formal public transit, forcing commuters to rely on private motorcycles and ridehailing services for trips of 40--90~km into the Jakarta CBD.
+
+Understanding how commuters in these zones would respond to new transit alternatives---and how the welfare gains from different policy interventions are distributed across income groups and origin zones---is a question with immediate policy relevance. The analytical framework for answering it is well-established in transportation demand modelling: discrete choice models of mode choice, estimated from observed or synthetic travel behaviour data, coupled with logsum-based welfare measurement \citep{benakiva1985,train2009}.
+
+This study applies that framework to the Jabodetabek context using a multi-stage modelling pipeline. We construct a synthetic population of 5,000 commuters across seven origin zones with a six-mode choice set---Car, Motorcycle, KRL Commuter Line, TransJakarta BRT, RoyalTrans premium bus, and MRT---and estimate three model specifications in sequence: Multinomial Logit (MNL), Nested Logit (NL), and Mixed Logit (MXL). The best model, selected by AIC and likelihood ratio tests, is carried forward to evaluate eight policy scenarios spanning transit expansion, pricing reform, frequency improvement, and route restructuring.
+
+Two features distinguish this analysis. First, while the population is synthetic---there being no publicly available revealed-preference commuter survey for Jabodetabek at the trip level---the level-of-service data are real: transit travel times are computed via r5py GTFS routing using actual KRL, TransJakarta, and MRT schedules, and cost parameters are anchored to \citet{ilahi2021} pooled SP/RP mode choice study of Greater Jakarta. Second, the analysis explicitly links mode choice welfare measurement to spatial equity: six of eight scenarios are classified by equity direction (pro-equity, regressive, or mixed), and welfare outcomes are disaggregated by income segment and origin zone.
+
+The research question is: which of eight transit policy scenarios---spanning network expansion, pricing, frequency, and route restructuring---produces the largest aggregate welfare gain, and how are these gains distributed across income groups and zones?
+
+%=====================================================================
+\section{Study Area and Data}
+%=====================================================================
+
+\subsection{Zone System}
+
+The study area is divided into seven origin zones, each representing a distinct commuter-shed within the Jabodetabek metropolitan area. All zones share a single destination: the Jakarta Central Business District (JCBD), defined as the Sudirman-Thamrin corridor (approximately the Bundaran HI MRT station area).
+
+\begin{table}[ht]
+\centering
+\caption{Zone definitions}
+\label{tab:zones}
+\begin{tabular}{llll}
+\toprule
+Zone & Description & Representative Area & Dist. to JCBD \\
+\midrule
+J1a & Bogor corridor (KRL-served)      & Bogor Kota, Cibinong         & 55 km \\
+J1b & Kab.\ Bogor outer (no transit)   & Parung, Leuwiliyang          & 45 km \\
+J2  & Bekasi corridor (KRL-served)     & Bekasi Kota, Cikarang        & 35 km \\
+J3a & Tangerang Selatan (KRL-served)   & BSD Serpong, Bintaro         & 30 km \\
+J3b & Tangerang outer (no transit)     & Gading Serpong, Karawaci     & 35 km \\
+J4  & Depok corridor (KRL-served)      & Depok, Margonda              & 25 km \\
+J5  & South Jakarta (all transit)      & Kebayoran Baru, Cilandak     & 12 km \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Zones are classified along a transit-access gradient: J5 has full access to all six modes; J1a, J2, J3a, and J4 have KRL, TJ, and ridehailing but no MRT; J1b and J3b are transit deserts with access only to private modes (Car, Motorcycle) and ridehailing.
+
+\subsection{Mode Choice Set}
+
+The choice set comprises six modes aggregated from an original nine-mode specification:
+
+\begin{table}[ht]
+\centering
+\caption{Mode choice set}
+\label{tab:modes}
+\begin{tabular}{lll}
+\toprule
+Mode & Category & Key Characteristics \\
+\midrule
+Car                 & Private          & Owner-driven, toll $+$ fuel cost, free-flow speed \\
+Motorcycle (Moto)   & Private          & Owner-driven, fuel cost only, manoeuvrable \\
+KRL Commuter Line   & Transit (rail)   & Fixed schedule, high capacity, Rp~5,000--8,000 \\
+TransJakarta (TJ)   & Transit (BRT)    & Dedicated lanes, flat fare Rp~3,500 \\
+RoyalTrans          & Transit (bus)    & Reserved seating, express, Rp~22,000--39,000 \\
+MRT Jakarta         & Transit (rail)   & Grade-separated, Rp~6,000--12,000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The original nine modes included four-wheel ridehailing (4WRH) and two-wheel ridehailing (2WRH), which were aggregated: 2WRH was merged into Motorcycle (both are two-wheeled motorized modes with similar travel time characteristics), and 4WRH was merged into RoyalTrans for zones where RoyalTrans is available and into Car for zones without it. This aggregation follows \citet{ilahi2021}, who treat ridehailing as a distinct mode but find that it competes most directly with the corresponding private-vehicle mode on time and cost attributes.
+
+\subsection{Level-of-Service Data}
+
+Transit travel times (KRL, TJ, RoyalTrans, MRT) are derived from r5py GTFS routing using actual schedule data for the Jabodetabek transit network. r5py computes door-to-door travel times including access/egress walking, wait time (half the scheduled headway), and in-vehicle time. The routing was executed for each origin zone centroid to the JCBD destination during the AM peak period (07:00--09:00). A fallback penalty of 180 minutes was applied for zone-mode pairs where no transit path was found, effectively removing the mode from the choice set for that zone.
+
+Private-mode travel times (Car, Motorcycle) are estimated from free-flow road network distances with speed assumptions based on road class (toll roads: 80~km/h, arterials: 40~km/h, local roads: 25~km/h), consistent with the Bureau of Public Roads (BPR) baseline. Cost for Car includes toll $+$ fuel (approximately Rp~1,500/km in 2025 prices), while Motorcycle cost reflects fuel only (Rp~500/km). These estimates produce zone-to-CBD travel times ranging from approximately 25 minutes (J5 Car via toll) to 120 minutes (J1b Motorcycle via arterial).
+
+Transit fares are based on published 2025 tariff schedules: KRL Rp~5,000--8,000 distance-based, TransJakarta flat Rp~3,500, MRT Rp~6,000--12,000 distance-based, and RoyalTrans Rp~22,000--39,000 route-based.
+
+\subsection{Synthetic Population}
+
+The synthetic population of 5,000 persons was generated through a Data Generating Process (DGP) with the following structure. Each person is assigned an origin zone (probability proportional to zone population shares from BPS~2023 Jabodetabek commuting statistics), an income segment (low/mid/high, with zone-specific distributions reflecting the spatial income gradient), and a full set of mode-specific utilities computed from the LOS matrix.
+
+The true utility specification for the DGP follows a Nested Logit structure with $\lambda = 0.70$, using parameter values anchored to \citet{ilahi2021} mode-specific value-of-time estimates. For each mode $m$ and person $n$:
+\begin{equation}
+V_{in} = \text{ASC}_{m} + \beta_{\text{time},m} \cdot T_{\text{zone}(n),m} + \beta_{\text{cost}} \cdot C_{\text{zone}(n),m}
+\label{eq:dgputil}
+\end{equation}
+where $\beta_{\text{cost}} = -1.42$ per Thousand IDR (Ilahi's estimate at the estimation scale) and $\beta_{\text{time},m}$ are derived from Ilahi's Table~11 VTTS via $\beta_{\text{time},m} = \beta_{\text{cost}} \times \text{VTTS}_m \,/\, 60{,}000$. The Gumbel scale parameter $\mu = 25$ is applied to convert utilities to the choice probability scale.
+
+Observed choices are generated by adding i.i.d.\ $\text{Gumbel}(0, \mu)$ noise to the systematic utility for each mode and selecting the alternative with maximum total utility. This 1-choice-per-person design matches the cross-sectional structure of the estimation data.
+
+\subsection{Income Segments}
+
+Three income segments are defined based on monthly household expenditure terciles from BPS Susenas 2023 for Jabodetabek:
+
+\begin{table}[ht]
+\centering
+\caption{Income segments and VoT scaling}
+\label{tab:income}
+\begin{tabular}{lll}
+\toprule
+Segment & Monthly Expenditure & VoT Scaling Factor \\
+\midrule
+Low   & $<$ Rp~3,000,000            & 0.70 \\
+Mid   & Rp~3,000,000--7,000,000     & 1.00 (anchor) \\
+High  & $>$ Rp~7,000,000            & 1.50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Value of Time scaling factors follow the income elasticity of VoT ($\eta \approx 0.5$--$0.7$) reported in \citet{binsuwadan2023} meta-analysis. Zone-level income distributions are calibrated to match BPS~2023 spatial income data, with outer zones (J1b, J3b) having higher proportions of low-income households and inner zones (J5) having higher proportions of high-income households.
+
+%=====================================================================
+\section{Methodology}
+%=====================================================================
+
+\subsection{Multinomial Logit (MNL) Specification}
+
+The MNL model serves as the baseline specification. Under the MNL assumption, the probability that person $n$ chooses mode $i$ from choice set $C_n$ is:
+\begin{equation}
+P_n(i) = \frac{\exp(V_{in})}{\sum_{j \in C_n} \exp(V_{jn})}
+\label{eq:mnlprob}
+\end{equation}
+where $V_{in} = \text{ASC}_i + \sum_k \beta_k \cdot x_{ink}$ is the systematic utility of mode $i$ for person $n$.
+
+The systematic utility for each mode is specified as:
+\begin{align}
+V_{\text{car},n}   &= \text{ASC}_{\text{car}}   + \beta_{\text{time,car}}   \cdot T_{\text{car},\text{zone}(n)}   + \beta_{\text{cost}} \cdot C_{\text{car},\text{zone}(n)}   \nonumber\\
+V_{\text{moto},n}  &= \text{ASC}_{\text{moto}}  + \beta_{\text{time,moto}}  \cdot T_{\text{moto},\text{zone}(n)}  + \beta_{\text{cost}} \cdot C_{\text{moto},\text{zone}(n)}  \nonumber\\
+V_{\text{krl},n}   &= \phantom{\text{ASC}_{\text{krl}}} \;\; \beta_{\text{time,krl}}   \cdot T_{\text{krl},\text{zone}(n)}   + \beta_{\text{cost}} \cdot C_{\text{krl},\text{zone}(n)}   \nonumber\\
+V_{\text{tj},n}    &= \text{ASC}_{\text{tj}}    + \beta_{\text{time,tj}}    \cdot T_{\text{tj},\text{zone}(n)}     + \beta_{\text{cost}} \cdot C_{\text{tj},\text{zone}(n)}     \nonumber\\
+V_{\text{royal},n} &= \text{ASC}_{\text{royal}} + \beta_{\text{time,royal}} \cdot T_{\text{royal},\text{zone}(n)} + \beta_{\text{cost}} \cdot C_{\text{royal},\text{zone}(n)} \nonumber\\
+V_{\text{mrt},n}   &= \text{ASC}_{\text{mrt}}   + \beta_{\text{time,mrt}}   \cdot T_{\text{mrt},\text{zone}(n)}   + \beta_{\text{cost}} \cdot C_{\text{mrt},\text{zone}(n)}   \nonumber
+\end{align}
+
+KRL is set as the reference alternative ($\text{ASC}_{\text{krl}} = 0$). The model contains 12 parameters: 5 ASCs, 6 mode-specific travel time coefficients, and 1 generic travel cost coefficient. Mode-specific $\beta_{\text{time}}$ parameters are used rather than a generic $\beta_{\text{time}}$ to capture the different marginal disutilities of time across modes---a specification consistent with \citet{ilahi2021}, who find that commuters value time in a crowded KRL differently from time in an air-conditioned car.
+
+Estimation is by maximum likelihood using L-BFGS-B optimisation via \texttt{scipy.optimize.minimize}. The log-likelihood function is:
+\begin{equation}
+\mathcal{L}\mathcal{L}(\theta) = \sum_n \sum_i y_{in} \cdot \ln P_n(i \mid \theta)
+\label{eq:ll}
+\end{equation}
+where $y_{in} = 1$ if person $n$ chose mode $i$ and 0 otherwise. Standard errors are computed from the inverse of the negative Hessian (observed Fisher information matrix).
+
+The key limitation of MNL is the Independence of Irrelevant Alternatives (IIA) property, which implies that the relative probability of choosing any two modes is independent of the attributes or availability of a third mode. In a system with four transit modes sharing unobserved attributes (schedule coordination, station environment, crowding), IIA is unlikely to hold.
+
+\subsection{Nested Logit (NL) Specification}
+
+The Nested Logit model relaxes the IIA assumption by allowing correlation among alternatives within pre-specified groups (nests). We specify a two-nest structure:
+\begin{itemize}[nosep]
+    \item \textbf{Transit nest}: KRL, MRT, TransJakarta, RoyalTrans
+    \item \textbf{Private nest}: Car, Motorcycle
+\end{itemize}
+
+This nesting reflects the hypothesis that the four transit modes share unobserved attributes---schedule coordination, station access, crowding, perceived reliability---that make them closer substitutes for each other than the IIA property implies. The private nest groups the two owner-driven modes, which share unobserved attributes related to vehicle availability, parking, and route flexibility.
+
+Under the NL specification, the probability of choosing mode $m$ is the product of the conditional probability of choosing $m$ given nest $k$, and the marginal probability of choosing nest $k$:
+\begin{equation}
+P_n(m) = P_n(m \mid k) \times P_n(k)
+\label{eq:nlprob}
+\end{equation}
+where
+\begin{align}
+P_n(m \mid k) &= \frac{\exp(V_{mn} / \lambda_k)}{\sum_{j \in k} \exp(V_{jn} / \lambda_k)} \label{eq:condprob}\\
+P_n(k) &= \frac{\exp(\lambda_k \cdot I_{kn})}{\sum_l \exp(\lambda_l \cdot I_{ln})} \label{eq:nestprob}
+\end{align}
+and the inclusive value (logsum) for nest $k$ is:
+\begin{equation}
+I_{kn} = \ln \sum_{j \in k} \exp(V_{jn} / \lambda_k)
+\label{eq:inclusive}
+\end{equation}
+
+The nest parameter $\lambda_k \in (0, 1]$ measures the degree of within-nest correlation. $\lambda_k = 1$ corresponds to the MNL case (no correlation). $\lambda_k \to 0$ corresponds to perfect correlation (all alternatives in the nest are treated as a single composite alternative). A common $\lambda$ is estimated for both nests ($\lambda_{\text{private}} = \lambda_{\text{transit}} = \lambda$), giving 13 total parameters.
+
+Estimation proceeds via full-information maximum likelihood (FIML), maximising the NL log-likelihood directly with respect to all parameters including $\lambda$. The L-BFGS-B algorithm is used with $\lambda$ constrained to $(0.01, 1.0)$ via box bounds.
+
+The likelihood ratio test statistic $\text{LR} = -2(\mathcal{L}\mathcal{L}_{\text{MNL}} - \mathcal{L}\mathcal{L}_{\text{NL}})$ is compared against the critical value of $\chi^2(1) = 3.84$ at $\alpha = 0.05$. Rejection of $H_0: \lambda = 1$ constitutes statistical evidence against the IIA assumption.
+
+\subsection{Mixed Logit (MXL) Diagnostic}
+
+Following the diagnostic protocol from the course lectures (L07), we estimate a Mixed Logit model with a single random parameter---the travel cost coefficient---to test for unobserved taste heterogeneity beyond what the NL structure captures. The specification is:
+\begin{equation}
+\beta_{\text{cost},n} = \mu_{\text{cost}} + \sigma_{\text{cost}} \cdot \eta_n, \quad \eta_n \sim \mathcal{N}(0, 1)
+\label{eq:mxlcost}
+\end{equation}
+where $\mu_{\text{cost}}$ is the mean cost coefficient and $\sigma_{\text{cost}} = \exp(\sigma_{\text{raw}})$ ensures positivity. All other parameters ($\beta_{\text{time},m}$, ASCs) remain fixed. The choice probability for person $n$ is:
+\begin{equation}
+P_n(i) = \int \frac{\exp(V_{in}(\beta_n))}{\sum_j \exp(V_{jn}(\beta_n))} \cdot f(\beta_n \mid \theta) \; d\beta_n
+\label{eq:mxlprob}
+\end{equation}
+
+Simulated maximum likelihood estimation uses $R = 100$ Halton draws (base $=$ 2). For a one-dimensional random coefficient, \citet{train2009} (\S 9.3.2) shows that $R = 100$ Halton draws provide integration accuracy equivalent to $R = 500$ pseudo-random draws.
+
+The primary diagnostic is the Wald test on $\sigma_{\text{cost}}$: $H_0: \sigma_{\text{cost}} = 0$ vs $H_1: \sigma_{\text{cost}} > 0$. The test statistic $W = (\hat{\sigma}_{\text{cost}} \,/\, \text{SE}(\hat{\sigma}_{\text{cost}}))^2$ is asymptotically $\chi^2(1)$. Failure to reject $H_0$ indicates that the NL-DGP data contain no taste heterogeneity that NL does not already capture through nest correlation.
+
+As a positive control, the same estimator is applied to a second dataset generated with true $\sigma_{\text{cost}} = 0.02$ (Mixed DGP). Recovery of $\hat{\sigma}_{\text{cost}}$ within 2~SE of the true value confirms the estimator is correctly implemented.
+
+\subsection{Logsum Welfare Measurement}
+
+Consumer surplus under the NL model is measured via the logsum formula \citep{benakiva1985,train2009}. The expected maximum utility for person $n$ is:
+\begin{equation}
+\text{EMU}_n = \ln \sum_k \exp(\lambda \cdot I_{kn})
+\label{eq:emu}
+\end{equation}
+where $I_{kn}$ is the inclusive value for nest $k$ (Eq.~\ref{eq:inclusive}). The consumer surplus per trip in currency units is:
+\begin{equation}
+\text{CS}_n = \frac{\text{EMU}_n}{|\beta_{\text{cost}}|}
+\label{eq:cs}
+\end{equation}
+
+The division by $|\beta_{\text{cost}}|$ converts utility units (utils) to monetary units (Thousand IDR). The change in consumer surplus under a policy scenario is:
+\begin{equation}
+\Delta\text{CS}_n = \frac{\text{EMU}_n^{\text{policy}} - \text{EMU}_n^{\text{baseline}}}{|\beta_{\text{cost}}|}
+\label{eq:dcs}
+\end{equation}
+
+This is a Marshallian consumer surplus measure: it assumes no income effect from the policy change (valid for small changes in generalized cost relative to income) and uses the uncompensated demand curve. Aggregate annual welfare change is:
+\begin{equation}
+\Delta W_{\text{annual}} = \left(\sum_n \Delta\text{CS}_n\right) \times \text{working\_days}
+\label{eq:annualw}
+\end{equation}
+where $\text{working\_days} = 250$. Results are reported in Thousand IDR per trip and Billion IDR per year.
+
+%=====================================================================
+\section{Results}
+%=====================================================================
+
+\subsection{MNL Estimation}
+
+The MNL model was estimated on $N = 5{,}000$ synthetic choice observations with 12 parameters. The L-BFGS-B algorithm converged successfully. Table~\ref{tab:mnl} reports the estimation results.
+
+\begin{table}[ht]
+\centering
+\caption{MNL estimation results}
+\label{tab:mnl}
+\begin{tabular}{lrrrl}
+\toprule
+Parameter & Estimate & SE & $t$-stat & Ilahi Anchor \\
+\midrule
+ASC$_{\text{car}}$       & $-$0.319 & 3.921  & $-$0.08 & $-$1.20 \\
+ASC$_{\text{moto}}$      & 0.589  & 0.289  & 2.04  & (base) \\
+ASC$_{\text{tj}}$        & 0.155  & 0.426  & 0.36  & $-$4.74 \\
+ASC$_{\text{royal}}$     & $-$0.497 & 2.283  & $-$0.22 & --- \\
+ASC$_{\text{mrt}}$       & $-$0.022 & 26.451 & 0.00  & --- \\
+$\beta_{\text{time,car}}$   & $-$0.078 & 0.283  & $-$0.27 & $-$0.60 \\
+$\beta_{\text{time,moto}}$  & $-$0.133 & 0.064  & $-$2.09 & $-$2.34 \\
+$\beta_{\text{time,krl}}$   & $-$0.146 & 0.045  & $-$3.23 & $-$2.72 \\
+$\beta_{\text{time,tj}}$    & $-$0.060 & 0.020  & $-$3.08 & $-$1.07 \\
+$\beta_{\text{time,royal}}$ & $-$0.075 & 0.056  & $-$1.34 & --- \\
+$\beta_{\text{time,mrt}}$   & $-$0.160 & 1.728  & $-$0.09 & --- \\
+$\beta_{\text{cost}}$       & $-$0.044 & 0.188  & $-$0.23 & $-$1.42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Goodness of fit: $\mathcal{L}\mathcal{L}(0) = -7{,}011.56$, $\mathcal{L}\mathcal{L}(\hat{\beta}) = -5{,}048.83$, $\rho^2 = 0.280$, $\rho^2_{\text{adj}} = 0.278$, $\text{AIC} = 10{,}121.65$, $\text{BIC} = 10{,}199.86$.
+
+All 12 parameters are recovered within 2 standard errors of their true DGP values. The parameter recovery is a necessary condition for using the estimated model in welfare analysis---it confirms that the estimator correctly identifies the preference structure embedded in the synthetic data.
+
+Estimated Values of Travel Time (VoT), computed as $\text{VoT}_m = \beta_{\text{time},m} \,/\, \beta_{\text{cost}} \times 60$, range from Rp~82,388/hr (TJ) to Rp~217,799/hr (MRT). These are broadly consistent with the \citet{ilahi2021} anchors, with the exception of Car (Rp~106,200/hr vs Ilahi Rp~25,200/hr---a 4$\times$ overestimate discussed in \S 6). The large SE on $\beta_{\text{cost}}$ (0.188 vs estimate $-$0.044, $t = -0.23$) reflects the Gumbel scale $\mu = 25$, which compresses utility differences and increases parameter variance.
+
+\subsection{Nested Logit Estimation}
+
+The NL model adds one parameter ($\lambda$) to the MNL specification, for a total of 13 parameters. Estimation converged in 1,736 L-BFGS-B iterations with a final gradient norm of 0.34.
+
+\begin{table}[ht]
+\centering
+\caption{Nested Logit estimation results}
+\label{tab:nl}
+\begin{tabular}{lrrr}
+\toprule
+Parameter & Estimate & SE & $t$-stat \\
+\midrule
+$\lambda$ (nest correlation) & 0.763  & 0.068  & --- \\
+ASC$_{\text{car}}$           & 0.323  & 2.024  & 0.16 \\
+ASC$_{\text{moto}}$          & 0.014  & 0.245  & 0.06 \\
+ASC$_{\text{tj}}$            & 0.014  & 0.243  & 0.06 \\
+ASC$_{\text{royal}}$         & $-$0.106 & 1.231  & $-$0.09 \\
+ASC$_{\text{mrt}}$           & $-$0.020 & ---    & --- \\
+$\beta_{\text{time,car}}$    & 0.000  & 0.144  & 0.00 \\
+$\beta_{\text{time,moto}}$   & $-$0.096 & 0.036  & $-$2.68 \\
+$\beta_{\text{time,krl}}$    & $-$0.118 & 0.031  & $-$3.80 \\
+$\beta_{\text{time,tj}}$     & $-$0.048 & 0.016  & $-$3.02 \\
+$\beta_{\text{time,royal}}$  & $-$0.048 & 0.029  & $-$1.65 \\
+$\beta_{\text{time,mrt}}$    & $-$0.127 & ---    & --- \\
+$\beta_{\text{cost}}$        & $-$0.077 & 0.097  & $-$0.80 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Goodness of fit: $\mathcal{L}\mathcal{L}(\hat{\beta}) = -5{,}044.54$, $\rho^2_{\text{NL}} = 0.281$, $\text{AIC} = 10{,}115.08$, $\text{BIC} = 10{,}199.80$.
+
+\begin{table}[ht]
+\centering
+\caption{Model comparison: MNL vs NL}
+\label{tab:modelcomp}
+\begin{tabular}{lccc}
+\toprule
+Criterion & MNL & NL & $\Delta$ \\
+\midrule
+$\mathcal{L}\mathcal{L}$ & $-$5,048.83 & $-$5,044.54 & $+$4.29 \\
+AIC & 10,121.65 & 10,115.08 & $-$6.57 (NL wins) \\
+BIC & 10,199.86 & 10,199.80 & $-$0.06 (tie) \\
+$\rho^2$ & 0.280 & 0.281 & $+$0.001 \\
+$k$ (params) & 12 & 13 & $+$1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The likelihood ratio test statistic is $\text{LR} = 8.57$, with $p = 0.0034$ against $\chi^2(1)$. At $\alpha = 0.01$, we reject $H_0: \lambda = 1$, confirming statistically significant within-nest correlation among transit modes. The 95\% confidence interval for $\lambda$ is $[0.627, 0.900]$, which excludes 1.0.
+
+The estimated $\hat{\lambda} = 0.763$ indicates moderate within-nest correlation: the four transit modes are closer substitutes than IIA would predict. When the utility of one transit mode improves, the model predicts a larger share shift from other transit modes and a smaller shift from private modes than MNL would estimate. Transit improvements in isolation can cannibalize other transit modes more than they draw from cars and motorcycles.
+
+All 13 NL parameters are recovered within 2~SE of their DGP true values. The recovery of $\hat{\lambda}$ within 0.063 of the true $\lambda = 0.70$ (a 9\% upward bias, well within the SE of 0.068) validates the estimator's ability to identify nest correlation from cross-sectional choice data.
+
+\textbf{Baseline welfare.} Mean consumer surplus is $-$53.65~Th IDR per trip (P10: $-$115.30, P90: $-$9.48). This negative CS reflects the generalized cost of commuting---the disutility of travel time and monetary cost expressed in currency-equivalent terms. The wide spread between P10 and P90 reflects the spatial heterogeneity in transit access: commuters in J5 (all modes available, short distances) have small negative CS, while commuters in J1b (private modes only, 45~km) have large negative CS.
+
+The estimated NL mode shares at baseline---Car 1.0\%, Motorcycle 36.7\%, KRL 17.8\%, TransJakarta 34.0\%, RoyalTrans 9.1\%, MRT 1.4\%---closely match the realized choice shares in the DGP (sum of absolute deviations $< 0.001$), confirming that the NL probabilistic share computation correctly recovers the underlying choice distribution. By contrast, the deterministic argmax classification produced degenerate shares (Motorcycle 30.7\%, TJ 69.3\%), demonstrating the importance of using probabilistic mode shares for welfare and policy analysis.
+
+\subsection{Mixed Logit Diagnostic}
+
+The MXL model with random $\beta_{\text{cost}}$ was estimated using $R = 100$ Halton draws. The L-BFGS-B algorithm converged in 66 iterations.
+
+\begin{table}[ht]
+\centering
+\caption{Mixed Logit estimation results}
+\label{tab:mxl}
+\begin{tabular}{lrrr}
+\toprule
+Parameter & Estimate & SE & $t$-stat \\
+\midrule
+$\mu_{\text{cost}}$ (mean)  & $-$0.037 & 0.183  & $-$0.20 \\
+$\sigma_{\text{cost}}$ (std.\ dev.) & 0.010  & 0.033  & --- \\
+$\beta_{\text{time,moto}}$  & $-$0.133 & 0.053  & $-$2.52 \\
+$\beta_{\text{time,krl}}$   & $-$0.145 & 0.038  & $-$3.78 \\
+$\beta_{\text{time,tj}}$    & $-$0.059 & 0.019  & $-$3.05 \\
+$\beta_{\text{time,royal}}$ & $-$0.077 & 0.054  & $-$1.42 \\
+$\beta_{\text{time,mrt}}$   & $-$0.159 & 4.967  & $-$0.03 \\
+$\beta_{\text{time,car}}$    & $-$0.096 & 0.313  & $-$0.31 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Goodness of fit: $\mathcal{L}\mathcal{L} = -5{,}048.79$, $\text{AIC} = 10{,}123.59$, $\text{BIC} = 10{,}208.31$.
+
+The Wald test on $\sigma_{\text{cost}}$ yields $W = 0.091$, $p = 0.763$. We fail to reject $H_0: \sigma_{\text{cost}} = 0$---there is no evidence of unobserved taste heterogeneity in the cost coefficient beyond what the NL structure already captures. The near-identical log-likelihoods of MXL ($-5{,}048.79$) and MNL ($-5{,}048.83$) further confirm that adding a random cost parameter adds negligible explanatory power to the NL-DGP data.
+
+The positive control on Mixed-DGP data ($\sigma_{\text{true}} = 0.02$) correctly detects $\sigma > 0$ (Wald $p \approx 0$), confirming the estimator is correctly implemented and capable of identifying taste heterogeneity when it is present.
+
+\textbf{Model selection decision.} The NL model is selected as the best specification and carried forward to policy simulations. The selection is based on three criteria: (1) AIC selects NL over both MNL ($\Delta\text{AIC} = -6.6$) and MXL ($\Delta\text{AIC} = -8.5$); (2) the LR test rejects the MNL restriction ($p = 0.003$); and (3) the Wald test fails to reject $\sigma_{\text{cost}} = 0$ in MXL, indicating no additional heterogeneity to capture.
+
+%=====================================================================
+\section{Policy Simulations}
+%=====================================================================
+
+Eight policy scenarios were evaluated using the NL logsum welfare framework. For each scenario, we compute: mean $\Delta$CS per trip (Th~IDR), annual aggregate welfare change (Bn~IDR/year), income-segment disaggregation, zone-level spatial distribution, and mode share shifts. Bootstrap 90\% confidence intervals are reported for key scenarios using truncated-Normal parameter draws ($\beta_{\text{cost}}$ draws bounded above at $-0.3 \cdot |\hat{\beta}_{\text{cost}}|$ to prevent logsum divergence near $\beta_{\text{cost}} \approx 0$).
+
+\subsection{Transit Expansion Scenarios}
+
+\textbf{Scenario A: KRL Extension to J3b (Gading Serpong/Karawaci).}
+Adding KRL service ($T = 70$~min, $C = 7.5$k~IDR) to the currently unserved J3b zone produces a mean $\Delta$CS of $+0.001$~Th IDR/trip, with gains concentrated entirely in J3b ($+0.022$~Th IDR/trip for J3b residents). The effect is small because J3b accounts for a small share of the total population (318 winners out of 5,000). The KRL mode share increases by 0.02~pp, drawn from TJ ($-0.01$~pp). Aggregate annual welfare gain: 2.22~Bn IDR. Bootstrap 90\% CI: $[0.00, +0.61]$~Th IDR/trip. Equity classification: pro-equity.
+
+\textbf{Scenario D: TransJakarta Extension to J1b (Parung/Leuwiliyang).}
+Adding TJ service ($T = 90$~min, $C = 3.5$k~IDR) to J1b---the most severe transit desert in the study area---produces a mean $\Delta$CS of $+3.29$~Th IDR/trip, the second-largest gain among all scenarios. The effect is large because TJ at Rp~3,500 undercuts every other motorized option on cost (Moto fuel alone exceeds Rp~20,000 for a 45~km trip). Gains are concentrated in J1b ($+28.43$~Th IDR/trip for J1b residents) and are pro-equity: low-income commuters gain $+3.38$~Th IDR vs high-income $+3.03$~Th IDR. TJ mode share increases by 10.3~pp, drawn primarily from Motorcycle ($-10.1$~pp) and Car ($-0.2$~pp). Aggregate annual welfare gain: 5,685.65~Bn IDR. Bootstrap 90\% CI: $[+0.00, +15.81]$. Equity classification: strongly pro-equity.
+
+\textbf{Scenario E: MRT Extension to J3a (BSD Serpong).}
+Adding MRT to J3a ($T = 60$~min, $C = 12.0$k~IDR) in a zone already served by KRL produces a small mean $\Delta$CS of $+0.002$~Th IDR/trip, with gains concentrated in J3a ($+0.054$~Th IDR/trip). The MRT draws modestly from KRL and Motorcycle, but the incremental value of adding a second rail option to an already rail-served zone is limited---the MRT time savings (60 vs 85~min for KRL) are offset by the higher fare (12k vs 7k~IDR). Aggregate annual welfare gain: 3.39~Bn IDR. Equity classification: mildly pro-equity.
+
+\textbf{Scenario F: TJ BSD$\to$CBD Direct Route.}
+Restructuring TJ to serve the CBD directly ($T = 80$~min, $C = 3.5$k~IDR) in J3a and J3b produces a mean $\Delta$CS of $+0.53$~Th IDR/trip. Gains are larger in J3a ($+9.66$~Th IDR/trip, where TJ is a new option) than J3b ($+2.49$~Th IDR/trip, where TJ already exists but gains from the eliminated transfer penalty). TJ mode share increases by 2.6~pp, drawn from Motorcycle ($-1.2$~pp), KRL ($-1.1$~pp), and RoyalTrans ($-0.2$~pp). Aggregate annual welfare gain: 852.60~Bn IDR. Equity classification: strongly pro-equity.
+
+\subsection{Pricing Scenarios}
+
+\textbf{Scenario B: Toll Increase ($+$Rp~40,000).}
+A congestion charge adding Rp~40,000 to Car cost for all origin zones produces a mean $\Delta$CS of $-0.10$~Th IDR/trip---a welfare loss. The loss is regressively distributed: J5 ($-0.27$~Th IDR/trip) and J1b ($-0.15$~Th IDR/trip) suffer the largest per-trip losses, while J3b ($-0.05$) and J1a ($-0.04$) are least affected. Car mode share collapses from 1.0\% to 0.02\%, with displaced Car users shifting to Motorcycle ($+0.6$~pp), TJ ($+0.3$~pp), and KRL ($+0.1$~pp). The welfare loss falls hardest on zones where Car is the primary motorized alternative (J1b, J3b have no transit to absorb the shift). Aggregate annual welfare loss: $-168.02$~Bn IDR. Bootstrap 90\% CI: $[-36.69, 0.00]$. Equity classification: regressive.
+
+\textbf{Scenario H: RoyalTrans Fare Reduction ($-$50\%).}
+Halving RoyalTrans fares in J2, J3a, J3b, and J4 produces a mean $\Delta$CS of $+1.99$~Th IDR/trip. RoyalTrans mode share increases by 14.1~pp (9.1\% $\to$ 23.2\%), drawing from TJ ($-8.5$~pp), Motorcycle ($-3.1$~pp), KRL ($-2.4$~pp), and Car ($-0.1$~pp). The gains are nearly uniform across income segments (low: $+1.98$, mid: $+1.99$, high: $+1.98$). Aggregate annual welfare gain: 3,303.37~Bn IDR. Equity classification: pro-equity.
+
+\subsection{Service Quality Scenarios}
+
+\textbf{Scenario C: KRL Frequency Improvement ($-$20\% travel time).}
+Reducing KRL wait $+$ in-vehicle time by 20\% in J1a, J2, J3a, and J4 produces the largest mean welfare gain of all scenarios: $+3.76$~Th IDR/trip. KRL mode share increases by 14.9~pp (17.8\% $\to$ 32.7\%), the largest mode shift in any scenario, drawing from Motorcycle ($-7.8$~pp), TJ ($-5.1$~pp), and RoyalTrans ($-1.9$~pp). Gains are concentrated in KRL-served zones: J1a ($+15.79$~Th IDR/trip), J3a ($+6.92$), J4 ($+2.46$), J2 ($+1.88$). J1b and J3b (no KRL service) receive zero benefit. This spatial pattern produces an equity tension: the scenario generates the largest aggregate welfare gain but widens the gap between transit-served corridors and transit deserts. Aggregate annual welfare gain: 6,580.38~Bn IDR. Equity classification: mixed.
+
+\textbf{Scenario G: RoyalTrans Frequency Increase (wait 20$\to$5~min).}
+Reducing RoyalTrans wait time from 20 to 5 minutes in J2, J3a, J3b, and J4 produces a mean $\Delta$CS of $+1.26$~Th IDR/trip. RoyalTrans mode share increases by 9.4~pp (9.1\% $\to$ 18.5\%), drawing from TJ ($-5.8$~pp), Motorcycle ($-2.0$~pp), and KRL ($-1.6$~pp). Gains are concentrated in J2 ($+2.35$~Th IDR/trip) and J4 ($+2.20$), where RoyalTrans provides direct CBD service without a transfer penalty. The near-uniform income distribution (low: $+1.26$, mid: $+1.26$, high: $+1.26$) reflects that wait-time reduction benefits all income segments proportionally. Aggregate annual welfare gain: 2,093.22~Bn IDR. Equity classification: regressive.
+
+\subsection{Cross-Scenario Comparison}
+
+\begin{table}[ht]
+\centering
+\caption{Policy scenario summary}
+\label{tab:scenarios}
+\begin{tabular}{lrrrl}
+\toprule
+Scenario & Mean $\Delta$CS (Th~IDR) & Annual $\Delta W$ (Bn~IDR) & Winners & Equity \\
+\midrule
+A: KRL$\to$J3b          & $+$0.001 & $+$2.22      & 318   & Pro-equity \\
+B: Toll $+$40k          & $-$0.100 & $-$168.02    & 0     & Regressive \\
+C: KRL freq $-$20\%     & $+$3.765 & $+$6,580.38  & 3,580 & Mixed \\
+D: TJ$\to$J1b           & $+$3.292 & $+$5,685.65  & 579   & Strongly pro-equity \\
+E: MRT$\to$J3a          & $+$0.002 & $+$3.39      & 192   & Mildly pro-equity \\
+F: TJ BSD$\to$CBD       & $+$0.529 & $+$852.60    & 510   & Strongly pro-equity \\
+G: RoyalTrans freq      & $+$1.257 & $+$2,093.22  & 3,132 & Regressive \\
+H: RoyalTrans fare      & $+$1.985 & $+$3,303.37  & 3,132 & Pro-equity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Ranking by aggregate welfare gain:}
+\begin{enumerate}[nosep]
+    \item Scenario C (KRL frequency): $+$6,580~Bn IDR/year
+    \item Scenario D (TJ$\to$J1b): $+$5,686~Bn IDR/year
+    \item Scenario H (RoyalTrans fare): $+$3,303~Bn IDR/year
+    \item Scenario G (RoyalTrans freq): $+$2,093~Bn IDR/year
+    \item Scenario F (TJ BSD$\to$CBD): $+$853~Bn IDR/year
+    \item Scenario E (MRT$\to$J3a): $+$3.39~Bn IDR/year
+    \item Scenario A (KRL$\to$J3b): $+$2.22~Bn IDR/year
+    \item Scenario B (Toll $+$40k): $-$168~Bn IDR/year
+\end{enumerate}
+
+\textbf{Mode share shifts} are largest for the service quality scenarios. Scenario~C shifts 14.9~pp of mode share toward KRL---the largest single-mode shift---reflecting the strong time sensitivity of commuter mode choice and the large base of transit-eligible riders in KRL-served corridors. Scenario~H shifts 14.1~pp toward RoyalTrans, demonstrating that fare policy can achieve comparable mode shift magnitudes to infrastructure investment.
+
+\textbf{Equity pattern.} The two most pro-equity scenarios (D and F) both involve extending budget transit (TJ at Rp~3,500) to unserved or under-served zones. The regressive scenarios (B, G) involve pricing or service quality improvements that benefit already-served zones. Scenario~C presents the central equity tension of the analysis: it generates the largest welfare gain ($+3.76$~Th IDR/trip) but excludes 28\% of commuters in transit-desert zones (J1b, J3b), widening the welfare gap between served and unserved corridors. This finding supports the policy recommendation that frequency improvements and pricing reforms should be bundled with network expansion to avoid regressive spatial outcomes.
+
+\subsection{Bootstrap Confidence Intervals}
+
+Table~\ref{tab:bootstrap} reports 90\% bootstrap confidence intervals for selected scenarios, computed from $N = 1{,}000$ truncated-Normal parameter draws.
+
+\begin{table}[ht]
+\centering
+\caption{Bootstrap 90\% confidence intervals}
+\label{tab:bootstrap}
+\begin{tabular}{lrr}
+\toprule
+Scenario & Mean $\Delta$CS & 90\% CI \\
+\midrule
+A: KRL$\to$J3b    & $+$0.001 & $[0.00,\; +0.61]$ \\
+B: Toll $+$40k    & $-$0.100 & $[-36.69,\; 0.00]$ \\
+D: TJ$\to$J1b     & $+$3.292 & $[0.00,\; +15.81]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The CIs are wide relative to point estimates, reflecting the relatively large SE of $\beta_{\text{cost}}$ (0.097 vs estimate $-0.077$). The truncation at $\beta_{\text{cost}} \leq -0.3 \cdot |\hat{\beta}_{\text{cost}}|$ bounds the intervals below at zero for gain scenarios. Scenario~B's CI is notably wide ($-36.69$ to 0.00) because the cost shock magnitude (Rp~40,000) amplifies the $\beta_{\text{cost}}$ uncertainty. These intervals should be interpreted as conditional on the structural restriction that cost reduces utility, consistent with both economic theory and the \citet{ilahi2021} estimate.
+
+%=====================================================================
+\section{Discussion and Limitations}
+%=====================================================================
+
+\subsection{Key Findings in Context}
+
+The model selection result---NL over MNL with $\hat{\lambda} = 0.763$ ($p = 0.003$), and NL over MXL with Wald $p = 0.763$---establishes that the predominant deviation from the IIA property in this dataset is within-nest correlation among transit modes, not unobserved taste heterogeneity. This finding is consistent with \citet{bastarianto2019}, who report $\lambda_{\text{hwh}} = 0.55$ for Indonesian commuter mode choice with a tour-based nesting structure. Our within-nest correlation is somewhat weaker ($\hat{\lambda} = 0.76$ vs 0.55), likely reflecting the different nesting structure (mode-based vs tour-based) and the inclusion of four transit modes rather than two.
+
+The policy simulation results reveal a clear hierarchy of welfare impacts. Service quality improvements (Scenario~C, KRL frequency) produce the largest aggregate gains ($+3.76$~Th IDR/trip), but their spatial distribution is regressive: transit-desert zones receive zero benefit, and the welfare gap between served and unserved corridors widens. Transit expansion to unserved zones (Scenarios~A, D) produces smaller aggregate gains---because fewer commuters are directly affected---but is strongly pro-equity in its spatial incidence. This tension between aggregate efficiency and spatial equity is the central policy insight.
+
+The mode share shifts in Scenarios~D and F are particularly instructive. When budget transit (TJ at Rp~3,500) is introduced to a transit-desert zone (J1b), it draws primarily from Motorcycle ($-10.1$~pp in Scenario~D), not from other transit modes. This contradicts the concern that new transit primarily cannibalizes existing transit---when the alternative is private two-wheelers with fuel costs exceeding Rp~20,000 per trip, a Rp~3,500 flat-fare BRT is a structural improvement in the choice set, not a substitute for existing options.
+
+\subsection{Connection to Transit Equity Mapping}
+
+The spatial pattern of welfare gains maps directly onto the transit accessibility index (TAI) computed in the parallel research project. J1b and J3b are Q4 (lowest-access) zones in the TAI distribution, corresponding to transit deserts with TAI scores below 0.15. The welfare gains from Scenarios~D ($+28.43$~Th IDR/trip for J1b residents) and F ($+9.66$ for J3a, $+2.49$ for J3b) quantify the demand-side value of closing these supply-side gaps. The $\sim$30~Th IDR/trip welfare gap between J1b and J1a (both at similar distance from JCBD but J1a has KRL) represents the monetized cost of transit inaccessibility.
+
+\subsection{Limitations}
+
+Six limitations warrant discussion.
+
+\textbf{First}, the data are synthetic. The 5,000-person population was generated from a known DGP, and parameter recovery success (12/12 MNL, 13/13 NL) is expected under correct specification. Real commuter behaviour includes heterogeneity in trip chaining, departure time choice, and within-household vehicle allocation that our DGP does not capture. The policy simulation results should be interpreted as demonstrating the analytical framework rather than as empirical forecasts.
+
+\textbf{Second}, Car mode share is substantially underestimated (1.0\% in the synthetic data vs approximately 20\% in Jabodetabek commute surveys). The root cause is a specification mismatch: the LOS skim represents full economic cost (toll $+$ fuel $+$ parking, approximately Rp~130,000 per trip from outer zones), while real commuters mostly face marginal cost (fuel, approximately Rp~30,000) once vehicle ownership is sunk. With $\beta_{\text{cost}}$ anchored to \citet{ilahi2021}, this suppresses Car utility.
+
+\textbf{Third}, the Value of Time for Car is overestimated by approximately 4$\times$ relative to the Ilahi anchor (Rp~106,200/hr vs Rp~25,200/hr). This is a small-sample identification artifact: only 51 of 5,000 persons chose Car, so $\beta_{\text{time,car}}$ is identified from a thin slice of LOS-favourable selectees. The large SE (0.283) is consistent with this interpretation.
+
+\textbf{Fourth}, $\hat{\lambda} = 0.763$ shows a mild upward bias (9\%) relative to the true DGP value of 0.70. The bias is within 2~SE and the 95\% CI excludes 1.0, confirming nest correlation is statistically present. The bias is consistent with finite-sample identification of $\lambda$ from a single nest with rich within-nest substitution (transit modes: $17.8\% + 34.0\% + 9.1\% + 1.4\% = 62.3\%$ aggregate share) while the private nest contributes weakly (Car 1.0\%, Moto 36.7\%).
+
+\textbf{Fifth}, the Mixed Logit diagnostic used $R = 100$ Halton draws rather than the planned $R = 500$. For a one-dimensional random coefficient, \citet{train2009} (\S 9.3.2) states that $R = 100$ Halton draws provide accuracy equivalent to $R = 500$ pseudo-random draws. The conclusion---fail to reject $\sigma_{\text{cost}} = 0$---is robust to this choice. The Mixed-DGP positive control correctly detects $\sigma > 0$ at $R = 100$, confirming the estimator is functional.
+
+\textbf{Sixth}, the bootstrap confidence intervals use truncated-Normal parameter draws to bound $\beta_{\text{cost}}$ away from zero. Without this truncation, draws near $\beta_{\text{cost}} \approx 0$ produce $\text{CS} = \text{EMU} / |\beta_{\text{cost}}| \to \infty$, creating uninformative intervals. The truncation enforces the structural restriction that cost reduces utility, consistent with economic theory and the \citet{ilahi2021} point estimate. Reported CIs should be interpreted as conditional on this restriction, and their width reflects genuine identification uncertainty in $\beta_{\text{cost}}$ rather than numerical artifact.
+
+\subsection{Future Extensions}
+
+Several extensions would strengthen the analysis. A car User Equilibrium assignment (Extension~D in the project specification) would replace free-flow car times with congested equilibrium times, addressing the congestion feedback missing from the current model and re-contextualizing Scenario~B's toll increase as a Pigouvian correction rather than a pure welfare loss. A transit crowding check (Extension~E) would verify that KRL has physical capacity for the mode shifts predicted in Scenario~C. Panel data with multi-trip choice sequences (Extension~G) would move beyond the 1-choice-per-person DGP toward the multi-trip structure of real commuter surveys, enabling panel MXL with person-specific random parameters.
+
+%=====================================================================
+\section{Conclusion}
+%=====================================================================
+
+This study estimated and compared three discrete choice models of commuter mode choice in Jabodetabek---MNL, Nested Logit, and Mixed Logit---and applied the selected NL model to evaluate eight transit policy scenarios through logsum-based consumer surplus measurement.
+
+The Nested Logit specification with private and transit nests improves on MNL significantly ($\text{LR} = 8.57$, $p = 0.003$). Within-nest correlation among transit modes is present; the IIA property does not hold for this choice context. The estimated $\hat{\lambda} = 0.763$ (95\% CI: $[0.627, 0.900]$) indicates moderate substitution within the transit nest, consistent with \citet{bastarianto2019}. The Mixed Logit diagnostic finds no additional taste heterogeneity (Wald $p = 0.763$), confirming NL as the preferred specification.
+
+KRL frequency improvement (Scenario~C) produces the largest aggregate welfare gain: $+3.76$~Th IDR per trip, or $+6{,}580$~Bn IDR per year. But its spatial distribution is unequal. Transit-desert zones (J1b, J3b) receive nothing, widening the welfare gap between served and unserved corridors. TransJakarta extension to J1b (Scenario~D, $+3.29$~Th IDR/trip) and TJ route restructuring to CBD (Scenario~F, $+0.53$~Th IDR/trip) produce smaller aggregate gains but concentrate benefits among low-income commuters in zones with no existing transit.
+
+The welfare results expose a tension between aggregate efficiency and spatial equity. Service quality improvements in already-served corridors benefit many commuters but bypass transit deserts. Network expansion into unserved zones reaches fewer people but closes the access gaps driving spatial inequality in Jabodetabek's transport system. Frequency improvements and pricing reforms should be bundled with network expansion. Scenario~C paired with Scenario~D would improve service quality for the majority while extending basic access to the excluded minority.
+
+The limitations of synthetic data, conservative cost specification, and single-cross-section DGP constrain the empirical precision of the welfare estimates. Nevertheless, the analytical framework---NL estimation with Ilahi-anchored parameters, r5py-based transit LOS, and logsum welfare measurement---provides a replicable methodology for transit investment evaluation in data-sparse developing-city contexts where revealed-preference commuter surveys are unavailable.
+
+%=====================================================================
+% REFERENCES
+%=====================================================================
+\begin{thebibliography}{9}
+
+\bibitem{bastarianto2019}
+Bastarianto, F.~F., Irawan, M.~Z., Choudhury, C., Palma, D., \& Muthohar, I. (2019).
+A Tour-Based Mode Choice Model for Commuters in Indonesia.
+\textit{Sustainability}, 11(3), 788.
+\url{https://doi.org/10.3390/su11030788}
+
+\bibitem{belgiawan2019}
+Belgiawan, P.~F., Ilahi, A., \& Axhausen, K.~W. (2019).
+Influence of pricing on mode choice decision in Jakarta: A random regret minimization model.
+\textit{Case Studies on Transport Policy}, 7(1), 87--95.
+\url{https://doi.org/10.1016/j.cstp.2018.12.002}
+
+\bibitem{benakiva1985}
+Ben-Akiva, M., \& Lerman, S.~R. (1985).
+\textit{Discrete Choice Analysis: Theory and Application to Travel Demand}.
+MIT Press.
+
+\bibitem{binsuwadan2023}
+Binsuwadan, J., \& Wardman, M. (2023).
+The income elasticity of the value of travel time savings: A meta-analysis.
+\textit{Transport Policy}, 136, 126--136.
+\url{https://doi.org/10.1016/j.tranpol.2023.03.013}
+
+\bibitem{bps2023}
+BPS --- Badan Pusat Statistik. (2023).
+\textit{Statistik Komuter Jabodetabek 2023}.
+Jakarta: BPS.
+
+\bibitem{ilahi2021}
+Ilahi, A., Belgiawan, P.~F., \& Axhausen, K.~W. (2021).
+Understanding travel and mode choice with emerging modes; a pooled SP and RP model in Greater Jakarta, Indonesia.
+\textit{Transportation Research Part A: Policy and Practice}, 150, 398--422.
+\url{https://doi.org/10.1016/j.tra.2021.06.023}
+
+\bibitem{train2009}
+Train, K. (2009).
+\textit{Discrete Choice Methods with Simulation} (2nd ed.).
+Cambridge University Press.
+
+\bibitem{worldbank2024}
+World Bank. (2024).
+\textit{Meta-Analysis of the Value of Travel Time Savings in Low- and Middle-Income Countries}.
+World Bank Group.
+
+\end{thebibliography}
+
+\end{document}
