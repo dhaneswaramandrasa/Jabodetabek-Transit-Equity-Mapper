@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jabodetabek Commute Policies · 3D</title>
+<title>Jabodetabek Commute Policies in 3D</title>
 <meta name="description" content="Eight transport policies for the Jabodetabek commute, scored with a Nested Logit model: who switches mode, who gains, who loses. 3D map with trains, buses and motorbikes moving on the network.">
-<meta property="og:title" content="Jabodetabek Commute Policies · 3D">
+<meta property="og:title" content="Jabodetabek Commute Policies in 3D">
 <meta property="og:description" content="Faster KRL, a new TransJakarta line or a toll? Eight policies, one Nested Logit model, animated on a 3D map.">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -77,7 +77,7 @@ body.embed .panel, body.embed .card, body.embed .clock { display: none; }
 <div id="load">Loading network…</div>
 
 <aside class="panel" aria-label="Scenarios">
-  <p class="kick">Jabodetabek commute · Nested Logit</p>
+  <p class="kick">Jabodetabek commute, nested logit model</p>
   <h1>Which policy helps the commute, and who gains?</h1>
   <p class="lede">Seven home zones, one destination: the Sudirman–Kuningan CBD. Six modes in two nests (private: car, motorbike; transit: KRL, TransJakarta, RoyalTrans, MRT). Pick a policy to see who switches and who gains.</p>
   <p class="sec">Scenario</p>
@@ -251,12 +251,12 @@ body.embed .panel, body.embed .card, body.embed .clock { display: none; }
   }
   function card() {
     var s = sc(), m = D.meta;
-    if (!s) return '<p class="kick">Baseline · today</p><div class="big">' + Math.round(-m.baseline.cs_mean_th_idr) + '<small>k IDR</small></div><div class="sub">average daily generalised cost felt per commuter (−CS)</div><p class="sec">Mode share, base</p>' + shareBars(null) +
+    if (!s) return '<p class="kick">Baseline today</p><div class="big">' + Math.round(-m.baseline.cs_mean_th_idr) + '<small>k IDR</small></div><div class="sub">average daily generalised cost felt per commuter (−CS)</div><p class="sec">Mode share, base</p>' + shareBars(null) +
       '<p class="sec">Model</p><div class="kv"><div><b>' + m.model + '</b><span>nested logit</span></div><div><b>λ ' + m.lambda.toFixed(2) + '</b><span>nest parameter</span></div><div><b>' + m.beta_cost.toFixed(3) + '</b><span>β cost / k IDR</span></div><div><b>' + fmtInt(m.n_persons) + '</b><span>synthetic commuters</span></div></div><p class="note">λ between 0 and 1: people switch more easily within private or within transit than across.</p>';
     var zk = D.zones.map(function (z) { return z.id; });
     return '<p class="kick">Scenario ' + S.sc + '</p><div class="big" style="color:' + (s.mean_dCS_th_idr >= 0 ? 'var(--accent)' : 'var(--neg)') + '">' + fmtK(s.mean_dCS_th_idr) + '<small>k IDR / day</small></div><div class="sub">mean ΔCS per commuter</div>' +
       '<div class="kv"><div><b>' + fmtInt(s.annual_aggregate_bn_idr) + '</b><span>bn IDR / year</span></div><div><b>' + fmtInt(s.n_winners) + ' / ' + fmtInt(s.n_losers) + '</b><span>gain / lose (of 5k)</span></div></div>' +
-      '<p class="sec">Mode share <small>· faint = base</small></p>' + shareBars(s) +
+      '<p class="sec">Mode share <small>(faint = base)</small></p>' + shareBars(s) +
       '<p class="sec">ΔCS by income</p>' + divBars(s.dCS_by_income, ['low', 'mid', 'high'], ['Low', 'Mid', 'High']) +
       '<p class="sec">ΔCS by zone</p>' + divBars(s.dCS_by_zone, zk, zk);
   }
@@ -296,7 +296,7 @@ body.embed .panel, body.embed .card, body.embed .clock { display: none; }
     var keys = ['base'].concat(Object.keys(D.scenarios));
     keys.forEach(function (k) { var b = document.createElement('button'); b.type = 'button'; b.dataset.k = k;
       var lab = k === 'base' ? 'Baseline' : D.scenarios[k].label.replace(/^[A-H]: /, '');
-      b.innerHTML = (k === 'base' ? '' : k + ' · ') + lab + '<span>' + (k === 'base' ? 'today' : fmtK(D.scenarios[k].mean_dCS_th_idr) + 'k / day') + '</span>';
+      b.innerHTML = (k === 'base' ? '' : k + ': ') + lab + '<span>' + (k === 'base' ? 'today' : fmtK(D.scenarios[k].mean_dCS_th_idr) + 'k / day') + '</span>';
       b.onclick = function () { pick(k); }; $('scen').appendChild(b); });
     if (/[?&]embed/.test(location.search)) document.body.classList.add('embed');
     var q = /[?&]s(?:cenario)?=([A-Ha-h]|base)/.exec(location.search), first = q ? (q[1] === 'base' ? 'base' : q[1].toUpperCase()) : 'base';
