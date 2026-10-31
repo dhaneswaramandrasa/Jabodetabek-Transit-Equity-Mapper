@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/"><img src="docs/showcase-3d.gif" alt="3D map: transit deserts in Jabodetabek rising out of the map" width="720"></a><br>
-  <a href="https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/"><b>▶ Open the 3D map</b></a><br>
+  <a href="https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/"><b>▶ Open the 3D map</b></a> · <a href="https://dhaneswaramandrasa.github.io/jabodetabek-transit-equity-mapper/commute/"><b>▶ Commute policies 3D</b></a><br>
   <sub>28% of Jabodetabek is a transit desert: high need, low access. Seven steps on real open data; unfinished parts are labelled.</sub>
 </p>
 
