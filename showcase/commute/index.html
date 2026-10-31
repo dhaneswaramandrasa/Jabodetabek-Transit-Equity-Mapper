@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jabodetabek Commute Policies · 3D</title>
+<meta name="description" content="Eight transport policies for the Jabodetabek commute, scored with a Nested Logit model: who switches mode, who gains, who loses. 3D map with trains, buses and motorbikes moving on the network.">
+<meta property="og:title" content="Jabodetabek Commute Policies · 3D">
+<meta property="og:description" content="Faster KRL, a new TransJakarta line or a toll? Eight policies, one Nested Logit model, animated on a 3D map.">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Commute policy 3D map. Data from data/commute.json, written by scripts/export_commute_showcase.py. */
+:root { --bg: #0b0d17; --panel: rgba(14,16,28,.86); --fg: #f4f4f8; --muted: #9298b0; --ink2: #c9cbd8; --line: rgba(255,255,255,.12); --accent: #2ee6a6; --well: rgba(255,255,255,.06); --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; --neg: #ff3b5c; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 14.5px/1.5 "Archivo", -apple-system, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+#map { position: fixed; inset: 0; }
+.panel, .card { position: absolute; z-index: 2; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.45); overflow: auto; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.panel { top: 16px; left: 16px; width: 360px; max-height: calc(100% - 96px); padding: 18px 20px 14px; }
+.card { top: 16px; right: 16px; width: 330px; max-height: calc(100% - 96px); padding: 16px 18px 14px; }
+.kick { font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+h1 { font-weight: 800; font-size: 27px; letter-spacing: -0.03em; line-height: 1.04; margin: 10px 0 0; }
+h2 { margin: 12px 0 0; font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
+.lede, .panel p { margin: 8px 0 0; color: var(--ink2); font-size: 13.5px; }
+.sec { margin: 14px 0 6px; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.sec small { letter-spacing: 0; text-transform: none; }
+.scen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.scen button { font: 600 12px "Archivo", sans-serif; text-align: left; color: var(--fg); background: var(--well); border: 1px solid var(--line); border-radius: 9px; padding: 6px 8px; cursor: pointer; line-height: 1.2; }
+.scen button span { display: block; font: 500 10px var(--mono); color: var(--muted); margin-top: 2px; }
+.scen button:hover { border-color: var(--accent); }
+.scen button[aria-pressed="true"] { background: var(--fg); color: #0b0d17; border-color: var(--fg); }
+.scen button[aria-pressed="true"] span { color: #3a3f55; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chips span { font: 500 11.5px "Archivo", sans-serif; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; display: inline-flex; gap: 6px; align-items: center; color: var(--ink2); }
+.chips i { width: 14px; height: 4px; border-radius: 2px; }
+.badge { display: inline-block; font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 2px 9px; border: 1.5px solid; margin-top: 6px; }
+.big { font-weight: 800; font-size: 34px; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.big small { font-size: 14px; font-weight: 700; margin-left: 3px; color: var(--muted); }
+.sub { font: 12px var(--mono); color: var(--muted); margin-top: 3px; }
+.kv { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.kv div { background: var(--well); border-radius: 8px; padding: 7px 9px; }
+.kv b { display: block; font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.kv span { font: 10px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.bars { display: grid; grid-template-columns: 74px 1fr 64px; gap: 5px 8px; align-items: center; font-size: 12.5px; }
+.bars .tr { position: relative; height: 10px; background: var(--well); border-radius: 2px; }
+.bars .tr b { position: absolute; top: 0; bottom: 0; border-radius: 2px; transition: width .5s, left .5s; }
+.bars .tr b.base { opacity: .35; }
+.bars .tr .mid { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--line); }
+.bars .v { font: 11px var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
+.note { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.foot { margin: 12px 0 0; font-size: 11.5px; color: var(--muted); }
+.foot a { color: var(--accent); text-decoration: none; }
+.clock { position: absolute; z-index: 2; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px 6px 8px; display: flex; gap: 10px; align-items: center; box-shadow: 0 12px 40px rgba(0,0,0,.45); backdrop-filter: blur(10px); }
+.clock button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: var(--accent); color: #0b0d17; cursor: pointer; font-size: 12px; flex: none; }
+.clock b { font: 600 15px var(--mono); min-width: 52px; }
+.clock span { font: 11px var(--mono); color: var(--muted); }
+.clock select { font: 500 11px var(--mono); background: #1a1d2e; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
+.tt { position: absolute; z-index: 3; pointer-events: none; background: #1a1d2e; color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font-size: 12.5px; box-shadow: 0 8px 24px rgba(0,0,0,.4); display: none; max-width: 280px; }
+.tt span { display: block; font: 11px var(--mono); color: var(--muted); }
+#load { position: fixed; z-index: 5; left: 50%; top: 50%; transform: translate(-50%,-50%); font: 500 13px var(--mono); color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; }
+body.embed .panel, body.embed .card, body.embed .clock { display: none; }
+@media (max-width: 860px) {
+  .panel { top: auto; bottom: 0; left: 0; right: 0; width: auto; max-height: 46%; border-radius: 14px 14px 0 0; padding: 12px 16px 10px; }
+  h1 { font-size: 20px; margin-top: 4px; } .lede, .panel .foot { display: none; }
+  .card { top: 10px; left: 10px; right: 10px; width: auto; max-height: 30%; padding: 10px 14px; }
+  .clock { bottom: calc(46% + 10px); }
+  .card .big { font-size: 26px; }
+}
+.maplibregl-ctrl-group { background: #1a1d2e; } .maplibregl-ctrl-group button + button { border-top-color: rgba(255,255,255,.1); }
+.maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: invert(1); }
+.maplibregl-ctrl-attrib { background: rgba(14,16,28,.7) !important; color: var(--muted); } .maplibregl-ctrl-attrib a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="map" role="img" aria-label="3D map of Jabodetabek commute zones with trains, buses and private vehicles moving towards central Jakarta"></div>
+<div class="tt" id="tt"></div>
+<div id="load">Loading network…</div>
+
+<aside class="panel" aria-label="Scenarios">
+  <p class="kick">Jabodetabek commute · Nested Logit</p>
+  <h1>Which policy helps the commute, and who gains?</h1>
+  <p class="lede">Seven home zones, one destination: the Sudirman–Kuningan CBD. Six modes in two nests (private: car, motorbike; transit: KRL, TransJakarta, RoyalTrans, MRT). Pick a policy to see who switches and who gains.</p>
+  <p class="sec">Scenario</p>
+  <div class="scen" id="scen"></div>
+  <div id="desc"></div>
+  <p class="sec">On the map</p>
+  <div class="chips" id="legend"></div>
+  <p class="note">Zone height and colour: change in consumer surplus (ΔCS) per commuter. Vehicles on the map scale with modelled mode share; their number is illustrative.</p>
+  <p class="foot">Hiroshima University · Transportation Engineering final project, 2026. Synthetic commuters (n = 5,000) on literature-anchored values of time; transit times from GTFS + r5py, road times from BPR. Rail and BRT lines are real; RoyalTrans and new links are schematic. <a href="../">← Transit equity map</a> · <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/notebooks/trans-eng-final">Notebooks</a></p>
+</aside>
+<aside class="card" id="card" aria-live="polite"></aside>
+<div class="clock"><button type="button" id="play" aria-label="Play or pause">❚❚</button><b id="time">06:00</b><span>morning peak</span><select id="speed" aria-label="Speed"><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option></select></div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var MOBILE = matchMedia('(max-width: 860px)').matches;
+  var $ = function (id) { return document.getElementById(id); };
+  var D, S = { sc: 'base', t: 0, playing: true, speed: 2 }, TRIPS = [], LINKS = [];
+  var LOOP = 120; // minutes of simulated morning peak, 06:00-08:00
+
+  function hex2rgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
+  function mix(a, b, t) { return [0, 1, 2].map(function (i) { return Math.round(a[i] + (b[i] - a[i]) * t); }); }
+  function css(c) { return 'rgb(' + c.join(',') + ')'; }
+  var MODE = {
+    car:   { n: 'Car',          c: '#c9cbd8', kmh: 0,  w: 3,  trail: 1.2 },
+    moto:  { n: 'Motorbike',    c: '#ffd84d', kmh: 0,  w: 2,  trail: 0.9 },
+    krl:   { n: 'KRL',          c: '#ff8a3d', kmh: 45, w: 7,  trail: 0.8, head: 10 },
+    tj:    { n: 'TransJakarta', c: '#38bdf8', kmh: 20, w: 4.5, trail: 1.4, head: 10 },
+    royal: { n: 'RoyalTrans',   c: '#2ee6a6', kmh: 0,  w: 4.5, trail: 1.4 },
+    mrt:   { n: 'MRT',          c: '#e5484d', kmh: 40, w: 7,  trail: 0.8, head: 6 },
+    lrt:   { n: 'LRT',          c: '#9b7bff', kmh: 35, w: 6,  trail: 0.8, head: 8 }
+  };
+  Object.keys(MODE).forEach(function (k) { MODE[k].rgb = hex2rgb(MODE[k].c); });
+  var POS = hex2rgb('#2ee6a6'), NEG = hex2rgb('#ff3b5c'), FLAT = [52, 56, 80];
+  var DIVS = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120];
+  function nearestDiv(h) { var best = 120; DIVS.forEach(function (d) { if (Math.abs(Math.log(d / h)) < Math.abs(Math.log(best / h))) best = d; }); return best; }
+  function fmtK(x) { var a = Math.abs(x); return (x < 0 ? '−' : x > 0 ? '+' : '') + (a >= 10 ? a.toFixed(1) : a >= 1 ? a.toFixed(2) : a.toFixed(3)); }
+  function km(a, b) { var dx = (a[0] - b[0]) * 111.32 * Math.cos(a[1] * Math.PI / 180), dy = (a[1] - b[1]) * 110.54; return Math.sqrt(dx * dx + dy * dy); }
+
+  var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/dark',
+    center: [106.78, -6.36], zoom: MOBILE ? 8.4 : 9.35, pitch: 52, bearing: -14, attributionControl: { compact: true } });
+  var mapReady = new Promise(function (res) { map.once('load', res); });
+  var overlay = new deck.MapboxOverlay({ interleaved: true, layers: [] });
+  map.addControl(overlay);
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+
+  // ---------- scenario helpers ----------
+  function sc() { return S.sc === 'base' ? null : D.scenarios[S.sc]; }
+  function shareRatio(m) {
+    var s = sc(); if (!s || !s.mode_share_base[m]) return 1;
+    return Math.max(0.02, s.mode_share_policy[m] / s.mode_share_base[m]);
+  }
+  function zoneDcs(id) { var s = sc(); return s ? s.dCS_by_zone[id] || 0 : 0; }
+  function maxAbsDcs() { var s = sc(), m = 0; if (!s) return 1; Object.keys(s.dCS_by_zone).forEach(function (k) { m = Math.max(m, Math.abs(s.dCS_by_zone[k])); }); return m || 1; }
+
+  // ---------- schematic links (zone centroid -> CBD), bent so modes do not overlap ----------
+  function bent(a, b, off) {
+    var mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1], L = Math.sqrt(dx * dx + dy * dy) || 1;
+    var cx = mx - dy / L * off * L, cy = my + dx / L * off * L, out = [];
+    for (var i = 0; i <= 24; i++) { var t = i / 24, u = 1 - t; out.push([u * u * a[0] + 2 * u * t * cx + t * t * b[0], u * u * a[1] + 2 * u * t * cy + t * t * b[1]]); }
+    return out;
+  }
+  var OFF = { car: 0.10, moto: -0.10, royal: 0.18, krl: -0.2, tj: 0.24, mrt: -0.26 };
+  function buildLinks() {
+    var s = sc(), links = [], cbd = D.cbd.centroid;
+    D.zones.forEach(function (z) {
+      z.avail.forEach(function (m) {
+        if (m === 'car' || m === 'moto' || m === 'royal') links.push({ zone: z, mode: m, path: bent(z.centroid, cbd, OFF[m]), t: z.skim[m] ? z.skim[m].t : 60, fresh: false });
+      });
+    });
+    if (s) s.new_links.forEach(function (l) { var z = D.zones.filter(function (q) { return q.id === l.zone; })[0]; links.push({ zone: z, mode: l.mode, path: bent(z.centroid, cbd, OFF[l.mode]), t: l.t, fresh: true }); });
+    LINKS = links;
+  }
+
+  // ---------- vehicles: periodic departures so the 120-min loop is seamless ----------
+  function rnd(seed) { var x = Math.sin(seed * 9301 + 49297) * 233280; return x - Math.floor(x); }
+  function addRuns(path, dur, headway, mode, seed, both, fresh) {
+    var cum = [0]; for (var i = 1; i < path.length; i++) cum.push(cum[i - 1] + km(path[i - 1], path[i]));
+    var len = cum[cum.length - 1] || 1, phase = rnd(seed) * headway;
+    [false, true].forEach(function (rev) {
+      if (rev && !both) return;
+      var p = rev ? path.slice().reverse() : path, c = rev ? cum.map(function (x) { return len - x; }).reverse() : cum;
+      for (var d = phase - Math.ceil(dur / headway) * headway; d < LOOP; d += headway)
+        TRIPS.push({ path: p, ts: c.map(function (x) { return d + x / len * dur; }), mode: mode, fresh: fresh });
+    });
+  }
+  function buildTrips() {
+    TRIPS = [];
+    D.routes.forEach(function (r, i) {
+      var M = MODE[r.mode], cum = 0; for (var j = 1; j < r.path.length; j++) cum += km(r.path[j - 1], r.path[j]);
+      if (cum < 0.5) return;
+      var h = nearestDiv(M.head / (r.mode === 'lrt' ? 1 : shareRatio(r.mode)));
+      addRuns(r.path, cum / M.kmh * 60, h, r.mode, i + 1, true, false);
+    });
+    // private vehicles + RoyalTrans + new links: vehicles per hour ~ zone population x mode share (illustrative)
+    var base = { car: 10, moto: 34, royal: 4, krl: 4, tj: 5, mrt: 6 };
+    LINKS.forEach(function (l, i) {
+      var perH = base[l.mode] * Math.sqrt(l.zone.pop / 1e6) * (l.fresh ? 1 : shareRatio(l.mode)), h = nearestDiv(60 / Math.max(0.5, perH));
+      addRuns(l.path, l.t, h, l.mode, 100 + i, false, l.fresh);
+    });
+  }
+
+  // ---------- layers ----------
+  function zoneLayer() {
+    var s = sc(), mx = maxAbsDcs(), maxPop = 2.4e6;
+    return new deck.GeoJsonLayer({
+      id: 'zones', data: { type: 'FeatureCollection', features: D.zones.map(function (z) { return { type: 'Feature', geometry: z.geometry, properties: z }; }) },
+      extruded: true, filled: true, stroked: true, pickable: true, wireframe: false,
+      getElevation: function (f) { var z = f.properties; if (!s) return 150 + Math.sqrt(z.pop / maxPop) * 1200; var v = zoneDcs(z.id); return v === 0 ? 80 : 250 + Math.sqrt(Math.abs(v) / mx) * 2600; },
+      getFillColor: function (f) { var z = f.properties; if (!s) return mix(FLAT, [110, 120, 170], z.pop / maxPop).concat(150); var v = zoneDcs(z.id), t = Math.sqrt(Math.abs(v) / mx);
+        return v === 0 ? FLAT.concat(110) : mix(FLAT, v > 0 ? POS : NEG, 0.25 + 0.75 * t).concat(120); },
+      getLineColor: [244, 244, 248, 90], lineWidthMinPixels: 1,
+      material: { ambient: 0.6, diffuse: 0.55, shininess: 20 },
+      updateTriggers: { getElevation: S.sc, getFillColor: S.sc },
+      transitions: { getElevation: 900, getFillColor: 600 },
+      onHover: function (i) { tip(i, function (f) { var z = f.properties, s2 = sc();
+        return '<b>' + z.id + ' · ' + z.name + '</b><span>' + (z.pop / 1e6).toFixed(2) + 'M people · income ' + fmtInt(z.income_k) + 'k IDR/mo · ' + z.dist_km + ' km to CBD</span><span>Modes: ' + z.avail.map(function (m) { return MODE[m].n + (z.skim[m] ? ' ' + Math.round(z.skim[m].t) + '′' : ''); }).join(', ') + '</span>' + (s2 ? '<span style="color:' + (zoneDcs(z.id) >= 0 ? 'var(--accent)' : 'var(--neg)') + '">ΔCS ' + fmtK(zoneDcs(z.id)) + 'k IDR / commuter / day</span>' : ''); }); }
+    });
+  }
+  function fmtInt(n) { return Math.round(n).toLocaleString('en-US'); }
+  function cbdLayer() {
+    return new deck.GeoJsonLayer({ id: 'cbd', data: { type: 'Feature', geometry: D.cbd.geometry, properties: {} }, extruded: true, getElevation: 1800, getFillColor: [253, 225, 106, 200], getLineColor: [253, 225, 106, 255], pickable: true,
+      onHover: function (i) { tip(i, function () { return '<b>CBD · Sudirman–Kuningan</b><span>Destination of every modelled trip</span>'; }); } });
+  }
+  function networkLayers() {
+    var s = sc(), boost = s && s.boost;
+    var fresh = LINKS.filter(function (l) { return l.fresh; });
+    var dash = deck.PathStyleExtension ? [new deck.PathStyleExtension({ dash: true })] : [];
+    var out = [
+      new deck.PathLayer({ id: 'rail-glow', data: D.routes, getPath: function (r) { return r.path; }, getColor: function (r) { return MODE[r.mode].rgb.concat(r.mode === boost ? 90 : 38); }, getWidth: function (r) { return r.mode === 'tj' ? 6 : 10; }, widthUnits: 'pixels', jointRounded: true, capRounded: true, parameters: { depthTest: false }, updateTriggers: { getColor: boost } }),
+      new deck.PathLayer({ parameters: { depthTest: false }, id: 'rail', data: D.routes, getPath: function (r) { return r.path; }, getColor: function (r) { return MODE[r.mode].rgb.concat(r.mode === 'tj' ? 90 : 170); }, getWidth: function (r) { return r.mode === 'tj' ? 1 : 2; }, widthUnits: 'pixels', jointRounded: true, pickable: true,
+        onHover: function (i) { tip(i, function (r) { return '<b>' + r.line + '</b><span>' + MODE[r.mode].n + '</span>'; }); } }),
+      new deck.PathLayer({ parameters: { depthTest: false }, id: 'links', data: LINKS.filter(function (l) { return !l.fresh; }), getPath: function (l) { return l.path; }, getColor: function (l) { return MODE[l.mode].rgb.concat(l.mode === 'royal' ? (boost === 'royal' ? 150 : 70) : 34); }, getWidth: 1.5, widthUnits: 'pixels',
+        getDashArray: [4, 4], dashJustified: true, extensions: dash, updateTriggers: { getColor: boost } }),
+      new deck.PathLayer({ parameters: { depthTest: false }, id: 'fresh-glow', data: fresh, getPath: function (l) { return l.path; }, getColor: function (l) { return MODE[l.mode].rgb.concat(70); }, getWidth: 14, widthUnits: 'pixels', capRounded: true, jointRounded: true }),
+      new deck.PathLayer({ parameters: { depthTest: false }, id: 'fresh', data: fresh, getPath: function (l) { return l.path; }, getColor: function (l) { return MODE[l.mode].rgb.concat(255); }, getWidth: 3, widthUnits: 'pixels', getDashArray: [6, 3], dashJustified: true, extensions: dash, pickable: true,
+        onHover: function (i) { tip(i, function (l) { return '<b>New ' + MODE[l.mode].n + ' link · ' + l.zone.id + ' → CBD</b><span>Scenario ' + S.sc + ' · ' + l.t + ' min in-vehicle (schematic route)</span>'; }); } }),
+      new deck.ScatterplotLayer({ parameters: { depthTest: false }, id: 'stops', data: D.stops, getPosition: function (s) { return s.p; }, getFillColor: [14, 16, 28, 255], getLineColor: function (s) { return MODE[s.mode].rgb.concat(255); }, stroked: true, lineWidthMinPixels: 1.5,
+        getRadius: function (s) { return s.mode === 'tj' ? 120 : 260; }, radiusMinPixels: 2, radiusMaxPixels: 7, pickable: true,
+        onHover: function (i) { tip(i, function (s) { return '<b>' + s.name + '</b><span>' + MODE[s.mode].n + ' station</span>'; }); } })
+    ];
+    if (s && s.toll) out.push(new deck.ScatterplotLayer({ id: 'toll', data: [D.cbd.centroid], getPosition: function (p) { return p; }, getRadius: 9000, filled: false, stroked: true, getLineColor: [255, 59, 92, 220], lineWidthMinPixels: 3,
+      getDashArray: [8, 5], extensions: dash.length ? [new deck.PathStyleExtension({ dash: true })] : [] }));
+    return out;
+  }
+  function tripLayer() {
+    return new deck.TripsLayer({
+      id: 'vehicles', data: TRIPS, getPath: function (d) { return d.path; }, getTimestamps: function (d) { return d.ts; },
+      getColor: function (d) { return d.fresh ? [255, 255, 255] : MODE[d.mode].rgb; }, getWidth: function (d) { return MODE[d.mode].w; }, widthUnits: 'pixels',
+      trailLength: 1.6, currentTime: S.t, parameters: { depthTest: false }, fadeTrail: true, capRounded: true, jointRounded: true, opacity: 1,
+      updateTriggers: { getColor: S.sc }
+    });
+  }
+  function draw() { overlay.setProps({ layers: [zoneLayer(), cbdLayer()].concat(networkLayers(), [tripLayer()]) }); }
+  function tip(info, html) { var tt = $('tt'); if (!info.object) { tt.style.display = 'none'; return; } tt.innerHTML = html(info.object); tt.style.display = 'block'; tt.style.left = info.x + 14 + 'px'; tt.style.top = info.y + 10 + 'px'; }
+
+  // ---------- panel + card ----------
+  var EQ = { 'pro-equity': '#2ee6a6', 'strongly pro-equity': '#2ee6a6', 'mildly pro-equity': '#7fe3f0', 'mixed': '#ffb347', 'regressive': '#ff3b5c' };
+  function shareBars(s) {
+    var base = s ? s.mode_share_base : D.scenarios.A.mode_share_base, pol = s ? s.mode_share_policy : base;
+    return '<div class="bars">' + ['car', 'moto', 'krl', 'tj', 'royal', 'mrt'].map(function (m) { var b = base[m], p = pol[m], dd = p - b;
+      return '<span>' + MODE[m].n + '</span><span class="tr"><b class="base" style="left:0;width:' + b * 100 * 2.2 + '%;background:' + MODE[m].c + '"></b><b style="left:0;width:' + p * 100 * 2.2 + '%;background:' + MODE[m].c + ';opacity:.95;height:5px;top:2.5px"></b></span><span class="v">' + (p * 100).toFixed(1) + '%' + (s && Math.abs(dd) >= 0.0005 ? ' <span style="color:' + (dd > 0 ? 'var(--accent)' : 'var(--neg)') + '">' + (dd > 0 ? '+' : '−') + Math.abs(dd * 100).toFixed(1) + '</span>' : '') + '</span>'; }).join('') + '</div>';
+  }
+  function divBars(obj, keys, names) {
+    var mx = 0; keys.forEach(function (k) { mx = Math.max(mx, Math.abs(obj[k])); }); mx = mx || 1;
+    return '<div class="bars">' + keys.map(function (k, i) { var v = obj[k], w = Math.abs(v) / mx * 50;
+      return '<span>' + names[i] + '</span><span class="tr"><span class="mid"></span><b style="left:' + (v >= 0 ? 50 : 50 - w) + '%;width:' + w + '%;background:' + (v >= 0 ? 'var(--accent)' : 'var(--neg)') + '"></b></span><span class="v">' + fmtK(v) + '</span>'; }).join('') + '</div>';
+  }
+  function card() {
+    var s = sc(), m = D.meta;
+    if (!s) return '<p class="kick">Baseline · today</p><div class="big">' + Math.round(-m.baseline.cs_mean_th_idr) + '<small>k IDR</small></div><div class="sub">average daily generalised cost felt per commuter (−CS)</div><p class="sec">Mode share, base</p>' + shareBars(null) +
+      '<p class="sec">Model</p><div class="kv"><div><b>' + m.model + '</b><span>nested logit</span></div><div><b>λ ' + m.lambda.toFixed(2) + '</b><span>nest parameter</span></div><div><b>' + m.beta_cost.toFixed(3) + '</b><span>β cost / k IDR</span></div><div><b>' + fmtInt(m.n_persons) + '</b><span>synthetic commuters</span></div></div><p class="note">λ between 0 and 1: people switch more easily within private or within transit than across.</p>';
+    var zk = D.zones.map(function (z) { return z.id; });
+    return '<p class="kick">Scenario ' + S.sc + '</p><div class="big" style="color:' + (s.mean_dCS_th_idr >= 0 ? 'var(--accent)' : 'var(--neg)') + '">' + fmtK(s.mean_dCS_th_idr) + '<small>k IDR / day</small></div><div class="sub">mean ΔCS per commuter</div>' +
+      '<div class="kv"><div><b>' + fmtInt(s.annual_aggregate_bn_idr) + '</b><span>bn IDR / year</span></div><div><b>' + fmtInt(s.n_winners) + ' / ' + fmtInt(s.n_losers) + '</b><span>gain / lose (of 5k)</span></div></div>' +
+      '<p class="sec">Mode share <small>· faint = base</small></p>' + shareBars(s) +
+      '<p class="sec">ΔCS by income</p>' + divBars(s.dCS_by_income, ['low', 'mid', 'high'], ['Low', 'Mid', 'High']) +
+      '<p class="sec">ΔCS by zone</p>' + divBars(s.dCS_by_zone, zk, zk);
+  }
+  function desc() {
+    var s = sc(); if (!s) return '<h2>Baseline</h2><p>The morning peak as the model sees it today. Watch KRL trains, TransJakarta buses and swarms of motorbikes head for the CBD.</p>';
+    return '<h2>' + s.label.replace(/^[A-H]: /, '') + '</h2><span class="badge" style="color:' + (EQ[s.equity_dir] || '#9298b0') + ';border-color:' + (EQ[s.equity_dir] || '#9298b0') + '">' + s.equity_dir + '</span><p>' + s.desc + '</p>';
+  }
+  function legend() {
+    var s = sc(), items = ['krl', 'mrt', 'lrt', 'tj', 'royal', 'moto', 'car'].map(function (m) { return '<span><i style="background:' + MODE[m].c + '"></i>' + MODE[m].n + '</span>'; });
+    if (s && s.new_links.length) items.unshift('<span><i style="background:#fff"></i>New link</span>');
+    if (s && s.toll) items.unshift('<span><i style="background:var(--neg)"></i>Toll cordon</span>');
+    return items.join('');
+  }
+  function render() {
+    [].forEach.call($('scen').children, function (b) { b.setAttribute('aria-pressed', b.dataset.k === S.sc); });
+    $('desc').innerHTML = desc(); $('card').innerHTML = card(); $('legend').innerHTML = legend();
+  }
+  function pick(k) {
+    S.sc = k; buildLinks(); buildTrips(); render(); draw();
+    var s = sc(), focus = s && s.new_links.length ? D.zones.filter(function (z) { return s.new_links.some(function (l) { return l.zone === z.id; }); }) : null;
+    if (focus) { var c = focus[0].centroid, cbd = D.cbd.centroid; map.flyTo({ center: [(c[0] + cbd[0]) / 2, (c[1] + cbd[1]) / 2 - 0.02], zoom: MOBILE ? 8.9 : 9.9, pitch: 55, bearing: -20, duration: 1600 }); }
+    else map.flyTo({ center: [106.78, -6.36], zoom: MOBILE ? 8.4 : 9.35, pitch: 52, bearing: -14, duration: 1400 });
+  }
+
+  // ---------- clock ----------
+  var last = performance.now();
+  function tick(now) {
+    var dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (S.playing && D) { S.t = (S.t + dt * S.speed * 1.5) % LOOP; var h = 6 + Math.floor(S.t / 60), mm = Math.floor(S.t % 60); $('time').textContent = '0' + h + ':' + (mm < 10 ? '0' : '') + mm; draw(); }
+    requestAnimationFrame(tick);
+  }
+  $('play').onclick = function () { S.playing = !S.playing; this.textContent = S.playing ? '❚❚' : '▶'; };
+  $('speed').onchange = function () { S.speed = +this.value; };
+
+  fetch('data/commute.json').then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function (json) {
+    D = json;
+    var keys = ['base'].concat(Object.keys(D.scenarios));
+    keys.forEach(function (k) { var b = document.createElement('button'); b.type = 'button'; b.dataset.k = k;
+      var lab = k === 'base' ? 'Baseline' : D.scenarios[k].label.replace(/^[A-H]: /, '');
+      b.innerHTML = (k === 'base' ? '' : k + ' · ') + lab + '<span>' + (k === 'base' ? 'today' : fmtK(D.scenarios[k].mean_dCS_th_idr) + 'k / day') + '</span>';
+      b.onclick = function () { pick(k); }; $('scen').appendChild(b); });
+    if (/[?&]embed/.test(location.search)) document.body.classList.add('embed');
+    var q = /[?&]s(?:cenario)?=([A-Ha-h]|base)/.exec(location.search), first = q ? (q[1] === 'base' ? 'base' : q[1].toUpperCase()) : 'base';
+    $('load').style.display = 'none';
+    var start = function () { pick(first); requestAnimationFrame(tick); };
+    mapReady.then(start); // map.loaded() can be false after 'load' while tiles stream in
+  }).catch(function (e) { $('load').textContent = 'Could not load data (' + e.message + '). Reload to try again.'; });
+})();
+</script>
+</body>
+</html>
