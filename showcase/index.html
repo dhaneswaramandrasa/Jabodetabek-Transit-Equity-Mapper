@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jabodetabek Transit Equity · 3D map</title>
+<title>Jabodetabek Transit Equity, 3D map</title>
 <meta property="og:type" content="website"><meta property="og:url" content="https://dhaneswaramandrasa.github.io/Jabodetabek-Transit-Equity-Mapper/"><meta property="og:title" content="Jabodetabek Transit Equity Mapper: live 3D map"><meta property="og:description" content="28% of Jabodetabek is a transit desert: high need, low access. A scroll-through 3D map built on real open data."><meta property="og:image" content="https://dhaneswara-mandrasa.vercel.app/og-transit.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="Where Jabodetabek needs transit, where it goes, and where the gap is. Real open data (GTFS, OSM, BPS, WorldPop) on a 3D map, with the unfinished parts labelled.">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
@@ -18,20 +18,20 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); f
 .panel { top: 16px; left: 16px; width: 360px; max-height: calc(100% - 32px); padding: 18px 20px 14px; }
 .card { top: 16px; right: 16px; width: 330px; max-height: calc(100% - 110px); padding: 16px 18px 14px; }
 .card:empty { display: none; }
-.kick { font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+.kick { font: 500 11px var(--mono); letter-spacing: .12em; color: var(--accent); margin: 0; }
 h1 { font-weight: 800; font-size: 28px; letter-spacing: -0.03em; line-height: 1.04; margin: 10px 0 0; }
 .lede { margin: 10px 0 0; color: var(--ink2); font-size: 13.5px; }
 .steps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 16px 0 0; }
-.steps button { font: 500 9.5px var(--mono); letter-spacing: .02em; text-transform: uppercase; color: var(--muted); background: none; border: 0; border-top: 3px solid var(--line); padding: 7px 0 0; text-align: left; cursor: pointer; }
+.steps button { font: 500 9.5px var(--mono); letter-spacing: .02em; color: var(--muted); background: none; border: 0; border-top: 3px solid var(--line); padding: 7px 0 0; text-align: left; cursor: pointer; }
 .steps button[aria-current="step"] { color: var(--accent); border-top-color: var(--accent); }
 .steps button.done { border-top-color: #b9bbe6; }
 .step h2 { margin: 14px 0 0; font-size: 19px; font-weight: 800; letter-spacing: -0.01em; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .step p { margin: 6px 0 0; color: var(--ink2); font-size: 13.5px; }
-.badge { font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 2px 9px; border: 1.5px solid; white-space: nowrap; }
+.badge { font: 500 10px var(--mono); letter-spacing: .1em; border-radius: 999px; padding: 2px 9px; border: 1.5px solid; white-space: nowrap; }
 .badge.done { color: var(--done); border-color: var(--done); }
 .badge.prelim { color: var(--prelim); border-color: var(--prelim); }
 .badge.plan { color: var(--plan); border: 1.5px dashed var(--plan); }
-.sec { margin: 14px 0 6px; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.sec { margin: 14px 0 6px; font: 500 11px var(--mono); letter-spacing: .1em; color: var(--muted); }
 .sec small { letter-spacing: 0; text-transform: none; }
 .nav { display: flex; justify-content: space-between; margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
 button.b, .chips button { font: 600 12.5px "Archivo", sans-serif; color: var(--fg); background: var(--well); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
@@ -53,16 +53,16 @@ button.b:disabled { opacity: .35; cursor: default; }
 .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .kv div { background: var(--well); border-radius: 8px; padding: 7px 9px; }
 .kv b { display: block; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.kv span { font: 10.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.kv span { font: 10.5px var(--mono); color: var(--muted); letter-spacing: .05em; }
 .note { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
 .list { margin: 6px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--ink2); }
 .list li { padding: 3px 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; }
-.list li em { font: normal 10.5px var(--mono); color: var(--prelim); text-transform: uppercase; white-space: nowrap; }
+.list li em { font: normal 10.5px var(--mono); color: var(--prelim); white-space: nowrap; }
 .mock { border: 1.5px dashed var(--plan); border-radius: 10px; padding: 8px 10px; font: 500 11.5px var(--mono); color: var(--prelim); margin-top: 10px; }
 .quad { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; font-size: 11.5px; }
 .quad div { border-radius: 6px; padding: 8px 8px; color: #0b0d17; font-weight: 700; line-height: 1.2; }
 .quad span { display: block; font: 500 10px var(--mono); opacity: .75; }
-.axes { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--muted); margin-top: 3px; text-transform: uppercase; }
+.axes { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--muted); margin-top: 3px; }
 table.cm { border-collapse: collapse; width: 100%; font: 11px var(--mono); margin-top: 8px; text-align: right; }
 table.cm th { color: var(--muted); font-weight: 500; padding: 2px 4px; }
 table.cm td { padding: 4px; border: 2px solid var(--panel); color: #fff; }
@@ -96,7 +96,7 @@ body.embed .panel, body.embed .card { display: none; }
   <nav class="steps" id="steps" aria-label="Story steps"></nav>
   <div id="step"></div>
   <div class="nav"><button class="b" type="button" id="prev">← Back</button><button class="b go" type="button" id="next">Next →</button></div>
-  <p class="foot">Real open data: GTFS (Mobility Database), OSM, BPS, WorldPop. Methods and paper in this repo. <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper">Code &amp; paper</a> · <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Interactive app</a> · <a href="commute/">Commute policies 3D →</a></p>
+  <p class="foot">Real open data: GTFS (Mobility Database), OSM, BPS, WorldPop. Methods and paper in this repo. <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper">Code &amp; paper</a> <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Interactive app</a> <a href="commute/">Commute policies 3D →</a></p>
 </aside>
 <aside class="card" id="card" aria-live="polite"></aside>
 
@@ -166,14 +166,14 @@ body.embed .panel, body.embed .card { display: none; }
       material: { ambient: 0.55, diffuse: 0.6, shininess: 24 },
       updateTriggers: { getElevation: [st, JSON.stringify(vis)], getFillColor: [st, JSON.stringify(vis)] },
       transitions: { getElevation: 600, getFillColor: 400 },
-      onHover: function (i) { tip(i, function (d) { return '<b>Hex · pop ' + fmt(d.pop) + '</b>' + metricLine(d); }); }
+      onHover: function (i) { tip(i, function (d) { return '<b>Hex, pop ' + fmt(d.pop) + '</b>' + metricLine(d); }); }
     });
   }
   function metricLine(d) {
     var st = S.step;
     if (st === 0) return '<span>Need (TNI) ' + d.tni.toFixed(2) + '</span>';
     if (st === 1) return '<span>Access (TAI) ' + d.tai.toFixed(2) + '</span>';
-    if (st === 2 || st === 3) return '<span>' + QN[d.q] + ' · TNI ' + d.tni.toFixed(2) + ' · TAI ' + d.tai.toFixed(2) + '</span>';
+    if (st === 2 || st === 3) return '<span>' + QN[d.q] + ', TNI ' + d.tni.toFixed(2) + ', TAI ' + d.tai.toFixed(2) + '</span>';
     if (st === 4) return '<span>LISA: ' + LN[d.lisa] + '</span>';
     if (st === 5) return '<span>' + (d.cbd >= 0 ? d.cbd + ' min to Sudirman–Thamrin (r5py)' : 'Not routed') + '</span>';
     return '<span>' + QN[d.q] + '</span>';
@@ -191,7 +191,7 @@ body.embed .panel, body.embed .card { display: none; }
       getLineColor: [11, 13, 23, 200], lineWidthMinPixels: 0.6,
       material: { ambient: 0.55, diffuse: 0.6, shininess: 24 },
       transitions: { getElevation: 600 },
-      onHover: function (i) { tip(i, function (f) { var p = f.properties; return '<b>' + p.name + '</b><span>' + p.kota + ' · pop ' + fmt(p.pop) + ' · ' + QN[p.q] + '</span>'; }); }
+      onHover: function (i) { tip(i, function (f) { var p = f.properties; return '<b>' + p.name + '</b><span>' + p.kota + ', pop ' + fmt(p.pop) + ', ' + QN[p.q] + '</span>'; }); }
     });
   }
   function transitLayers() {
@@ -270,8 +270,8 @@ body.embed .panel, body.embed .card { display: none; }
     { t: 'Gap', h: 'The gap', st: 'done', cam: { zoom: 9.4 },
       body: function () { return '<p>Need against access gives four groups. <b>Q4 is the problem:</b> high need, low access. Those hexes rise in red; the rest sink back.</p><p class="sec">Show groups <small>· tap to toggle</small></p>' + quadChips(); },
       card: function () { var h = ST.h3, k = ST.kelurahan;
-        return '<p class="kick">Transit deserts (Q4)</p><div class="big" style="color:' + QC[4] + '">' + pct(h.q4_pct) + '</div><div class="sub">of hexes · ' + pct(k.q4_pct) + ' of kelurahan</div><p class="sec">Hexes by group</p>' + qBars(h.quadrant_counts) +
-          '<p class="sec">How the groups are cut</p><div class="quad"><div style="background:' + QC[4] + '">Q4 Desert<span>high need · low access</span></div><div style="background:' + QC[1] + '">Q1 Well served<span>high need · high access</span></div><div style="background:' + QC[3] + ';color:#fff">Q3 Low priority<span>low need · low access</span></div><div style="background:' + QC[2] + '">Q2 Overserved<span>low need · high access</span></div></div><div class="axes"><span>← access low</span><span>access high →</span></div>'; } },
+        return '<p class="kick">Transit deserts (Q4)</p><div class="big" style="color:' + QC[4] + '">' + pct(h.q4_pct) + '</div><div class="sub">of hexes, ' + pct(k.q4_pct) + ' of kelurahan</div><p class="sec">Hexes by group</p>' + qBars(h.quadrant_counts) +
+          '<p class="sec">How the groups are cut</p><div class="quad"><div style="background:' + QC[4] + '">Q4 Desert<span>high need, low access</span></div><div style="background:' + QC[1] + '">Q1 Well served<span>high need, high access</span></div><div style="background:' + QC[3] + ';color:#fff">Q3 Low priority<span>low need, low access</span></div><div style="background:' + QC[2] + '">Q2 Overserved<span>low need, high access</span></div></div><div class="axes"><span>← access low</span><span>access high →</span></div>'; } },
     { t: 'Resolution', h: 'Resolution changes the story', st: 'done',
       body: function () { return '<p>The same data, drawn two ways. Switch between <b>administrative kelurahan</b> and <b>equal-size H3 hexes</b>. Big kelurahan hide the sharp edges that hexes show.</p><div class="chips" id="rchips" style="margin-top:10px"><button type="button" data-r="kel" aria-pressed="' + (S.res === 'kel') + '">Kelurahan</button><button type="button" data-r="h3" aria-pressed="' + (S.res === 'h3') + '">H3 hexes</button></div>'; },
       card: function () { var rc = ST.resolution_comparison;
@@ -285,7 +285,7 @@ body.embed .panel, body.embed .card { display: none; }
       card: function () { var n = D.meta.n_routed;
         return '<p class="kick">Routed with r5py</p><div class="big">' + fmt(n) + '<small>of ' + fmt(N) + '</small></div><div class="sub">' + pct(n / N * 100) + ' of hexes</div><div class="mock" style="color:var(--prelim)">Known limit: GTFS coverage is thin outside the core. The other ' + fmt(N - n) + ' hexes have no routing result and default to 180 min in the score.</div><p class="note">So the access numbers for the outer ring are conservative until more feeds are added.</p>'; } },
     { t: 'What-if', h: 'What a new station would change', st: 'plan', cam: 'station',
-      body: function () { var m = D.meta.mockup_station; return '<p><b>Click the map</b> to drop a station, then set the catchment. Q4 hexes inside turn from red to amber. The start pin is the largest connected Q4 High-High cluster in Bodetabek (' + fmt(m.component_hexes) + ' hexes, ' + (m.component_pop / 1e6).toFixed(1) + 'M people).</p><p class="sec">Catchment radius · <span id="rv">' + (S.radius / 1000).toFixed(1) + ' km</span></p><input type="range" id="rad" min="400" max="3000" step="100" value="' + S.radius + '" style="width:100%;accent-color:var(--accent)"><div class="chips" style="margin-top:8px"><button type="button" id="reset">Reset pin</button></div><div class="mock">Mock-up: simulator not built yet</div>'; },
+      body: function () { var m = D.meta.mockup_station; return '<p><b>Click the map</b> to drop a station, then set the catchment. Q4 hexes inside turn from red to amber. The start pin is the largest connected Q4 High-High cluster in Bodetabek (' + fmt(m.component_hexes) + ' hexes, ' + (m.component_pop / 1e6).toFixed(1) + 'M people).</p><p class="sec">Catchment radius, <span id="rv">' + (S.radius / 1000).toFixed(1) + ' km</span></p><input type="range" id="rad" min="400" max="3000" step="100" value="' + S.radius + '" style="width:100%;accent-color:var(--accent)"><div class="chips" style="margin-top:8px"><button type="button" id="reset">Reset pin</button></div><div class="mock">Mock-up: simulator not built yet</div>'; },
       card: function () { var tot = ST.h3.quadrant_counts.Q4, n = ringCells.length, pc = function (x) { return (x / N * 100).toFixed(1) + '%'; };
         return '<p class="kick">If this station were built (mock)</p><div class="kv"><div><b>' + fmt(n) + '</b><span>Q4 hexes in catchment</span></div><div><b>' + fmt(S.ringPop) + '</b><span>people reached</span></div></div><p class="sec">Q4 share of all hexes</p><div class="big"><span style="color:' + QC[4] + '">' + pc(tot) + '</span> → <span style="color:#ffb347">' + pc(tot - n) + '</span></div><div class="mock">Mock rule: every Q4 hex inside the radius counts as fixed. Not a result.</div><p class="sec">Planned method</p><ul class="list"><li>Re-score first-mile (L1) and service (L2) in the catchment</li><li>Recount Q4 before and after</li></ul><p class="sec">Missing before it is real</p><ul class="list"><li><span>L4 last-mile layer</span><em>placeholder</em></li><li><span>L5 cost layer</span><em>placeholder</em></li><li><span>Full r5py routing</span><em>' + pct(D.meta.n_routed / N * 100) + ' routed</em></li></ul><p class="note"><a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/web">Open the interactive app →</a></p>'; } }
   ];

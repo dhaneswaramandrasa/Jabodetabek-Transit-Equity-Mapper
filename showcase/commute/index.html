@@ -18,11 +18,11 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); f
 .panel, .card { position: absolute; z-index: 2; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.45); overflow: auto; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .panel { top: 16px; left: 16px; width: 360px; max-height: calc(100% - 96px); padding: 18px 20px 14px; }
 .card { top: 16px; right: 16px; width: 330px; max-height: calc(100% - 96px); padding: 16px 18px 14px; }
-.kick { font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+.kick { font: 500 11px var(--mono); letter-spacing: .12em; color: var(--accent); margin: 0; }
 h1 { font-weight: 800; font-size: 27px; letter-spacing: -0.03em; line-height: 1.04; margin: 10px 0 0; }
 h2 { margin: 12px 0 0; font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
 .lede, .panel p { margin: 8px 0 0; color: var(--ink2); font-size: 13.5px; }
-.sec { margin: 14px 0 6px; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.sec { margin: 14px 0 6px; font: 500 11px var(--mono); letter-spacing: .1em; color: var(--muted); }
 .sec small { letter-spacing: 0; text-transform: none; }
 .scen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
 .scen button { font: 600 12px "Archivo", sans-serif; text-align: left; color: var(--fg); background: var(--well); border: 1px solid var(--line); border-radius: 9px; padding: 6px 8px; cursor: pointer; line-height: 1.2; }
@@ -33,14 +33,14 @@ h2 { margin: 12px 0 0; font-size: 18px; font-weight: 800; letter-spacing: -0.01e
 .chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .chips span { font: 500 11.5px "Archivo", sans-serif; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; display: inline-flex; gap: 6px; align-items: center; color: var(--ink2); }
 .chips i { width: 14px; height: 4px; border-radius: 2px; }
-.badge { display: inline-block; font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 2px 9px; border: 1.5px solid; margin-top: 6px; }
+.badge { display: inline-block; font: 500 10px var(--mono); letter-spacing: .1em; border-radius: 999px; padding: 2px 9px; border: 1.5px solid; margin-top: 6px; }
 .big { font-weight: 800; font-size: 34px; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
 .big small { font-size: 14px; font-weight: 700; margin-left: 3px; color: var(--muted); }
 .sub { font: 12px var(--mono); color: var(--muted); margin-top: 3px; }
 .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .kv div { background: var(--well); border-radius: 8px; padding: 7px 9px; }
 .kv b { display: block; font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.kv span { font: 10px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.kv span { font: 10px var(--mono); color: var(--muted); letter-spacing: .05em; }
 .bars { display: grid; grid-template-columns: 74px 1fr 64px; gap: 5px 8px; align-items: center; font-size: 12.5px; }
 .bars .tr { position: relative; height: 10px; background: var(--well); border-radius: 2px; }
 .bars .tr b { position: absolute; top: 0; bottom: 0; border-radius: 2px; transition: width .5s, left .5s; }
@@ -86,7 +86,7 @@ body.embed .panel, body.embed .card, body.embed .clock { display: none; }
   <p class="sec">On the map</p>
   <div class="chips" id="legend"></div>
   <p class="note">Zone height and colour: change in consumer surplus (ΔCS) per commuter. Vehicles on the map scale with modelled mode share; their number is illustrative.</p>
-  <p class="foot">Hiroshima University · Transportation Engineering final project, 2026. Synthetic commuters (n = 5,000) on literature-anchored values of time; transit times from GTFS + r5py, road times from BPR. Rail and BRT lines are real; RoyalTrans and new links are schematic. <a href="../">← Transit equity map</a> · <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/notebooks/trans-eng-final">Notebooks</a></p>
+  <p class="foot">Hiroshima University, Transportation Engineering final project, 2026. Synthetic commuters (n = 5,000) on literature-anchored values of time; transit times from GTFS + r5py, road times from BPR. Rail and BRT lines are real; RoyalTrans and new links are schematic. <a href="../">← Transit equity map</a> <a href="https://github.com/dhaneswaramandrasa/Jabodetabek-Transit-Equity-Mapper/tree/main/notebooks/trans-eng-final">Notebooks</a></p>
 </aside>
 <aside class="card" id="card" aria-live="polite"></aside>
 <div class="clock"><button type="button" id="play" aria-label="Play or pause">❚❚</button><b id="time">06:00</b><span>morning peak</span><select id="speed" aria-label="Speed"><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option></select></div>
@@ -203,7 +203,7 @@ body.embed .panel, body.embed .card, body.embed .clock { display: none; }
   function fmtInt(n) { return Math.round(n).toLocaleString('en-US'); }
   function cbdLayer() {
     return new deck.GeoJsonLayer({ id: 'cbd', data: { type: 'Feature', geometry: D.cbd.geometry, properties: {} }, extruded: true, getElevation: 1800, getFillColor: [253, 225, 106, 200], getLineColor: [253, 225, 106, 255], pickable: true,
-      onHover: function (i) { tip(i, function () { return '<b>CBD · Sudirman–Kuningan</b><span>Destination of every modelled trip</span>'; }); } });
+      onHover: function (i) { tip(i, function () { return '<b>CBD, Sudirman–Kuningan</b><span>Destination of every modelled trip</span>'; }); } });
   }
   function networkLayers() {
     var s = sc(), boost = s && s.boost;
@@ -217,7 +217,7 @@ body.embed .panel, body.embed .card, body.embed .clock { display: none; }
         getDashArray: [4, 4], dashJustified: true, extensions: dash, updateTriggers: { getColor: boost } }),
       new deck.PathLayer({ parameters: { depthTest: false }, id: 'fresh-glow', data: fresh, getPath: function (l) { return l.path; }, getColor: function (l) { return MODE[l.mode].rgb.concat(70); }, getWidth: 14, widthUnits: 'pixels', capRounded: true, jointRounded: true }),
       new deck.PathLayer({ parameters: { depthTest: false }, id: 'fresh', data: fresh, getPath: function (l) { return l.path; }, getColor: function (l) { return MODE[l.mode].rgb.concat(255); }, getWidth: 3, widthUnits: 'pixels', getDashArray: [6, 3], dashJustified: true, extensions: dash, pickable: true,
-        onHover: function (i) { tip(i, function (l) { return '<b>New ' + MODE[l.mode].n + ' link · ' + l.zone.id + ' → CBD</b><span>Scenario ' + S.sc + ' · ' + l.t + ' min in-vehicle (schematic route)</span>'; }); } }),
+        onHover: function (i) { tip(i, function (l) { return '<b>New ' + MODE[l.mode].n + ' link, ' + l.zone.id + ' → CBD</b><span>Scenario ' + S.sc + ', ' + l.t + ' min in-vehicle (schematic route)</span>'; }); } }),
       new deck.ScatterplotLayer({ parameters: { depthTest: false }, id: 'stops', data: D.stops, getPosition: function (s) { return s.p; }, getFillColor: [14, 16, 28, 255], getLineColor: function (s) { return MODE[s.mode].rgb.concat(255); }, stroked: true, lineWidthMinPixels: 1.5,
         getRadius: function (s) { return s.mode === 'tj' ? 120 : 260; }, radiusMinPixels: 2, radiusMaxPixels: 7, pickable: true,
         onHover: function (i) { tip(i, function (s) { return '<b>' + s.name + '</b><span>' + MODE[s.mode].n + ' station</span>'; }); } })
